@@ -120,79 +120,7 @@ class UsuariosController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        if (!isset($request->activo)) {
-            $request->validate([
-                'nombres' => 'required',
-                'apellidos' => 'nullable',
-                'username' => [
-                    'required',
-                    Rule::unique('usuarios')->ignore($request->id),
-                ],
-                'email' => [
-                    'nullable',
-                    'email',
-                    Rule::unique('usuarios')->ignore($request->id),
-                ],
-                'password' => 'nullable|min:8|confirmed',
-                'role' => 'required',
-                'dep_id' => 'nullable',
-                'des_id' => 'nullable',
-                'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
-            ], [
-                'nombres.required' => 'El nombre es obligatorio',
-                'username.required' => 'El nombre de usuario es obligatorio',
-                'username.unique' => 'El nombre de usuario ya está en uso',
-                'email.required' => 'El email es obligatorio',
-                'email.email' => 'El email no es válido',
-                'email.unique' => 'El email ya está en uso',
-                'password.min' => 'La contraseña debe tener al menos 8 caracteres',
-                'password.confirmed' => 'Las contraseñas no coinciden',
-                'role.required' => 'El rol es obligatorio',
-                'imagen.image' => 'Debe ser una imagen',
-                'imagen.mimes' => 'El formato de la imagen debe ser JPEG, PNG o JPG',
-                'imagen.max' => 'El tamaño de la imagen no puede superar los 2MB'
-            ]);
-
-            $usuario = Usuario::findOrFail($id);
-            $usuario->nombres = $request->nombres;
-            $usuario->apellidos = $request->apellidos;
-            $usuario->username = $request->username;
-            $usuario->email = $request->email;
-
-            if ($request->password) {
-                $usuario->password = bcrypt($request->password);
-            }
-            $oldImagePath = '';
-            if ($request->hasFile('imagen')) {
-                if ($usuario->imagen) {
-                    $oldImagePath = storage_path('app/' . str_replace('storage', 'public', $usuario->imagen));
-                    if (file_exists($oldImagePath)) {
-                        unlink($oldImagePath);
-                    }
-                }
-
-                $archivo = $request->file('imagen');
-                $nombreArchivo = time() . '.' . $archivo->getClientOriginalExtension();
-                $archivo->move(storage_path('app/public/profile'), $nombreArchivo);
-                $rutaImagen = 'storage/profile/' . $nombreArchivo;
-
-                $usuario->imagen = $rutaImagen;
-            }
-            $usuario->save();
-
-            $detalle = EmpleadoDetalle::where('usu_id', $usuario->id)->first();
-            $detalle->dep_id = $request->dep_id;
-            $detalle->des_id = $request->des_id;
-            $detalle->save();
-
-            session()->flash('message', 'Usuario actualizado correctamente');
-
-            if ($request->ajax()) {
-                return response()->json(['redirect' => url()->previous()]);
-            }
-
-            return redirect()->back()->with('message', 'Usuario actualizado correctamente');
-        } else {
+        if (isset($request->activo)) {
             $usuario = Usuario::findOrFail($id);
             $usuario->activo = $request->activo;
             $usuario->save();
@@ -206,6 +134,78 @@ class UsuariosController extends Controller
 
             return redirect()->back()->with('message', $text);
         }
+
+        $request->validate([
+            'nombres' => 'required',
+            'apellidos' => 'nullable',
+            'username' => [
+                'required',
+                Rule::unique('usuarios')->ignore($request->id),
+            ],
+            'email' => [
+                'nullable',
+                'email',
+                Rule::unique('usuarios')->ignore($request->id),
+            ],
+            'password' => 'nullable|min:8|confirmed',
+            'role' => 'required',
+            'dep_id' => 'nullable',
+            'des_id' => 'nullable',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+        ], [
+            'nombres.required' => 'El nombre es obligatorio',
+            'username.required' => 'El nombre de usuario es obligatorio',
+            'username.unique' => 'El nombre de usuario ya está en uso',
+            'email.required' => 'El email es obligatorio',
+            'email.email' => 'El email no es válido',
+            'email.unique' => 'El email ya está en uso',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres',
+            'password.confirmed' => 'Las contraseñas no coinciden',
+            'role.required' => 'El rol es obligatorio',
+            'imagen.image' => 'Debe ser una imagen',
+            'imagen.mimes' => 'El formato de la imagen debe ser JPEG, PNG o JPG',
+            'imagen.max' => 'El tamaño de la imagen no puede superar los 2MB'
+        ]);
+
+        $usuario = Usuario::findOrFail($id);
+        $usuario->nombres = $request->nombres;
+        $usuario->apellidos = $request->apellidos;
+        $usuario->username = $request->username;
+        $usuario->email = $request->email;
+
+        if ($request->password) {
+            $usuario->password = bcrypt($request->password);
+        }
+        $oldImagePath = '';
+        if ($request->hasFile('imagen')) {
+            if ($usuario->imagen) {
+                $oldImagePath = storage_path('app/' . str_replace('storage', 'public', $usuario->imagen));
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+            }
+
+            $archivo = $request->file('imagen');
+            $nombreArchivo = time() . '.' . $archivo->getClientOriginalExtension();
+            $archivo->move(storage_path('app/public/profile'), $nombreArchivo);
+            $rutaImagen = 'storage/profile/' . $nombreArchivo;
+
+            $usuario->imagen = $rutaImagen;
+        }
+        $usuario->save();
+
+        $detalle = EmpleadoDetalle::where('usu_id', $usuario->id)->first();
+        $detalle->dep_id = $request->dep_id;
+        $detalle->des_id = $request->des_id;
+        $detalle->save();
+
+        session()->flash('message', 'Usuario actualizado correctamente');
+
+        if ($request->ajax()) {
+            return response()->json(['redirect' => url()->previous()]);
+        }
+
+        return redirect()->back()->with('message', 'Usuario actualizado correctamente');
     }
 
     /**

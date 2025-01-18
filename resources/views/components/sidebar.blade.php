@@ -45,8 +45,8 @@
                         <span>Designaciones</span>
                     </a>
                 </li>
-                <li class="{{ Route::is('admin.gestion-asistencias.index') ? 'active' : '' }}">
-                    <a href="{{ route('admin.gestion-asistencias.index') }}">
+                <li class="{{ Route::is('admin.permisos.index') ? 'active' : '' }}">
+                    <a href="{{ route('admin.permisos.index') }}">
                         <i class="la la-tasks"></i>
                         <span>Gestión de asistencias</span>
                     </a>

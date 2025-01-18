@@ -4,20 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class EmpleadoPermiso extends Model
+class EmpleadoDescuentoCompensacion extends Model
 {
-    protected $table = 'empleado_permisos';
+    protected $table = 'empleado_descuentos_compensaciones';
     protected $primaryKey = 'id';
-
     protected $fillable = [
-        'usu_detalle_id',
         'tipo',
-        'fecha_ini',
-        'fecha_fin',
-        'dias',
-        'razones',
-        'estado',
-        'usu_id'
+        'usu_detalle_id',
+        'nombre',
+        'descripcion',
+        'cantidad',
+        'usu_id',
     ];
 
     public function detalle()

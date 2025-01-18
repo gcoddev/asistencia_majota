@@ -25,9 +25,9 @@ class UserSeeder extends Seeder
         // Asignar rol de admin al usuario
         $user->assignRole('admin');
 
-        $detalle = new EmpleadoDetalle();
-        $detalle->usu_id = $user->id;
-        $detalle->save();
+        // $detalle = new EmpleadoDetalle();
+        // $detalle->usu_id = $user->id;
+        // $detalle->save();
 
         $user = Usuario::create([
             'nombres' => 'Empleado',

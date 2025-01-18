@@ -143,7 +143,7 @@ $(document).ready(function () {
 				next: 'fa fa-angle-right',
 				previous: 'fa fa-angle-left'
 			}
-		});
+		})
 	}
 
 	// Datatable

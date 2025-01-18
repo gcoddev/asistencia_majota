@@ -88,12 +88,14 @@
                                 {{ $user->apellidos }}
                             </a>
                         </h4>
-                        <div class="small text-muted">
-                            {{ $user->detalle->departamento ? $user->detalle->departamento->nombre : '- Sin departamento -' }}
-                        </div>
-                        <div class="small text-muted">
-                            {{ $user->detalle->designacion ? $user->detalle->designacion->nombre : '- Sin designación -' }}
-                        </div>
+                        @if ($user->detalle)
+                            <div class="small text-muted">
+                                {{ $user->detalle->departamento ? $user->detalle->departamento->nombre : '- Sin departamento -' }}
+                            </div>
+                            <div class="small text-muted">
+                                {{ $user->detalle->designacion ? $user->detalle->designacion->nombre : '- Sin designación -' }}
+                            </div>
+                        @endif
                     </div>
                 </div>
             @endforeach
@@ -125,12 +127,14 @@
                                             </a>
                                             <a href="profile.html">
                                                 {{ $user->nombres }} {{ $user->apellidos }}
-                                                <span>
-                                                    {{ $user->detalle->departamento ? $user->detalle->departamento->nombre : '- Sin departamento -' }}
-                                                </span>
-                                                <span>
-                                                    {{ $user->detalle->designacion ? $user->detalle->designacion->nombre : '- Sin designación -' }}
-                                                </span>
+                                                @if ($user->detalle)
+                                                    <span>
+                                                        {{ $user->detalle->departamento ? $user->detalle->departamento->nombre : '- Sin departamento -' }}
+                                                    </span>
+                                                    <span>
+                                                        {{ $user->detalle->designacion ? $user->detalle->designacion->nombre : '- Sin designación -' }}
+                                                    </span>
+                                                @endif
                                             </a>
                                         </h2>
                                     </td>

@@ -7,7 +7,7 @@ use App\Http\Controllers\DeduccionesController;
 use App\Http\Controllers\DepartamentosController;
 use App\Http\Controllers\DesignacionesController;
 use App\Http\Controllers\UsuariosController;
-use App\Http\Controllers\GestionAsistenciasController;
+use App\Http\Controllers\PermisosController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\SueldosController;
@@ -22,7 +22,7 @@ Route::prefix('admin')->middleware('usuario_autenticado')->group(function () {
     Route::resource('/usuarios', UsuariosController::class, ['names' => 'admin.usuarios']);
     Route::resource('/departamentos', DepartamentosController::class, ['names' => 'admin.departamentos']);
     Route::resource('/designaciones', DesignacionesController::class, ['names' => 'admin.designaciones']);
-    Route::resource('/gestion-asistencias', GestionAsistenciasController::class, ['names' => 'admin.gestion-asistencias']);
+    Route::resource('/permisos', PermisosController::class, ['names' => 'admin.permisos']);
     Route::resource('/sueldos', SueldosController::class, ['names' => 'admin.sueldos']);
     Route::resource('/compensaciones', CompensacionesController::class, ['names' => 'admin.compensaciones']);
     Route::resource('/deducciones', DeduccionesController::class, ['names' => 'admin.deducciones']);
