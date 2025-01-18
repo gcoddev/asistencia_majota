@@ -194,10 +194,12 @@ class UsuariosController extends Controller
         }
         $usuario->save();
 
-        $detalle = EmpleadoDetalle::where('usu_id', $usuario->id)->first();
-        $detalle->dep_id = $request->dep_id;
-        $detalle->des_id = $request->des_id;
-        $detalle->save();
+        if ($usuario->detalle) {
+            $detalle = EmpleadoDetalle::where('usu_id', $usuario->id)->first();
+            $detalle->dep_id = $request->dep_id;
+            $detalle->des_id = $request->des_id;
+            $detalle->save();
+        }
 
         session()->flash('message', 'Usuario actualizado correctamente');
 
