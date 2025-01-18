@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('asistencias', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('usu_id');
+            $table->enum('tipo', ['permiso', 'vacacion']);
             $table->date('fecha_ini');
             $table->date('fecha_fin');
             $table->foreign('usu_id')

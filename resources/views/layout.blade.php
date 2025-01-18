@@ -11,6 +11,8 @@
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/favicon.png') }}">
 
     @include('components.styles')
+
+    @stack('styles')
 </head>
 
 <body>

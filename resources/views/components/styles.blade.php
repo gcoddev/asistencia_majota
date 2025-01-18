@@ -10,5 +10,14 @@
 <!-- Chart CSS -->
 <link rel="stylesheet" href="{{ asset('assets/plugins/morris/morris.css') }}">
 
+<!-- Datatable CSS -->
+<link rel="stylesheet" href="{{ asset('assets/css/dataTables.bootstrap4.min.css') }}">
+
+<!-- Select2 CSS -->
+<link rel="stylesheet" href="{{ asset('assets/css/select2.min.css') }}">
+
+<!-- Datetimepicker CSS -->
+<link rel="stylesheet" href="{{ asset('assets/css/bootstrap-datetimepicker.min.css') }}">
+
 <!-- Main CSS -->
 <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">

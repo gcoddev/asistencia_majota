@@ -14,19 +14,19 @@ return new class extends Migration
         Schema::create('empleado_detalles', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('usu_id');
-            $table->unsignedBigInteger('dep_id');
-            $table->unsignedBigInteger('des_id');
-            $table->string('num_pasaporte');
-            $table->string('exp_pasaporte');
-            $table->string('tel_pasaporte');
-            $table->string('nacionalidad');
-            $table->string('religion');
-            $table->string('etnia');
-            $table->string('estado_civil');
-            $table->string('ocupacion');
-            $table->date('fecha_nacimiento');
-            $table->date('fecha_ingreso');
-            ('contacto_emergencia');
+            $table->unsignedBigInteger('dep_id')->nullable();
+            $table->unsignedBigInteger('des_id')->nullable();
+            $table->string('num_pasaporte')->nullable();
+            $table->string('exp_pasaporte')->nullable();
+            $table->string('tel_pasaporte')->nullable();
+            $table->string('nacionalidad')->nullable();
+            $table->string('religion')->nullable();
+            $table->string('etnia')->nullable();
+            $table->string('estado_civil')->nullable();
+            $table->string('ocupacion')->nullable();
+            $table->date('fecha_nacimiento')->nullable();
+            $table->date('fecha_ingreso')->nullable();
+            $table->string('contacto_emergencia')->nullable();
             $table->foreign('usu_id')
                 ->references('id')
                 ->on('usuarios')
