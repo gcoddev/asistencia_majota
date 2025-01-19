@@ -160,7 +160,7 @@
                 let formData = new FormData(this);
 
                 const id = $('#id').val();
-                if (id) {
+                if (id != '') {
                     formData.append('_method', 'PUT');
                 }
 

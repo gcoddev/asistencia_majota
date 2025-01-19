@@ -14,12 +14,26 @@ class PermisosController extends Controller
      */
     public function index()
     {
-        $permisos = EmpleadoPermiso::where('tipo', 'permiso')
-            ->orderByRaw("FIELD(estado, 'pendiente', 'rechazado', 'aprobado')")
-            ->get();
-        $vacaciones = EmpleadoPermiso::where('tipo', 'vacacion')
-            ->orderByRaw("FIELD(estado, 'pendiente', 'rechazado', 'aprobado')")
-            ->get();
+        $permisos = null;
+        $vacaciones = null;
+
+        if (Auth::user()->role[0]->name == 'admin') {
+            $permisos = EmpleadoPermiso::where('tipo', 'permiso')
+                ->orderByRaw("FIELD(estado, 'pendiente', 'rechazado', 'aprobado')")
+                ->get();
+            $vacaciones = EmpleadoPermiso::where('tipo', 'vacacion')
+                ->orderByRaw("FIELD(estado, 'pendiente', 'rechazado', 'aprobado')")
+                ->get();
+        } else {
+            $permisos = EmpleadoPermiso::where('tipo', 'permiso')
+                ->where('usu_detalle_id', Auth::user()->detalle->id)
+                ->orderByRaw("FIELD(estado, 'pendiente', 'rechazado', 'aprobado')")
+                ->get();
+            $vacaciones = EmpleadoPermiso::where('tipo', 'vacacion')
+                ->where('usu_detalle_id', Auth::user()->detalle->id)
+                ->orderByRaw("FIELD(estado, 'pendiente', 'rechazado', 'aprobado')")
+                ->get();
+        }
 
         return view('backend.permisos.index', compact('permisos', 'vacaciones'));
     }
@@ -45,7 +59,7 @@ class PermisosController extends Controller
             'dias' => 'required|min:1',
             'razones' => 'required',
         ], [
-            'usu_detalle_id.required' => 'El usuario es obligatorio',
+            'usu_detalle_id.required' => 'El empleado es obligatorio',
             'tipo.required' => 'El tipo es obligatorio',
             'fecha_ini.required' => 'La fecha de inicio es obligatoria',
             'fecha_ini.date_format' => 'Debe ser una fecha valida',

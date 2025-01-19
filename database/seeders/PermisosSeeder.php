@@ -85,7 +85,14 @@ class PermisosSeeder extends Seeder
         $adminRole = Role::findByName('admin');
         $adminRole->givePermissionTo($roles);
         $adminRole->revokePermissionTo(['permiso.create']);
-        // $adminRole->revokePermissionTo(['permiso.edit']);
+
+        // Tecnico
+        $adminRole = Role::findByName('tecnico');
+        $adminRole->givePermissionTo($roles);
+        $adminRole->revokePermissionTo(['roles.create']);
+        $adminRole->revokePermissionTo(['roles.show']);
+        $adminRole->revokePermissionTo(['roles.edit']);
+        $adminRole->revokePermissionTo(['roles.delete']);
 
         // Empleado
         $employeeRole = Role::findByName('empleado');

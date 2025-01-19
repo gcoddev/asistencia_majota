@@ -15,27 +15,35 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // Admin
         $user = Usuario::create([
             'nombres' => 'Admin',
             'apellidos' => 'Admin',
+            'email' => 'admin@majota.net',
             'username' => 'admin',
             'password' => bcrypt('admin'),
         ]);
-
         // Asignar rol de admin al usuario
         $user->assignRole('admin');
 
-        // $detalle = new EmpleadoDetalle();
-        // $detalle->usu_id = $user->id;
-        // $detalle->save();
+        // Tecnico
+        $user = Usuario::create([
+            'nombres' => 'Tenico',
+            'apellidos' => 'Tenico',
+            'email' => 'tecnico@majota.net',
+            'username' => 'tecnico',
+            'password' => bcrypt('tecnico'),
+        ]);
+        // Asignar rol de tecnico al usuario
+        $user->assignRole('tecnico');
 
+        // Empleado
         $user = Usuario::create([
             'nombres' => 'Empleado',
             'apellidos' => 'Empleado',
             'username' => 'empleado',
             'password' => bcrypt('empleado'),
         ]);
-
         // Asignar rol de empleado al usuario
         $user->assignRole('empleado');
 

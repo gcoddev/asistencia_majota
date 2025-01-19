@@ -84,6 +84,7 @@ class UsuariosController extends Controller
         $usuario->save();
 
         $usuario->assignRole($request->role);
+
         $detalle = new EmpleadoDetalle();
         $detalle->usu_id = $usuario->id;
         $detalle->dep_id = $request->dep_id;
@@ -193,6 +194,12 @@ class UsuariosController extends Controller
             $usuario->imagen = $rutaImagen;
         }
         $usuario->save();
+
+
+        if ($request->role != $usuario->role[0]->name) {
+            $usuario->removeRole($usuario->role[0]->name);
+            $usuario->assignRole($request->role);
+        }
 
         if ($usuario->detalle) {
             $detalle = EmpleadoDetalle::where('usu_id', $usuario->id)->first();

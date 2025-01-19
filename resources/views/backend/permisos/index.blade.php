@@ -419,10 +419,13 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        @include('components.alerts')
                         <form id="form-permiso">
                             @csrf
                             <input type="hidden" name="id" id="id">
-                            <input type="hidden" name="usu_detalle_id" id="usu_detalle_id">
+                            <input type="hidden" name="usu_detalle_id" id="usu_detalle_id"
+                                @if (Auth::user()->detalle) value="{{ Auth::user()->detalle->id }}" @endif>
+                            <span class="invalid-feedback" id="usu_detalle_id_error"></span>
                             <div class="form-group">
                                 <label>Tipo <span class="text-danger">*</span></label>
                                 <select class="select" name="tipo" id="tipo">
@@ -574,7 +577,7 @@
                 let formData = new FormData(this);
 
                 const id = $('#id').val();
-                if (id) {
+                if (id != '') {
                     formData.append('_method', 'PUT');
                 }
 
@@ -619,8 +622,8 @@
             $('.invalid-feedback').text('');
             $('.form-control').removeClass('is-invalid');
 
-            $('#tipo').val('permiso').trigger('change')
             $('#form-permiso').trigger('reset')
+            $('#tipo').val('permiso').trigger('change')
         }
 
         function editPer(data) {

@@ -28,8 +28,8 @@ Route::prefix('admin')->middleware('usuario_autenticado')->group(function () {
     Route::resource('/deducciones', DeduccionesController::class, ['names' => 'admin.deducciones']);
     Route::resource('/asistencias', AsistenciasController::class, ['names' => 'admin.asistencias']);
 
-    Route::resource('roles', RolesController::class, ['names' => 'admin.roles']);
-    Route::get('/roles/{id}/permissions', [RolesController::class, 'getPermissions'])->name('admin.roles.permissions');
+    Route::resource('/roles', RolesController::class, ['names' => 'admin.roles']);
+    Route::put('/permission', [RolesController::class, 'putPermission'])->name('admin.permission.update');
 });
 
 Route::middleware('usuario_no_autenticado')->group(function () {

@@ -240,7 +240,7 @@
                 let formData = new FormData(this);
 
                 const id = $('#id').val();
-                if (id) {
+                if (id != '') {
                     formData.append('_method', 'PUT');
                 }
 
@@ -285,8 +285,8 @@
             $('.invalid-feedback').text('');
             $('.form-control').removeClass('is-invalid');
 
-            $('#usu_detalle_id').val('').trigger('change')
             $('#form-descuento').trigger('reset')
+            $('#usu_detalle_id').val('').trigger('change')
         }
 
         function editDes(data) {
