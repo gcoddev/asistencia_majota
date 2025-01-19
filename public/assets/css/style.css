@@ -2308,9 +2308,9 @@ table.dataTable thead > tr > td.sorting {
 }
 .cancel-btn {
     background-color: #fff;
-    border: 1px solid #f43b48;
+    border: 1px solid #5A6268;
     border-radius: 50px;
-    color: #f43b48;
+    color: #5A6268;
     display: block;
     font-size: 18px;
     font-weight: 600;
@@ -2320,8 +2320,8 @@ table.dataTable thead > tr > td.sorting {
 .cancel-btn:hover,
 .cancel-btn:focus,
 .cancel-btn:active {
-	background-color: #f43b48;
-	border: 1px solid #f43b48;
+	background-color: #5A6268;
+	border: 1px solid #5A6268;
 	color: #fff;
 }
 

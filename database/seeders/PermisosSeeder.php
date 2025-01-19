@@ -21,6 +21,54 @@ class PermisosSeeder extends Seeder
                 'usuario.show',
                 'usuario.edit',
                 'usuario.delete',
+            ],
+            'departamento' => [
+                'departamento.create',
+                'departamento.show',
+                'departamento.edit',
+                'departamento.delete',
+            ],
+            'designacion' => [
+                'designacion.create',
+                'designacion.show',
+                'designacion.edit',
+                'designacion.delete',
+            ],
+            'permiso' => [
+                'permiso.create',
+                'permiso.show',
+                'permiso.edit',
+                'permiso.delete',
+            ],
+            'sueldo' => [
+                'sueldo.create',
+                'sueldo.show',
+                'sueldo.edit',
+                'sueldo.delete',
+            ],
+            'compensacion' => [
+                'compensacion.create',
+                'compensacion.show',
+                'compensacion.edit',
+                'compensacion.delete',
+            ],
+            'deduccion' => [
+                'deduccion.create',
+                'deduccion.show',
+                'deduccion.edit',
+                'deduccion.delete',
+            ],
+            'roles' => [
+                'roles.create',
+                'roles.show',
+                'roles.edit',
+                'roles.delete',
+            ],
+            'asistencia' => [
+                'asistencia.create',
+                'asistencia.show',
+                'asistencia.edit',
+                'asistencia.delete',
             ]
         ];
         foreach ($roles as $module => $permissions) {
@@ -36,9 +84,11 @@ class PermisosSeeder extends Seeder
         // Admin
         $adminRole = Role::findByName('admin');
         $adminRole->givePermissionTo($roles);
+        $adminRole->revokePermissionTo(['permiso.create']);
+        // $adminRole->revokePermissionTo(['permiso.edit']);
 
         // Empleado
         $employeeRole = Role::findByName('empleado');
-        $employeeRole->givePermissionTo(['usuario.show']);
+        $employeeRole->givePermissionTo(['permiso.show', 'permiso.create', 'permiso.edit', 'permiso.delete']);
     }
 }

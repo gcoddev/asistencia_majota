@@ -126,15 +126,17 @@
 
                     items.forEach(item => item.classList.remove('active'));
                     const targetItem = document.getElementById(id);
+
                     if (targetItem) {
                         targetItem.classList.add('active');
                     }
+
                     fetch(url)
                         .then(response => response.json())
                         .then(data => {
                             updatePermissionsTable(data.permissions);
                         })
-                        .catch(error => console.error('Error al cargar permisos:', error));
+                        .catch(error => console.log('Error al cargar permisos:', error));
                 });
             });
 
@@ -149,15 +151,15 @@
                     row.innerHTML = `
                         <td>${module}</td>
                         ${['.create', '.show', '.edit', '.delete'].map(action => `
-                                        <td class="text-center">
-                                            <label class="custom_check">
-                                                <input type="checkbox" name="permissions[]" 
-                                                        value="${module + action}" 
-                                                        ${permissions[module].some(permission => permission.name === module + action) ? 'checked' : ''}/>
-                                                <span class="checkmark"></span>
-                                            </label>
-                                        </td>
-                                    `).join('')}
+                            <td class="text-center">
+                                <label class="custom_check">
+                                    <input type="checkbox" name="permissions[]" 
+                                            value="${module + action}" 
+                                            ${permissions[module].some(permission => permission.name === module + action) ? 'checked' : ''}/>
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                        `).join('')}
         `;
 
                     tbody.appendChild(row);

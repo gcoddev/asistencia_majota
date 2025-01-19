@@ -14,12 +14,14 @@
                         <li class="breadcrumb-item active">Departamentos</li>
                     </ul>
                 </div>
-                <div class="col-auto float-right ml-auto">
-                    <a href="#" class="btn add-btn" data-toggle="modal" data-target="#modal_departamento"
-                        onclick="resetForm('Agregar')">
-                        <i class="fa fa-plus"></i> Agregar departamento
-                    </a>
-                </div>
+                @can('departamento.create')
+                    <div class="col-auto float-right ml-auto">
+                        <a href="#" class="btn add-btn" data-toggle="modal" data-target="#modal_departamento"
+                            onclick="resetForm('Agregar')">
+                            <i class="fa fa-plus"></i> Agregar departamento
+                        </a>
+                    </div>
+                @endcan
             </div>
         </div>
         <!-- /Page Header -->
@@ -43,28 +45,34 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $dep->nombre }}</td>
-                                    <td>{{ $dep->descripcion }}</td>
+                                    <td>{!! nl2br(e($dep->descripcion)) !!}</td>
                                     <td class="text-right">
-                                        <div class="dropdown dropdown-action">
-                                            <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
-                                                aria-expanded="false">
-                                                <i class="material-icons">more_vert</i>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                                    data-target="#modal_departamento"
-                                                    onclick="editDep({{ $dep }})">
-                                                    <i class="fa fa-pencil m-r-5"></i>
-                                                    Editar
+                                        @if (Auth::user()->can('departamento.delete') || Auth::user()->can('designacion.edit'))
+                                            <div class="dropdown dropdown-action">
+                                                <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
+                                                    aria-expanded="false">
+                                                    <i class="material-icons">more_vert</i>
                                                 </a>
-                                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                                    data-target="#delete_department"
-                                                    onclick="$('#dep_id').val({{ $dep->id }})">
-                                                    <i class="fa fa-trash-o m-r-5"></i>
-                                                    Eliminar
-                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    @can('departamento.edit')
+                                                        <a class="dropdown-item" href="#" data-toggle="modal"
+                                                            data-target="#modal_departamento"
+                                                            onclick="editDep({{ $dep }})">
+                                                            <i class="fa fa-pencil m-r-5"></i>
+                                                            Editar
+                                                        </a>
+                                                    @endcan
+                                                    @can('departamento.delete')
+                                                        <a class="dropdown-item" href="#" data-toggle="modal"
+                                                            data-target="#delete_department"
+                                                            onclick="$('#dep_id').val({{ $dep->id }})">
+                                                            <i class="fa fa-trash-o m-r-5"></i>
+                                                            Eliminar
+                                                        </a>
+                                                    @endcan
+                                                </div>
                                             </div>
-                                        </div>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -76,68 +84,72 @@
     </div>
     <!-- /Page Content -->
 
-    <!-- Add Department Modal -->
-    <div id="modal_departamento" class="modal custom-modal fade" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><span id="title-form"></span> departamento</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="form-departamento">
-                        @csrf
-                        <input type="hidden" name="id" id="id">
-                        <div class="form-group">
-                            <label>Nombre <span class="text-danger">*</span></label>
-                            <input class="form-control" type="text" name="nombre" id="nombre">
-                            <span class="invalid-feedback" id="nombre_error"></span>
-                        </div>
-                        <div class="form-group">
-                            <label>Descripción</label>
-                            <input class="form-control" type="text" name="descripcion" id="descripcion">
-                            <span class="invalid-feedback" id="descripcion_error"></span>
-                        </div>
-                        <div class="submit-section">
-                            <button type="submit" class="btn btn-primary submit-btn" id="btn-form"></button>
-                        </div>
-                    </form>
+    @if (Auth::user()->can('departamento.create') || Auth::user()->can('departamento.edit'))
+        <!-- Add Department Modal -->
+        <div id="modal_departamento" class="modal custom-modal fade" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><span id="title-form"></span> departamento</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form-departamento">
+                            @csrf
+                            <input type="hidden" name="id" id="id">
+                            <div class="form-group">
+                                <label>Nombre <span class="text-danger">*</span></label>
+                                <input class="form-control" type="text" name="nombre" id="nombre">
+                                <span class="invalid-feedback" id="nombre_error"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>Descripción</label>
+                                <input class="form-control" type="text" name="descripcion" id="descripcion">
+                                <span class="invalid-feedback" id="descripcion_error"></span>
+                            </div>
+                            <div class="submit-section">
+                                <button type="submit" class="btn btn-primary submit-btn" id="btn-form"></button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- /Add Department Modal -->
+        <!-- /Add Department Modal -->
+    @endif
 
-    <!-- Delete Department Modal -->
-    <div class="modal custom-modal fade" id="delete_department" role="dialog">
-        <div class="modal-dialog modal-dialog-centered">z
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="form-header">
-                        <h3>Eliminar departamento</h3>
-                        <p>¿Esta seguro de eliminar el departamento?</p>
-                    </div>
-                    <div class="modal-btn delete-action">
-                        <div class="row">
-                            <div class="col-6">
-                                <a href="javascript:void(0);" class="btn btn-primary continue-btn" onclick="deleteDep()">
-                                    Eliminar
-                                </a>
-                                <input type="hidden" name="dep_id" id="dep_id">
-                            </div>
-                            <div class="col-6">
-                                <a href="javascript:void(0);" data-dismiss="modal"
-                                    class="btn btn-primary cancel-btn">Cancelar</a>
+    @can('departamento.delete')
+        <!-- Delete Department Modal -->
+        <div class="modal custom-modal fade" id="delete_department" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">z
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="form-header">
+                            <h3>Eliminar departamento</h3>
+                            <p>¿Esta seguro de eliminar el departamento?</p>
+                        </div>
+                        <div class="modal-btn delete-action">
+                            <div class="row">
+                                <div class="col-6">
+                                    <a href="javascript:void(0);" class="btn btn-primary continue-btn" onclick="deleteDep()">
+                                        Eliminar
+                                    </a>
+                                    <input type="hidden" name="dep_id" id="dep_id">
+                                </div>
+                                <div class="col-6">
+                                    <a href="javascript:void(0);" data-dismiss="modal"
+                                        class="btn btn-primary cancel-btn">Cancelar</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- /Delete Department Modal -->
+        <!-- /Delete Department Modal -->
+    @endcan
 @endsection
 
 @push('scripts')

@@ -8,18 +8,23 @@
         <div class="page-header">
             <div class="row align-items-center">
                 <div class="col">
-                    <h3 class="page-title">Gestión de asistencia (Administración)</h3>
+                    <h3 class="page-title">
+                        Gestión de asistencia
+                        {{ Auth::user()->role[0]->name == 'admin' ? '(Administración)' : '(Empleado)' }}
+                    </h3>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('inicio') }}">Panel</a></li>
                         <li class="breadcrumb-item active">Gestión de asistencias</li>
                     </ul>
                 </div>
-                <div class="col-auto float-right ml-auto">
-                    <a href="#" class="btn add-btn" data-toggle="modal" data-target="#modal_leave"
-                        onclick="resetForm('Nuevo')">
-                        <i class="fa fa-plus"></i> Nuevo permiso
-                    </a>
-                </div>
+                @can('permiso.create')
+                    <div class="col-auto float-right ml-auto">
+                        <a href="#" class="btn add-btn" data-toggle="modal" data-target="#modal_leave"
+                            onclick="resetForm('Nuevo')">
+                            <i class="fa fa-plus"></i> Nuevo permiso
+                        </a>
+                    </div>
+                @endcan
             </div>
         </div>
         <!-- /Page Header -->
@@ -149,38 +154,50 @@
                                         </h2>
                                     </td>
                                     <td>
-                                        <span class="badge bg-info">{{ $per->tipo }}</span>
+                                        <span class="badge bg-info text-light">{{ $per->tipo }}</span>
                                     </td>
                                     <td>{{ fecha_literal($per->fecha_ini) }}</td>
                                     <td>{{ fecha_literal($per->fecha_fin) }}</td>
-                                    <td>{{ $per->dias }}</td>
-                                    <td>{{ $per->razones }}</td>
+                                    <td class="text-center">{{ $per->dias }}</td>
+                                    <td>{!! nl2br(e($per->razones)) !!}</td>
                                     <td class="text-center">
-                                        <div class="dropdown action-label">
-                                            <a class="btn btn-white btn-sm btn-rounded px-2 {{ $per->estado == 'pendiente' ? 'dropdown-toggle' : '' }}"
-                                                href="javascript:void(0)"
-                                                data-toggle="{{ $per->estado == 'pendiente' ? 'dropdown' : '' }}"
-                                                aria-expanded="false">
-                                                <i
-                                                    class="fa fa-dot-circle-o
+                                        @if (Auth::user()->role[0]->name == 'admin')
+                                            <div class="dropdown action-label">
+                                                <a class="btn btn-white btn-sm btn-rounded px-2 {{ $per->estado == 'pendiente' ? 'dropdown-toggle' : '' }}"
+                                                    href="javascript:void(0)"
+                                                    data-toggle="{{ $per->estado == 'pendiente' ? 'dropdown' : '' }}"
+                                                    aria-expanded="false">
+                                                    <i
+                                                        class="fa fa-dot-circle-o
                                                     {{ $per->estado == 'aprobado' ? 'text-success' : ($per->estado == 'rechazado' ? 'text-danger' : 'text-info') }}"></i>
-                                                {{ $per->estado }}
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                                    data-target="#approve_leave"
-                                                    onclick="$('#per_id_estado').val({{ $per->id }});$('#per_estado').val('aprobado')">
-                                                    <i class="fa fa-dot-circle-o text-success"></i>
-                                                    Aprobar
+                                                    {{ $per->estado }}
                                                 </a>
-                                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                                    data-target="#decline_leave"
-                                                    onclick="$('#per_id_estado').val({{ $per->id }});$('#per_estado').val('rechazado')">
-                                                    <i class="fa fa-dot-circle-o text-danger"></i>
-                                                    Rechazar
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a class="dropdown-item" href="#" data-toggle="modal"
+                                                        data-target="#approve_leave"
+                                                        onclick="$('#per_id_estado').val({{ $per->id }});$('#per_estado').val('aprobado')">
+                                                        <i class="fa fa-dot-circle-o text-success"></i>
+                                                        Aprobar
+                                                    </a>
+                                                    <a class="dropdown-item" href="#" data-toggle="modal"
+                                                        data-target="#decline_leave"
+                                                        onclick="$('#per_id_estado').val({{ $per->id }});$('#per_estado').val('rechazado')">
+                                                        <i class="fa fa-dot-circle-o text-danger"></i>
+                                                        Rechazar
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class=" action-label">
+                                                <a class="btn btn-white btn-sm btn-rounded px-2" href="javascript:void(0)"
+                                                    aria-expanded="false">
+                                                    <i
+                                                        class="fa fa-dot-circle-o
+                                                {{ $per->estado == 'aprobado' ? 'text-success' : ($per->estado == 'rechazado' ? 'text-danger' : 'text-info') }}"></i>
+                                                    {{ $per->estado }}
                                                 </a>
                                             </div>
-                                        </div>
+                                        @endif
                                     </td>
                                     <td>
                                         @if ($per->usuario)
@@ -207,23 +224,29 @@
                                         @endif
                                     </td>
                                     <td class="text-right">
-                                        <div class="dropdown dropdown-action">
-                                            <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
-                                                aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                                    data-target="#modal_leave" onclick="editPer({{ $per }})">
-                                                    <i class="fa fa-pencil m-r-5"></i>
-                                                    Editar
-                                                </a>
-                                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                                    data-target="#delete_approve"
-                                                    onclick="$('#per_id').val({{ $per->id }})">
-                                                    <i class="fa fa-trash-o m-r-5"></i>
-                                                    Eliminar
-                                                </a>
+                                        @if ($per->estado == 'pendiente')
+                                            <div class="dropdown dropdown-action">
+                                                <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
+                                                    aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    @can('permiso.edit')
+                                                        <a class="dropdown-item" href="#" data-toggle="modal"
+                                                            data-target="#modal_leave" onclick="editPer({{ $per }})">
+                                                            <i class="fa fa-pencil m-r-5"></i>
+                                                            Editar
+                                                        </a>
+                                                    @endcan
+                                                    @can('permiso.delete')
+                                                        <a class="dropdown-item" href="#" data-toggle="modal"
+                                                            data-target="#delete_approve"
+                                                            onclick="$('#per_id').val({{ $per->id }})">
+                                                            <i class="fa fa-trash-o m-r-5"></i>
+                                                            Eliminar
+                                                        </a>
+                                                    @endcan
+                                                </div>
                                             </div>
-                                        </div>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -276,38 +299,50 @@
                                         </h2>
                                     </td>
                                     <td>
-                                        <span class="badge bg-info">{{ $vac->tipo }}</span>
+                                        <span class="badge bg-info text-white">{{ $vac->tipo }}</span>
                                     </td>
                                     <td>{{ fecha_literal($vac->fecha_ini) }}</td>
                                     <td>{{ fecha_literal($vac->fecha_fin) }}</td>
-                                    <td>{{ $vac->dias }}</td>
-                                    <td>{{ $vac->razones }}</td>
+                                    <td class="text-center">{{ $vac->dias }}</td>
+                                    <td>{!! nl2br(e($vac->razones)) !!}</td>
                                     <td class="text-center">
-                                        <div class="dropdown action-label">
-                                            <a class="btn btn-white btn-sm btn-rounded px-2 {{ $vac->estado == 'pendiente' ? 'dropdown-toggle' : '' }}"
-                                                href="javascript:void(0)"
-                                                data-toggle="{{ $vac->estado == 'pendiente' ? 'dropdown' : '' }}"
-                                                aria-expanded="false">
-                                                <i
-                                                    class="fa fa-dot-circle-o
+                                        @if (Auth::user()->role[0]->name == 'admin')
+                                            <div class="dropdown action-label">
+                                                <a class="btn btn-white btn-sm btn-rounded px-2 {{ $vac->estado == 'pendiente' ? 'dropdown-toggle' : '' }}"
+                                                    href="javascript:void(0)"
+                                                    data-toggle="{{ $vac->estado == 'pendiente' ? 'dropdown' : '' }}"
+                                                    aria-expanded="false">
+                                                    <i
+                                                        class="fa fa-dot-circle-o
                                                     {{ $vac->estado == 'aprobado' ? 'text-success' : ($vac->estado == 'rechazado' ? 'text-danger' : 'text-info') }}"></i>
-                                                {{ $vac->estado }}
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                                    data-target="#approve_leave"
-                                                    onclick="$('#per_id_estado').val({{ $vac->id }});$('#per_estado').val('aprobado')">
-                                                    <i class="fa fa-dot-circle-o text-success"></i>
-                                                    Aprobar
+                                                    {{ $vac->estado }}
                                                 </a>
-                                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                                    data-target="#decline_leave"
-                                                    onclick="$('#per_id_estado').val({{ $vac->id }});$('#per_estado').val('rechazado')">
-                                                    <i class="fa fa-dot-circle-o text-danger"></i>
-                                                    Rechazar
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a class="dropdown-item" href="#" data-toggle="modal"
+                                                        data-target="#approve_leave"
+                                                        onclick="$('#per_id_estado').val({{ $vac->id }});$('#per_estado').val('aprobado')">
+                                                        <i class="fa fa-dot-circle-o text-success"></i>
+                                                        Aprobar
+                                                    </a>
+                                                    <a class="dropdown-item" href="#" data-toggle="modal"
+                                                        data-target="#decline_leave"
+                                                        onclick="$('#per_id_estado').val({{ $vac->id }});$('#per_estado').val('rechazado')">
+                                                        <i class="fa fa-dot-circle-o text-danger"></i>
+                                                        Rechazar
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class=" action-label">
+                                                <a class="btn btn-white btn-sm btn-rounded px-2" href="javascript:void(0)"
+                                                    aria-expanded="false">
+                                                    <i
+                                                        class="fa fa-dot-circle-o
+                                                {{ $vac->estado == 'aprobado' ? 'text-success' : ($vac->estado == 'rechazado' ? 'text-danger' : 'text-info') }}"></i>
+                                                    {{ $vac->estado }}
                                                 </a>
                                             </div>
-                                        </div>
+                                        @endif
                                     </td>
                                     <td>
                                         @if ($vac->usuario)
@@ -334,23 +369,33 @@
                                         @endif
                                     </td>
                                     <td class="text-right">
-                                        <div class="dropdown dropdown-action">
-                                            <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
-                                                aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                                    data-target="#modal_leave" onclick="editPer({{ $vac }})">
-                                                    <i class="fa fa-pencil m-r-5"></i>
-                                                    Editar
-                                                </a>
-                                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                                    data-target="#delete_approve"
-                                                    onclick="$('#per_id').val({{ $vac->id }})">
-                                                    <i class="fa fa-trash-o m-r-5"></i>
-                                                    Eliminar
-                                                </a>
-                                            </div>
-                                        </div>
+                                        @if (Auth::user()->can('permiso.delete') || Auth::user()->can('permiso.edit'))
+                                            @if ($vac->estado == 'pendiente')
+                                                <div class="dropdown dropdown-action">
+                                                    <a href="#" class="action-icon dropdown-toggle"
+                                                        data-toggle="dropdown" aria-expanded="false"><i
+                                                            class="material-icons">more_vert</i></a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        @can('permiso.edit')
+                                                            <a class="dropdown-item" href="#" data-toggle="modal"
+                                                                data-target="#modal_leave"
+                                                                onclick="editPer({{ $vac }})">
+                                                                <i class="fa fa-pencil m-r-5"></i>
+                                                                Editar
+                                                            </a>
+                                                        @endcan
+                                                        @can('permiso.delete')
+                                                            <a class="dropdown-item" href="#" data-toggle="modal"
+                                                                data-target="#delete_approve"
+                                                                onclick="$('#per_id').val({{ $vac->id }})">
+                                                                <i class="fa fa-trash-o m-r-5"></i>
+                                                                Eliminar
+                                                            </a>
+                                                        </div>
+                                                    @endcan
+                                                </div>
+                                            @endif
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -362,153 +407,159 @@
     </div>
     <!-- /Page Content -->
 
-    <!-- Add Leave Modal -->
-    <div id="modal_leave" class="modal custom-modal fade" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><span id="title-form"></span> permiso</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="form-permiso">
-                        @csrf
-                        <input type="text" name="id" id="id">
-                        <input type="text" name="usu_detalle_id" id="usu_detalle_id">
-                        <div class="form-group">
-                            <label>Tipo <span class="text-danger">*</span></label>
-                            <select class="select" name="tipo" id="tipo">
-                                <option value="permiso">Permiso</option>
-                                <option value="vacacion">Vacación</option>
-                            </select>
-                            <span class="invalid-feedback" id="tipo_error"></span>
-                        </div>
-                        <div class="form-group">
-                            <label>Desde <span class="text-danger">*</span></label>
-                            <div class="cal-icon">
-                                <input class="form-control datetimepicker" type="text" name="fecha_ini"
-                                    id="fecha_ini">
-                                <span class="invalid-feedback" id="fecha_ini_error"></span>
+    @if (Auth::user()->can('permiso.create') || Auth::user()->can('permiso.edit'))
+        <!-- Add Leave Modal -->
+        <div id="modal_leave" class="modal custom-modal fade" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><span id="title-form"></span> permiso</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form-permiso">
+                            @csrf
+                            <input type="hidden" name="id" id="id">
+                            <input type="hidden" name="usu_detalle_id" id="usu_detalle_id">
+                            <div class="form-group">
+                                <label>Tipo <span class="text-danger">*</span></label>
+                                <select class="select" name="tipo" id="tipo">
+                                    <option value="permiso">Permiso</option>
+                                    <option value="vacacion">Vacación</option>
+                                </select>
+                                <span class="invalid-feedback" id="tipo_error"></span>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Hasta <span class="text-danger">*</span></label>
-                            <div class="cal-icon">
-                                <input class="form-control datetimepicker" type="text" name="fecha_fin"
-                                    id="fecha_fin">
-                                <span class="invalid-feedback" id="fecha_fin_error"></span>
+                            <div class="form-group">
+                                <label>Desde <span class="text-danger">*</span></label>
+                                <div class="cal-icon">
+                                    <input class="form-control datetimepicker" type="text" name="fecha_ini"
+                                        id="fecha_ini">
+                                    <span class="invalid-feedback" id="fecha_ini_error"></span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Numero de Dias (hábiles) <span class="text-danger">*</span></label>
-                            <input class="form-control" readonly type="text" name="dias" id="dias">
-                            <span class="invalid-feedback" id="dias_error"></span>
-                        </div>
-                        <div class="form-group">
-                            <label>Razón del permiso <span class="text-danger">*</span></label>
-                            <textarea rows="4" class="form-control" name="razones" id="razones"></textarea>
-                            <span class="invalid-feedback" id="razones_error"></span>
-                        </div>
-                        <div class="submit-section">
-                            <button type="submit" class="btn btn-primary submit-btn" id="btn-form"></button>
-                        </div>
-                    </form>
+                            <div class="form-group">
+                                <label>Hasta <span class="text-danger">*</span></label>
+                                <div class="cal-icon">
+                                    <input class="form-control datetimepicker" type="text" name="fecha_fin"
+                                        id="fecha_fin">
+                                    <span class="invalid-feedback" id="fecha_fin_error"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Numero de Dias (hábiles) <span class="text-danger">*</span></label>
+                                <input class="form-control" readonly type="text" name="dias" id="dias">
+                                <span class="invalid-feedback" id="dias_error"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>Razón del permiso <span class="text-danger">*</span></label>
+                                <textarea rows="4" class="form-control" name="razones" id="razones"></textarea>
+                                <span class="invalid-feedback" id="razones_error"></span>
+                            </div>
+                            <div class="submit-section">
+                                <button type="submit" class="btn btn-primary submit-btn" id="btn-form"></button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- /Add Leave Modal -->
+        <!-- /Add Leave Modal -->
+    @endif
 
-    <input type="hidden" name="per_id_estado" id="per_id_estado">
-    <input type="hidden" name="per_estado" id="per_estado">
-    <!-- Approve Leave Modal -->
-    <div class="modal custom-modal fade" id="approve_leave" role="dialog">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="form-header">
-                        <h3>Aprobar permiso</h3>
-                        <p>¿Esta seguro de aprobar el permiso?</p>
-                        <h5>Esta acción no se puede deshacer</h5>
-                    </div>
-                    <div class="modal-btn delete-action">
-                        <div class="row">
-                            <div class="col-6">
-                                <a href="javascript:void(0);" class="btn continue-btn btn-success" onclick="estadoPer()">
-                                    Aprobar
-                                </a>
-                            </div>
-                            <div class="col-6">
-                                <a href="javascript:void(0);" data-dismiss="modal"
-                                    class="btn cancel-btn btn-secondary">Cancelar</a>
+    @can('permiso.edit')
+        <input type="hidden" name="per_id_estado" id="per_id_estado">
+        <input type="hidden" name="per_estado" id="per_estado">
+        <!-- Approve Leave Modal -->
+        <div class="modal custom-modal fade" id="approve_leave" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="form-header">
+                            <h3>Aprobar permiso</h3>
+                            <p>¿Esta seguro de aprobar el permiso?</p>
+                            <h5>Esta acción no se puede deshacer</h5>
+                        </div>
+                        <div class="modal-btn delete-action">
+                            <div class="row">
+                                <div class="col-6">
+                                    <a href="javascript:void(0);" class="btn continue-btn btn-success" onclick="estadoPer()">
+                                        Aprobar
+                                    </a>
+                                </div>
+                                <div class="col-6">
+                                    <a href="javascript:void(0);" data-dismiss="modal"
+                                        class="btn cancel-btn btn-secondary">Cancelar</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- /Approve Leave Modal -->
+        <!-- /Approve Leave Modal -->
 
-    <!-- Decline Leave Modal -->
-    <div class="modal custom-modal fade" id="decline_leave" role="dialog">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="form-header">
-                        <h3>Rechazar permiso</h3>
-                        <p>¿Esta seguro de rechazar el permiso?</p>
-                        <h5>Esta acción no se puede deshacer</h5>
-                    </div>
-                    <div class="modal-btn delete-action">
-                        <div class="row">
-                            <div class="col-6">
-                                <a href="javascript:void(0);" class="btn btn-primary continue-btn" onclick="estadoPer()">
-                                    Rechazar
-                                </a>
-                            </div>
-                            <div class="col-6">
-                                <a href="javascript:void(0);" data-dismiss="modal"
-                                    class="btn btn-primary cancel-btn">Cancelar</a>
+        <!-- Decline Leave Modal -->
+        <div class="modal custom-modal fade" id="decline_leave" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="form-header">
+                            <h3>Rechazar permiso</h3>
+                            <p>¿Esta seguro de rechazar el permiso?</p>
+                            <h5>Esta acción no se puede deshacer</h5>
+                        </div>
+                        <div class="modal-btn delete-action">
+                            <div class="row">
+                                <div class="col-6">
+                                    <a href="javascript:void(0);" class="btn btn-primary continue-btn" onclick="estadoPer()">
+                                        Rechazar
+                                    </a>
+                                </div>
+                                <div class="col-6">
+                                    <a href="javascript:void(0);" data-dismiss="modal"
+                                        class="btn btn-primary cancel-btn">Cancelar</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- /Decline Leave Modal -->
+        <!-- /Decline Leave Modal -->
+    @endcan
 
-    <!-- Delete Leave Modal -->
-    <div class="modal custom-modal fade" id="delete_approve" role="dialog">
-        <div class="modal-dialog modal-dialog-centered">z
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="form-header">
-                        <h3>Eliminar permiso</h3>
-                        <p>¿Esta seguro de eliminar el permiso?</p>
-                    </div>
-                    <div class="modal-btn delete-action">
-                        <div class="row">
-                            <div class="col-6">
-                                <a href="javascript:void(0);" class="btn btn-primary continue-btn" onclick="deletePer()">
-                                    Eliminar
-                                </a>
-                                <input type="text" name="per_id" id="per_id">
-                            </div>
-                            <div class="col-6">
-                                <a href="javascript:void(0);" data-dismiss="modal"
-                                    class="btn btn-primary cancel-btn">Cancelar</a>
+    @can('permiso.delete')
+        <!-- Delete Leave Modal -->
+        <div class="modal custom-modal fade" id="delete_approve" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">z
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="form-header">
+                            <h3>Eliminar permiso</h3>
+                            <p>¿Esta seguro de eliminar el permiso?</p>
+                        </div>
+                        <div class="modal-btn delete-action">
+                            <div class="row">
+                                <div class="col-6">
+                                    <a href="javascript:void(0);" class="btn btn-primary continue-btn" onclick="deletePer()">
+                                        Eliminar
+                                    </a>
+                                    <input type="hidden" name="per_id" id="per_id">
+                                </div>
+                                <div class="col-6">
+                                    <a href="javascript:void(0);" data-dismiss="modal"
+                                        class="btn btn-primary cancel-btn">Cancelar</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- /Delete Leave Modal -->
+        <!-- /Delete Leave Modal -->
+    @endcan
 @endsection
 
 @push('scripts')

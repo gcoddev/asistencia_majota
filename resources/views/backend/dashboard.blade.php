@@ -8,9 +8,11 @@
         <div class="page-header">
             <div class="row">
                 <div class="col-sm-12">
-                    <h3 class="page-title">Welcome Admin!</h3>
+                    <h3 class="page-title">
+                        Bienvenido/a {{ Auth::user()->nombres }} {{ Auth::user()->apellidos }}!
+                    </h3>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item active">Dashboard</li>
+                        <li class="breadcrumb-item active">Panel</li>
                     </ul>
                 </div>
             </div>

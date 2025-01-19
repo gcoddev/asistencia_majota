@@ -19,11 +19,13 @@
                         onclick="resetForm('Agregar')">
                         <i class="fa fa-plus"></i> Agregar usuario
                     </a>
-                    <div class="view-icons">
-                        <a href="#" class="grid-view btn btn-link" data-name="grid"><i class="fa fa-th"></i></a>
-                        <a href="#" class="list-view btn btn-link active" data-name="list"><i
-                                class="fa fa-bars"></i></a>
-                    </div>
+                    @can('usuario.create')
+                        <div class="view-icons">
+                            <a href="#" class="grid-view btn btn-link" data-name="grid"><i class="fa fa-th"></i></a>
+                            <a href="#" class="list-view btn btn-link active" data-name="list"><i
+                                    class="fa fa-bars"></i></a>
+                        </div>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -68,20 +70,28 @@
                                 <img src="{{ asset($user->imagen ?? 'assets/img/user.jpg') }}" alt="">
                             </a>
                         </div>
-                        <div class="dropdown profile-action">
-                            <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
-                                aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal_usuario"
-                                    onclick="editUser({{ $user }})"><i class="fa fa-pencil m-r-5"></i> Editar</a>
-                                @if ($user->id != 1)
-                                    <a class="dropdown-item" href="#" data-toggle="modal"
-                                        data-target="#delete_employee" onclick="$('#usu_id').val({{ $user->id }})">
-                                        <i class="fa fa-trash-o m-r-5"></i> Eliminar
-                                    </a>
-                                @endif
+                        @if (Auth::user()->can('usuario.delete') || Auth::user()->can('usuario.edit'))
+                            <div class="dropdown profile-action">
+                                <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
+                                    aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    @can('usuario.edit')
+                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal_usuario"
+                                            onclick="editUser({{ $user }})">
+                                            <i class="fa fa-pencil m-r-5"></i> Editar
+                                        </a>
+                                    @endcan
+                                    @if ($user->id != 1)
+                                        @can('usuario.delete')
+                                            <a class="dropdown-item" href="#" data-toggle="modal"
+                                                data-target="#delete_employee" onclick="$('#usu_id').val({{ $user->id }})">
+                                                <i class="fa fa-trash-o m-r-5"></i> Eliminar
+                                            </a>
+                                        @endcan
+                                    @endif
+                                </div>
                             </div>
-                        </div>
+                        @endif
                         <h4 class="user-name m-t-10 mb-0 text-ellipsis">
                             <a href="profile.html">
                                 {{ $user->nombres }}
@@ -143,9 +153,13 @@
                                     <td>{{ $user->role[0]->name }}</td>
                                     <td>
                                         <div class="dropdown">
+                                            @php
+                                                $canEditUser = Auth::user()->can('usuario.edit');
+                                            @endphp
                                             <a href="#"
-                                                class="btn btn-white btn-sm btn-rounded {{ $user->id != 1 ? 'dropdown-toggle' : '' }}"
-                                                data-toggle="{{ $user->id != 1 ? 'dropdown' : '' }}" aria-expanded="false">
+                                                class="btn btn-white btn-sm btn-rounded {{ $user->id != 1 && $canEditUser ? 'dropdown-toggle' : '' }}"
+                                                data-toggle="{{ $user->id != 1 && $canEditUser ? 'dropdown' : '' }}"
+                                                aria-expanded="false">
                                                 <span>
                                                     <i
                                                         class="fa fa-circle m-r-5 {{ $user->activo == '1' ? 'text-success' : 'text-danger' }}"></i>
@@ -154,7 +168,7 @@
                                                     </span>
                                                 </span>
                                             </a>
-                                            @if ($user->id != 1)
+                                            @if ($user->id != 1 && $canEditUser)
                                                 <div class="dropdown-menu">
                                                     <a class="dropdown-item change-status" href="#"
                                                         data-id="{{ $user->id }}" data-status="1">
@@ -171,25 +185,28 @@
                                         </div>
                                     </td>
                                     <td class="text-right">
-                                        <div class="dropdown dropdown-action">
-                                            <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
-                                                aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                                    data-target="#modal_usuario" onclick="editUser({{ $user }})">
-                                                    <i class="fa fa-pencil m-r-5"></i>
-                                                    Editar
-                                                </a>
-                                                @if ($user->id != 1)
+                                        @if (Auth::user()->can('usuario.delete') || Auth::user()->can('usuario.edit'))
+                                            <div class="dropdown dropdown-action">
+                                                <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
+                                                    aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                                <div class="dropdown-menu dropdown-menu-right">
                                                     <a class="dropdown-item" href="#" data-toggle="modal"
-                                                        data-target="#delete_employee"
-                                                        onclick="$('#usu_id').val({{ $user->id }})">
-                                                        <i class="fa fa-trash-o m-r-5"></i>
-                                                        Eliminar
+                                                        data-target="#modal_usuario"
+                                                        onclick="editUser({{ $user }})">
+                                                        <i class="fa fa-pencil m-r-5"></i>
+                                                        Editar
                                                     </a>
-                                                @endif
+                                                    @if ($user->id != 1)
+                                                        <a class="dropdown-item" href="#" data-toggle="modal"
+                                                            data-target="#delete_employee"
+                                                            onclick="$('#usu_id').val({{ $user->id }})">
+                                                            <i class="fa fa-trash-o m-r-5"></i>
+                                                            Eliminar
+                                                        </a>
+                                                    @endif
+                                                </div>
                                             </div>
-                                        </div>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -201,162 +218,167 @@
     </div>
     <!-- /Page Content -->
 
-    <!-- Employee Modal -->
-    <div id="modal_usuario" class="modal custom-modal fade" role="dialog">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><span id="title-form"></span> usuario</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="form-usuario" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name="id" id="id">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label class="col-form-label">Nombres <span class="text-danger">*</span></label>
-                                    <div class="profile-img profile-input">
-                                        <label class="avatar" for="imagen">
-                                            <div class="overlay">
-                                                <i class="fa fa-camera"></i>
-                                            </div>
-                                            <img src="{{ asset('assets/img/user.jpg') }}" alt=""
-                                                id="imagen-prev">
-                                        </label>
+    @if (Auth::user()->can('usuario.create') || Auth::user()->can('usuario.edit'))
+        <!-- Employee Modal -->
+        <div id="modal_usuario" class="modal custom-modal fade" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><span id="title-form"></span> usuario</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form-usuario" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="id" id="id">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Nombres <span class="text-danger">*</span></label>
+                                        <div class="profile-img profile-input">
+                                            <label class="avatar" for="imagen">
+                                                <div class="overlay">
+                                                    <i class="fa fa-camera"></i>
+                                                </div>
+                                                <img src="{{ asset('assets/img/user.jpg') }}" alt=""
+                                                    id="imagen-prev">
+                                            </label>
+                                        </div>
+                                        <input type="file" name="imagen" id="imagen" class="d-none form-control"
+                                            accept="image/png,image/jpg,image/jpeg">
+                                        <span class="invalid-feedback" id="imagen_error"></span>
                                     </div>
-                                    <input type="file" name="imagen" id="imagen" class="d-none form-control"
-                                        accept="image/png,image/jpg,image/jpeg">
-                                    <span class="invalid-feedback" id="imagen_error"></span>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Nombres <span class="text-danger">*</span></label>
+                                        <input class="form-control" type="text" name="nombres" id="nombres">
+                                        <span class="invalid-feedback" id="nombres_error"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Apellidos</label>
+                                        <input class="form-control" type="text" name="apellidos" id="apellidos">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Nombre de usuario <span
+                                                class="text-danger">*</span></label>
+                                        <input class="form-control" type="text" name="username" id="username">
+                                        <span class="invalid-feedback" id="username_error"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Email <span class="text-danger">*</span></label>
+                                        <input class="form-control" type="email" name="email" id="email">
+                                        <span class="invalid-feedback" id="email_error"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Celular </label>
+                                        <input class="form-control" type="text" name="celular" id="celular">
+                                        <span class="invalid-feedback" id="celular_error"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Rol <span class="text-danger">*</span></label>
+                                        <select class="select" name="role" id="role">
+                                            @foreach ($roles as $rol)
+                                                <option value="{{ $rol->name }}">{{ $rol->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="invalid-feedback" id="role_error"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Departamento</label>
+                                        <select class="select" name="dep_id" id="dep_id">
+                                            <option value="">-</option>
+                                            @foreach ($departamentos as $dep)
+                                                <option value="{{ $dep->id }}">{{ $dep->nombre }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Designación</label>
+                                        <select class="select" name="des_id" id="des_id">
+                                            <option value="">-</option>
+                                            @foreach ($designaciones as $des)
+                                                <option value="{{ $des->id }}">{{ $des->nombre }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Contraseña <span
+                                                class="text-danger">*</span></label>
+                                        <input class="form-control" type="password" name="password" id="password">
+                                        <span class="invalid-feedback" id="password_error"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Confirmar contraseña <span
+                                                class="text-danger">*</span></label>
+                                        <input class="form-control" type="password" name="password_confirmation"
+                                            id="password_confirmation">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="col-form-label">Nombres <span class="text-danger">*</span></label>
-                                    <input class="form-control" type="text" name="nombres" id="nombres">
-                                    <span class="invalid-feedback" id="nombres_error"></span>
-                                </div>
+                            <div class="submit-section">
+                                <button type="submit" class="btn btn-success submit-btn" id="btn-form"></button>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="col-form-label">Apellidos</label>
-                                    <input class="form-control" type="text" name="apellidos" id="apellidos">
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="col-form-label">Nombre de usuario <span
-                                            class="text-danger">*</span></label>
-                                    <input class="form-control" type="text" name="username" id="username">
-                                    <span class="invalid-feedback" id="username_error"></span>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="col-form-label">Email <span class="text-danger">*</span></label>
-                                    <input class="form-control" type="email" name="email" id="email">
-                                    <span class="invalid-feedback" id="email_error"></span>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="col-form-label">Celular </label>
-                                    <input class="form-control" type="text" name="celular" id="celular">
-                                    <span class="invalid-feedback" id="celular_error"></span>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="col-form-label">Rol <span class="text-danger">*</span></label>
-                                    <select class="select" name="role" id="role">
-                                        @foreach ($roles as $rol)
-                                            <option value="{{ $rol->name }}">{{ $rol->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <span class="invalid-feedback" id="role_error"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Departamento</label>
-                                    <select class="select" name="dep_id">
-                                        <option value="">[ Seleccionar ]</option>
-                                        @foreach ($departamentos as $dep)
-                                            <option value="{{ $dep->id }}">{{ $dep->nombre }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Designación</label>
-                                    <select class="select" name="des_id">
-                                        <option value="">[ Seleccionar ]</option>
-                                        @foreach ($designaciones as $des)
-                                            <option value="{{ $des->id }}">{{ $des->nombre }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="col-form-label">Contraseña <span class="text-danger">*</span></label>
-                                    <input class="form-control" type="password" name="password" id="password">
-                                    <span class="invalid-feedback" id="password_error"></span>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="col-form-label">Confirmar contraseña <span
-                                            class="text-danger">*</span></label>
-                                    <input class="form-control" type="password" name="password_confirmation"
-                                        id="password_confirmation">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="submit-section">
-                            <button type="submit" class="btn btn-success submit-btn" id="btn-form"></button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- /Employee Modal -->
+        <!-- /Employee Modal -->
+    @endif
 
-    <!-- Delete Employee Modal -->
-    <div class="modal custom-modal fade" id="delete_employee" role="dialog">
-        <div class="modal-dialog modal-dialog-centered">z
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="form-header">
-                        <h3>Eliminar usuario</h3>
-                        <p>¿Esta seguro de eliminar el usuario?</p>
-                    </div>
-                    <div class="modal-btn delete-action">
-                        <div class="row">
-                            <div class="col-6">
-                                <a href="javascript:void(0);" class="btn btn-primary continue-btn"
-                                    onclick="deleteUser()">
-                                    Eliminar
-                                </a>
-                                <input type="hidden" name="usu_id" id="usu_id">
-                            </div>
-                            <div class="col-6">
-                                <a href="javascript:void(0);" data-dismiss="modal"
-                                    class="btn btn-primary cancel-btn">Cancelar</a>
+    @can('usuario.delete')
+        <!-- Delete Employee Modal -->
+        <div class="modal custom-modal fade" id="delete_employee" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">z
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="form-header">
+                            <h3>Eliminar usuario</h3>
+                            <p>¿Esta seguro de eliminar el usuario?</p>
+                        </div>
+                        <div class="modal-btn delete-action">
+                            <div class="row">
+                                <div class="col-6">
+                                    <a href="javascript:void(0);" class="btn btn-primary continue-btn"
+                                        onclick="deleteUser()">
+                                        Eliminar
+                                    </a>
+                                    <input type="hidden" name="usu_id" id="usu_id">
+                                </div>
+                                <div class="col-6">
+                                    <a href="javascript:void(0);" data-dismiss="modal"
+                                        class="btn btn-primary cancel-btn">Cancelar</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- /Delete Employee Modal -->
+        <!-- /Delete Employee Modal -->
+    @endcan
 @endsection
 
 @push('styles')
@@ -522,10 +544,14 @@
 
             $('#imagen-prev').attr('src', `{{ asset('assets/img/user.jpg') }}`);
             $('#role').val('empleado').trigger('change');
+            $('#dep_id').val('').trigger('change')
+            $('#des_id').val('').trigger('change')
             $('#form-usuario').trigger('reset')
         }
 
         function editUser(data) {
+            console.log(data);
+
             resetForm('Editar')
             $('#id').val(data.id)
             $('#imagen-prev').attr('src',
@@ -540,8 +566,8 @@
             $('#password_confirmation').val('')
             $('#celular').val(data.celular)
             $('#role').val(data.role[0].name).trigger('change')
-            $('#id_dep').val('')
-            $('#id_des').val('')
+            $('#dep_id').val(data.detalle.dep_id).trigger('change')
+            $('#des_id').val(data.detalle.des_id).trigger('change')
         }
 
         function deleteUser() {

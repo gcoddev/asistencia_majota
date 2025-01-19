@@ -14,12 +14,14 @@
                         <li class="breadcrumb-item active">Descuentos</li>
                     </ul>
                 </div>
-                <div class="col-auto float-right ml-auto">
-                    <a href="#" class="btn add-btn" data-toggle="modal" data-target="#modal_descuento"
-                        onclick="resetForm('Nuevo')">
-                        <i class="fa fa-plus"></i> Agregar descuento
-                    </a>
-                </div>
+                @can('deduccion.create')
+                    <div class="col-auto float-right ml-auto">
+                        <a href="#" class="btn add-btn" data-toggle="modal" data-target="#modal_descuento"
+                            onclick="resetForm('Nuevo')">
+                            <i class="fa fa-plus"></i> Agregar descuento
+                        </a>
+                    </div>
+                @endcan
             </div>
         </div>
         <!-- /Page Header -->
@@ -95,25 +97,32 @@
                                     <td>{{ fecha_literal($des->fecha) }}</td>
                                     <td class="text-center">{{ $des->horas }}</td>
                                     <td class="text-center">{{ $des->monto }}</td>
-                                    <td>{{ $des->descripcion }}</td>
+                                    <td>{!! nl2br(e($des->descripcion)) !!}</td>
                                     <td class="text-right">
-                                        <div class="dropdown dropdown-action">
-                                            <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
-                                                aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                                    data-target="#modal_descuento" onclick="editDes({{ $des }})">
-                                                    <i class="fa fa-pencil m-r-5"></i>
-                                                    Editar
-                                                </a>
-                                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                                    data-target="#delete_overtime"
-                                                    onclick="$('#des_id').val({{ $des->id }})">
-                                                    <i class="fa fa-trash-o m-r-5"></i>
-                                                    Eliminar
-                                                </a>
+                                        @if (Auth::user()->can('deduccion.edit') || Auth::user()->can('deduccion.delete'))
+                                            <div class="dropdown dropdown-action">
+                                                <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
+                                                    aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    @can('deduccion.edit')
+                                                        <a class="dropdown-item" href="#" data-toggle="modal"
+                                                            data-target="#modal_descuento"
+                                                            onclick="editDes({{ $des }})">
+                                                            <i class="fa fa-pencil m-r-5"></i>
+                                                            Editar
+                                                        </a>
+                                                    @endcan
+                                                    @can('deduccion.delete')
+                                                        <a class="dropdown-item" href="#" data-toggle="modal"
+                                                            data-target="#delete_overtime"
+                                                            onclick="$('#des_id').val({{ $des->id }})">
+                                                            <i class="fa fa-trash-o m-r-5"></i>
+                                                            Eliminar
+                                                        </a>
+                                                    </div>
+                                                @endcan
                                             </div>
-                                        </div>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -125,98 +134,102 @@
     </div>
     <!-- /Page Content -->
 
-    <!-- Add Overtime Modal -->
-    <div id="modal_descuento" class="modal custom-modal fade" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><span id="title-form"></span> descuento</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="form-descuento">
-                        @csrf
-                        <input type="text" name="id" id="id">
-                        <div class="form-group">
-                            <label>Seleccionar empleado <span class="text-danger">*</span></label>
-                            <select class="select form-control" name="usu_detalle_id" id="usu_detalle_id">
-                                <option value="">-</option>
-                                @foreach ($empleados as $emp)
-                                    <option value="{{ $emp->id }}">
-                                        {{ $emp->empleado->nombres }}
-                                        {{ $emp->empleado->apellidos }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <span class="invalid-feedback" id="usu_detalle_id_error"></span>
-                        </div>
-                        <div class="form-group">
-                            <label>Nombre <span class="text-danger">*</span></label>
-                            <input class="form-control" type="text" name="nombre" id="nombre">
-                            <span class="invalid-feedback" id="nombre_error"></span>
-                        </div>
-                        <div class="form-group">
-                            <label>Fecha <span class="text-danger">*</span></label>
-                            <div class="cal-icon">
-                                <input class="form-control datetimepicker" type="text" name="fecha" id="fecha">
-                                <span class="invalid-feedback" id="fecha_error"></span>
+    @if (Auth::user()->can('deduccion.create') || Auth::user()->can('deduccion.edit'))
+        <!-- Add Overtime Modal -->
+        <div id="modal_descuento" class="modal custom-modal fade" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><span id="title-form"></span> descuento</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form-descuento">
+                            @csrf
+                            <input type="hidden" name="id" id="id">
+                            <div class="form-group">
+                                <label>Seleccionar empleado <span class="text-danger">*</span></label>
+                                <select class="select form-control" name="usu_detalle_id" id="usu_detalle_id">
+                                    <option value="">-</option>
+                                    @foreach ($empleados as $emp)
+                                        <option value="{{ $emp->id }}">
+                                            {{ $emp->empleado->nombres }}
+                                            {{ $emp->empleado->apellidos }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <span class="invalid-feedback" id="usu_detalle_id_error"></span>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Horas <span class="text-danger">*</span></label>
-                            <input class="form-control" type="text" name="horas" id="horas">
-                            <span class="invalid-feedback" id="horas_error"></span>
-                        </div>
-                        <div class="form-group">
-                            <label>Monto <span class="text-danger">*</span></label>
-                            <input class="form-control" type="text" name="monto" id="monto">
-                            <span class="invalid-feedback" id="monto_error"></span>
-                        </div>
-                        <div class="form-group">
-                            <label>Descripción <span class="text-danger">*</span></label>
-                            <textarea rows="4" class="form-control" name="descripcion" id="descripcion"></textarea>
-                            <span class="invalid-feedback" id="descripcion_error"></span>
-                        </div>
-                        <div class="submit-section">
-                            <button class="btn btn-primary submit-btn" id="btn-form"></button>
-                        </div>
-                    </form>
+                            <div class="form-group">
+                                <label>Nombre <span class="text-danger">*</span></label>
+                                <input class="form-control" type="text" name="nombre" id="nombre">
+                                <span class="invalid-feedback" id="nombre_error"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>Fecha <span class="text-danger">*</span></label>
+                                <div class="cal-icon">
+                                    <input class="form-control datetimepicker" type="text" name="fecha" id="fecha">
+                                    <span class="invalid-feedback" id="fecha_error"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Horas <span class="text-danger">*</span></label>
+                                <input class="form-control" type="text" name="horas" id="horas">
+                                <span class="invalid-feedback" id="horas_error"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>Monto <span class="text-danger">*</span></label>
+                                <input class="form-control" type="text" name="monto" id="monto">
+                                <span class="invalid-feedback" id="monto_error"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>Descripción <span class="text-danger">*</span></label>
+                                <textarea rows="4" class="form-control" name="descripcion" id="descripcion"></textarea>
+                                <span class="invalid-feedback" id="descripcion_error"></span>
+                            </div>
+                            <div class="submit-section">
+                                <button class="btn btn-primary submit-btn" id="btn-form"></button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- /Add Overtime Modal -->
+        <!-- /Add Overtime Modal -->
+    @endif
 
-    <!-- Delete Overtime Modal -->
-    <div class="modal custom-modal fade" id="delete_overtime" role="dialog">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="form-header">
-                        <h3>Eliminar descuento</h3>
-                        <p>¿Esta seguro de eliminar el descuento?</p>
-                    </div>
-                    <div class="modal-btn delete-action">
-                        <div class="row">
-                            <div class="col-6">
-                                <a href="javascript:void(0);" class="btn btn-primary continue-btn" onclick="deleteDes()">
-                                    Eliminar
-                                </a>
-                                <input type="hidden" name="des_id" id="des_id">
-                            </div>
-                            <div class="col-6">
-                                <a href="javascript:void(0);" data-dismiss="modal"
-                                    class="btn btn-primary cancel-btn">Cancelar</a>
+    @can('deduccion.delete')
+        <!-- Delete Overtime Modal -->
+        <div class="modal custom-modal fade" id="delete_overtime" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="form-header">
+                            <h3>Eliminar descuento</h3>
+                            <p>¿Esta seguro de eliminar el descuento?</p>
+                        </div>
+                        <div class="modal-btn delete-action">
+                            <div class="row">
+                                <div class="col-6">
+                                    <a href="javascript:void(0);" class="btn btn-primary continue-btn" onclick="deleteDes()">
+                                        Eliminar
+                                    </a>
+                                    <input type="hidden" name="des_id" id="des_id">
+                                </div>
+                                <div class="col-6">
+                                    <a href="javascript:void(0);" data-dismiss="modal"
+                                        class="btn btn-primary cancel-btn">Cancelar</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- /Delete Overtime Modal -->
+        <!-- /Delete Overtime Modal -->
+    @endcan
 @endsection
 
 @push('scripts')
