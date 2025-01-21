@@ -4,7 +4,7 @@
     <!-- Logo -->
     <div class="header-left">
         <a href="index.html" class="logo">
-            <img src="assets/img/logo.png" width="40" height="40" alt="">
+            <img src="{{ asset('assets/img/logo.png') }}" width="100" height="50" alt="">
         </a>
     </div>
     <!-- /Logo -->
@@ -280,8 +280,8 @@
                 <span>{{ Auth::user()->nombres }} {{ Auth::user()->apellidos }}</span>
             </a>
             <div class="dropdown-menu">
-                <a class="dropdown-item" href="profile.html">Mi perfil</a>
-                <a class="dropdown-item" href="settings.html">Configuraciones</a>
+                <a class="dropdown-item" href="{{ route('admin.perfil.index') }}">Mi perfil</a>
+                {{-- <a class="dropdown-item" href="settings.html">Configuraciones</a> --}}
                 <a class="dropdown-item" href="javascript:void(0)" onclick="logout()">Cerrar sesión</a>
                 <form action="{{ route('logout') }}" id="form-logout" method="POST">
                     @csrf
@@ -296,8 +296,8 @@
         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
             <i class="fa fa-ellipsis-v"></i></a>
         <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="profile.html">Mi perfil</a>
-            <a class="dropdown-item" href="settings.html">Configuraciones</a>
+            <a class="dropdown-item" href="{{ route('admin.perfil.index') }}">Mi perfil</a>
+            {{-- <a class="dropdown-item" href="settings.html">Configuraciones</a> --}}
             <a class="dropdown-item" href="javascript:void(0)" onclick="logout()">Cerrar sesión</a>
         </div>
     </div>

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('exp_pasaporte')->nullable();
             $table->string('tel_pasaporte')->nullable();
             $table->string('nacionalidad')->nullable();
+            $table->enum('genero', ['M', 'F'])->nullable();
             $table->string('religion')->nullable();
             $table->string('etnia')->nullable();
             $table->string('estado_civil')->nullable();

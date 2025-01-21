@@ -66,7 +66,7 @@
                 <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
                     <div class="profile-widget">
                         <div class="profile-img">
-                            <a href="profile.html" class="avatar">
+                            <a href="{{ route('admin.perfil.show', $user->id) }}" class="avatar">
                                 <img src="{{ asset($user->imagen ?? 'assets/img/user.jpg') }}" alt="">
                             </a>
                         </div>
@@ -93,7 +93,7 @@
                             </div>
                         @endif
                         <h4 class="user-name m-t-10 mb-0 text-ellipsis">
-                            <a href="profile.html">
+                            <a href="{{ route('admin.perfil.show', $user->id) }}">
                                 {{ $user->nombres }}
                                 {{ $user->apellidos }}
                             </a>
@@ -132,10 +132,11 @@
                                     <td>{{ $user->id }}</td>
                                     <td>
                                         <h2 class="table-avatar">
-                                            <a href="profile.html" class="avatar"><img alt=""
+                                            <a href="{{ route('admin.perfil.show', $user->id) }}" class="avatar">
+                                                <img alt=""
                                                     src="{{ asset($user->imagen ?? 'assets/img/user.jpg') }}">
                                             </a>
-                                            <a href="profile.html">
+                                            <a href="{{ route('admin.perfil.show', $user->id) }}">
                                                 {{ $user->nombres }} {{ $user->apellidos }}
                                                 @if ($user->detalle)
                                                     <span>

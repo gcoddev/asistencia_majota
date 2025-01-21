@@ -9,6 +9,7 @@ use App\Http\Controllers\DesignacionesController;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\PermisosController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\SueldosController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,8 @@ Route::prefix('admin')->middleware('usuario_autenticado')->group(function () {
 
     Route::resource('/roles', RolesController::class, ['names' => 'admin.roles']);
     Route::put('/permission', [RolesController::class, 'putPermission'])->name('admin.permission.update');
+
+    Route::resource('/perfil', PerfilController::class, ['names' => 'admin.perfil']);
 });
 
 Route::middleware('usuario_no_autenticado')->group(function () {
