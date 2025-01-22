@@ -8,7 +8,7 @@
     <title>Majota | Admin</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/favicon.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/logo.png') }}">
 
     @include('components.styles')
 </head>

@@ -15,7 +15,7 @@ class DeduccionesController extends Controller
      */
     public function index()
     {
-        $descuentos = EmpleadoDescuentoCompensacion::where('tipo', 'descuento')->get();
+        $descuentos = EmpleadoDescuentoCompensacion::where('tipo', 'deduccion')->get();
         // $empleados = Usuario::whereHas('roles', function ($query) {
         //     $query->where('name', 'empleado');
         // })->get();
@@ -54,7 +54,7 @@ class DeduccionesController extends Controller
         ]);
 
         $descuento = new EmpleadoDescuentoCompensacion();
-        $descuento->tipo = 'descuento';
+        $descuento->tipo = 'deduccion';
         $descuento->usu_detalle_id = $request->usu_detalle_id;
         $descuento->nombre = $request->nombre;
         $descuento->descripcion = $request->descripcion;

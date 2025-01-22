@@ -493,7 +493,7 @@ table.dataTable thead > tr > td.sorting {
 }
 .text-primary,
 .dropdown-menu > li > a.text-primary {
-	color: #f43b48 !important;
+	color: #025E12 !important;
 }
 .text-success,
 .dropdown-menu > li > a.text-success {
@@ -529,16 +529,16 @@ table.dataTable thead > tr > td.sorting {
 	border: 1px solid #482fe9;
 }
 .btn-primary {
-	background-color: #f43b48;
-	border: 1px solid #f43b48;
+	background-color: #32701B;
+	border: 1px solid #32701B;
 }
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary.active,
 .btn-primary:active,
 .open > .dropdown-toggle.btn-primary {
-	background-color: #f10e1d;
-	border: 1px solid #f10e1d;
+	background-color: #025E12;
+	border: 1px solid #025E12;
 }
 .btn-primary.active.focus,
 .btn-primary.active:focus,
@@ -549,14 +549,14 @@ table.dataTable thead > tr > td.sorting {
 .open > .dropdown-toggle.btn-primary.focus,
 .open > .dropdown-toggle.btn-primary:focus,
 .open > .dropdown-toggle.btn-primary:hover {
-	background-color: #f10e1d;
-	border: 1px solid #f10e1d;
+	background-color: #025E12;
+	border: 1px solid #025E12;
 }
 .btn-primary.active:not(:disabled):not(.disabled),
 .btn-primary:active:not(:disabled):not(.disabled),
 .show > .btn-primary.dropdown-toggle {
-	background-color: #f10e1d;
-	border-color: #f10e1d;
+	background-color: #025E12;
+	border-color: #025E12;
 	color: #fff;
 }
 .btn-primary.active:focus:not(:disabled):not(.disabled), 
@@ -565,8 +565,8 @@ table.dataTable thead > tr > td.sorting {
 	box-shadow: unset;
 }
 .btn-primary.disabled, .btn-primary:disabled {
-    background-color: #f43b48;
-    border-color: #f43b48;
+    background-color: #688425;
+    border-color: #688425;
     color: #fff;
 }
 .btn-success {
@@ -730,22 +730,22 @@ table.dataTable thead > tr > td.sorting {
 .pagination > .active > span,
 .pagination > .active > span:focus,
 .pagination > .active > span:hover {
-	background-color: #f43b48;
-	border-color: #f43b48;
+	background-color: #025E12;
+	border-color: #025E12;
 }
 .pagination > li > a, 
 .pagination > li > span {
-	color: #f43b48;
+	color: #025E12;
 }
 .page-link:hover {
-	color: #f43b48;
+	color: #025E12;
 }
 .page-link:focus {
 	box-shadow: unset;
 }
 .page-item.active .page-link {
-	background-color: #f43b48;
-	border-color: #f43b48;
+	background-color: #025E12;
+	border-color: #025E12;
 }
 .dropdown-menu {
 	border: 1px solid rgba(0, 0, 0, 0.1);
@@ -785,7 +785,7 @@ table.dataTable thead > tr > td.sorting {
 	box-shadow: unset;
 }
 .dropdown-item.active, .dropdown-item:active {
-	background-color: #f43b48;
+	background-color: #025E12;
 }
 .list-group-item {
 	border: 1px solid #e3e3e3;
@@ -1162,7 +1162,7 @@ table.dataTable thead > tr > td.sorting {
     cursor: pointer
 }
 .custom_check input:checked ~ .checkmark {
-    background-color: #ff9b44;
+    background-color: #025E12;
     border: 1px solid transparent
 }
 .custom_check .checkmark {
@@ -1553,7 +1553,7 @@ table.dataTable thead > tr > td.sorting {
 	line-height: 40px;
 }
 .sidebar-menu li.menu-title a {
-    color: #f43b48;
+    color: #025E12;
     display: inline-block;
     margin-left: auto;
     padding: 0;
@@ -1800,8 +1800,8 @@ table.dataTable thead > tr > td.sorting {
 	margin-bottom: 20px;
 }
 .add-btn {
-    background-color: #f43b48;
-    border: 1px solid #f43b48;
+    background-color: #32701B;
+    border: 1px solid #32701B;
     border-radius: 50px;
     color: #fff;
     float: right;
@@ -1811,8 +1811,8 @@ table.dataTable thead > tr > td.sorting {
 .add-btn:hover,
 .add-btn:focus,
 .add-btn:active {
-	background-color: #f10e1d;
-	border: 1px solid #f10e1d;
+	background-color: #025E12;
+	border: 1px solid #025E12;
     color: #fff;
 }
 .add-btn i {
@@ -1975,9 +1975,9 @@ table.dataTable thead > tr > td.sorting {
 	padding-right: 15px;
 }
 .dash-widget-icon {
-	background-color: rgba(244, 59, 72, 0.2);
+	background-color: rgba(0, 94, 18, 0.2);
 	border-radius: 100%;
-	color: #f43b48;
+	color: #025E12;
 	display: inline-block;
 	float: left;
 	font-size: 30px;
@@ -2173,7 +2173,7 @@ table.dataTable thead > tr > td.sorting {
 	line-height: 42px;
 }
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-	background-color: #f43b48;
+	background-color: #32701B;
 }
 
 /*-----------------
@@ -2290,9 +2290,9 @@ table.dataTable thead > tr > td.sorting {
 }
 .continue-btn {
     background-color: #fff;
-    border: 1px solid #f43b48;
+    border: 1px solid #025E12;
     border-radius: 50px;
-    color: #f43b48;
+    color: #025E12;
     display: block;
     font-size: 18px;
     font-weight: 600;
@@ -2302,8 +2302,8 @@ table.dataTable thead > tr > td.sorting {
 .continue-btn:hover,
 .continue-btn:focus,
 .continue-btn:active {
-	background-color: #f43b48;
-	border: 1px solid #f43b48;
+	background-color: #025E12;
+	border: 1px solid #025E12;
 	color: #fff;
 }
 .cancel-btn {
@@ -3516,8 +3516,8 @@ table.dataTable thead > tr > td.sorting {
     width: 26px;
 }
 .edit-icon:hover {
-	background-color: #f43b48;
-	border-color: #f43b48;
+	background-color: #025E12;
+	border-color: #025E12;
     color: #fff;
 }
 .delete-icon {
@@ -3623,10 +3623,10 @@ table.dataTable thead > tr > td.sorting {
     padding: 10px 15px;
 }
 .add-more a {
-	color: #f43b48;
+	color: #067018;
 }
 .add-more a:hover {
-	color: #f10e1d;
+	color: #025E12;
 }
 .avatar-box {
     float: left;
@@ -3725,7 +3725,7 @@ table.dataTable thead > tr > td.sorting {
     font-size: 14px;
 }
 .topnav-dropdown-header .clear-noti {
-    color: #f83f37;
+    color: #025E12;
     float: right;
     font-size: 11px;
     text-transform: uppercase;
@@ -3786,12 +3786,12 @@ table.dataTable thead > tr > td.sorting {
     position: relative;
 }
 .roles-menu > ul > li.active a {
-	border-color: #f43b48;
-	color: #f43b48;
+	border-color: #025E12;
+	color: #025E12;
 }
 .roles-menu > ul > li a:hover {
     background-color: #eee;
-	border-color: #f43b48;
+	border-color: #025E12;
 }
 .role-action {
 	float: right;
@@ -7904,7 +7904,7 @@ ul.comment-list li ul.children {
 	.nav-tabs.nav-tabs-bottom > li > a.active:focus {
 		border-bottom-width: 2px;
 		border-color: transparent;
-		border-bottom-color: #f43b48;
+		border-bottom-color: #025E12;
 		background-color: transparent;
 		transition: none 0s ease 0s; 
 		-moz-transition: none 0s ease 0s; 

@@ -3,7 +3,7 @@
 
     <!-- Logo -->
     <div class="header-left">
-        <a href="index.html" class="logo">
+        <a href="{{ route('inicio') }}" class="logo">
             <img src="{{ asset('assets/img/logo.png') }}" width="100" height="50" alt="">
         </a>
     </div>
@@ -80,7 +80,7 @@
                             <a href="activities.html">
                                 <div class="media">
                                     <span class="avatar">
-                                        <img alt="" src="assets/img/profiles/avatar-02.jpg">
+                                        <img alt="" src="{{asset('assets/img/profiles/avatar-02.jpg') }}">
                                     </span>
                                     <div class="media-body">
                                         <p class="noti-details"><span class="noti-title">John Doe</span> added new task
@@ -95,7 +95,7 @@
                             <a href="activities.html">
                                 <div class="media">
                                     <span class="avatar">
-                                        <img alt="" src="assets/img/profiles/avatar-03.jpg">
+                                        <img alt="" src="{{asset('assets/img/profiles/avatar-03.jpg') }}">
                                     </span>
                                     <div class="media-body">
                                         <p class="noti-details"><span class="noti-title">Tarah Shropshire</span> changed
@@ -110,7 +110,7 @@
                             <a href="activities.html">
                                 <div class="media">
                                     <span class="avatar">
-                                        <img alt="" src="assets/img/profiles/avatar-06.jpg">
+                                        <img alt="" src="{{asset('assets/img/profiles/avatar-06.jpg') }}">
                                     </span>
                                     <div class="media-body">
                                         <p class="noti-details"><span class="noti-title">Misty Tison</span> added
@@ -127,7 +127,7 @@
                             <a href="activities.html">
                                 <div class="media">
                                     <span class="avatar">
-                                        <img alt="" src="assets/img/profiles/avatar-17.jpg">
+                                        <img alt="" src="{{asset('assets/img/profiles/avatar-17.jpg') }}">
                                     </span>
                                     <div class="media-body">
                                         <p class="noti-details"><span class="noti-title">Rolland Webber</span>
@@ -142,7 +142,7 @@
                             <a href="activities.html">
                                 <div class="media">
                                     <span class="avatar">
-                                        <img alt="" src="assets/img/profiles/avatar-13.jpg">
+                                        <img alt="" src="{{asset('assets/img/profiles/avatar-13.jpg') }}">
                                     </span>
                                     <div class="media-body">
                                         <p class="noti-details"><span class="noti-title">Bernardo Galaviz</span> added
@@ -196,7 +196,7 @@
                                 <div class="list-item">
                                     <div class="list-left">
                                         <span class="avatar">
-                                            <img alt="" src="assets/img/profiles/avatar-02.jpg">
+                                            <img alt="" src="{{asset('assets/img/profiles/avatar-02.jpg') }}">
                                         </span>
                                     </div>
                                     <div class="list-body">
@@ -214,7 +214,7 @@
                                 <div class="list-item">
                                     <div class="list-left">
                                         <span class="avatar">
-                                            <img alt="" src="assets/img/profiles/avatar-03.jpg">
+                                            <img alt="" src="{{asset('assets/img/profiles/avatar-03.jpg') }}">
                                         </span>
                                     </div>
                                     <div class="list-body">
@@ -232,7 +232,7 @@
                                 <div class="list-item">
                                     <div class="list-left">
                                         <span class="avatar">
-                                            <img alt="" src="assets/img/profiles/avatar-05.jpg">
+                                            <img alt="" src="{{asset('assets/img/profiles/avatar-05.jpg') }}">
                                         </span>
                                     </div>
                                     <div class="list-body">
@@ -250,7 +250,7 @@
                                 <div class="list-item">
                                     <div class="list-left">
                                         <span class="avatar">
-                                            <img alt="" src="assets/img/profiles/avatar-08.jpg">
+                                            <img alt="" src="{{asset('assets/img/profiles/avatar-08.jpg') }}">
                                         </span>
                                     </div>
                                     <div class="list-body">

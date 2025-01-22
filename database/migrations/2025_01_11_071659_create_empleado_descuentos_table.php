@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('empleado_descuentos_compensaciones', function (Blueprint $table) {
             $table->id();
-            $table->enum('tipo', ['descuento', 'compensacion']);
+            $table->enum('tipo', ['deduccion', 'compensacion']);
             $table->unsignedBigInteger('usu_detalle_id');
             $table->string('nombre');
             $table->string('descripcion')->nullable();

@@ -29,4 +29,17 @@ class EmpleadoDetalle extends Model
     {
         return $this->hasOne(Designacion::class, 'id', 'des_id');
     }
+
+    public function salario()
+    {
+        return $this->hasOne(EmpleadoSalario::class, 'usu_detalle_id', 'id');
+    }
+    public function compensaciones()
+    {
+        return $this->hasMany(EmpleadoDescuentoCompensacion::class, 'usu_detalle_id', 'id')->where('tipo', 'compensacion');
+    }
+    public function deducciones()
+    {
+        return $this->hasMany(EmpleadoDescuentoCompensacion::class, 'usu_detalle_id', 'id')->where('tipo', 'deduccion');
+    }
 }

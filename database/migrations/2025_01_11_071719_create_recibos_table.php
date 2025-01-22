@@ -13,17 +13,18 @@ return new class extends Migration
     {
         Schema::create('recibos', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo');
-            $table->unsignedBigInteger('usu_detalle_id');
-            $table->string('permiso');
-            $table->string('descuento');
-            $table->date('fecha_recibo');
-            $table->string('tipo');
-            $table->string('semanas');
-            $table->date('fecha_ini');
-            $table->date('fecha_fin');
-            $table->integer('horas_totales');
-            $table->string('salario_neto');
+            $table->string('titulo')->nullable();
+            $table->unsignedBigInteger('usu_detalle_id')->nullable();
+            $table->boolean('use_compensaciones')->default(false);
+            $table->boolean('use_deducciones')->default(false);
+            $table->date('fecha_recibo')->nullable();
+            $table->string('tipo')->nullable();
+            $table->string('semanas')->nullable();
+            $table->date('fecha_ini')->nullable();
+            $table->date('fecha_fin')->nullable();
+            $table->integer('horas_totales')->nullable();
+            $table->string('salario_neto')->nullable();
+            $table->string('salario_total')->nullable();
             $table->foreign('usu_detalle_id')
                 ->references('id')
                 ->on('empleado_detalles')

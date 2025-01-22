@@ -22,7 +22,7 @@
                             Asiste
                         </div>
                         <div class="col-6">
-                            <i class="fa fa-check text-danger"></i>
+                            <i class="fa fa-close text-danger"></i>
                             Falta
                         </div>
                         <div class="col-6">

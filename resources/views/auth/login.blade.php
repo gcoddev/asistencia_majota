@@ -7,7 +7,7 @@
 
             <!-- Account Logo -->
             <div class="account-logo">
-                <a href="index.html"><img src="{{ asset('assets/img/logo2.png') }}" alt="Majota net"></a>
+                <a href="{{ route('inicio') }}"><img src="{{ asset('assets/img/logo2.png') }}" alt="Majota net"></a>
             </div>
             <!-- /Account Logo -->
 

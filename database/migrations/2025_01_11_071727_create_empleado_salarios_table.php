@@ -13,18 +13,19 @@ return new class extends Migration
     {
         Schema::create('empleado_salarios', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('usu_detalle_id');
-            $table->string('base');
-            $table->string('salario_base');
-            $table->string('metodo_pago');
-            $table->string('pf_contribucion');
-            $table->string('pf_numero');
-            $table->string('pf_adicional');
-            $table->string('pf_tasa_total');
-            $table->string('esi_contribucion');
-            $table->string('esi_numero');
-            $table->string('esi_adicional');
-            $table->string('esi_tasa_total');
+            $table->unsignedBigInteger('usu_detalle_id')->nullable();
+            $table->string('base')->nullable();
+            $table->float('salario_base', 10.2)->nullable();
+            $table->string('metodo_pago')->nullable();
+            $table->string('cuenta_bancaria')->nullable();
+            $table->boolean('pf_contribucion')->default(false)->nullable();
+            $table->string('pf_numero')->nullable();
+            $table->float('pf_adicional', 10.2)->nullable();
+            $table->float('pf_tasa_total', 10.2)->nullable();
+            $table->boolean('esi_contribucion')->default(false)->nullable();
+            $table->string('esi_numero')->nullable();
+            $table->float('esi_adicional', 10.2)->nullable();
+            $table->float('esi_tasa_total', 10.2)->nullable();
             $table->foreign('usu_detalle_id')
                 ->references('id')
                 ->on('empleado_detalles')
