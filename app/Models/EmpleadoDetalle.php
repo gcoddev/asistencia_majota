@@ -15,7 +15,7 @@ class EmpleadoDetalle extends Model
         'des_id',
     ];
 
-    public function empleado()
+    public function usuario()
     {
         return $this->hasOne(Usuario::class, 'id', 'usu_id');
     }

@@ -31,7 +31,7 @@
     <!-- /Main Wrapper -->
 
     @include('components.scripts')
-    
+
     @stack('scripts')
 </body>
 

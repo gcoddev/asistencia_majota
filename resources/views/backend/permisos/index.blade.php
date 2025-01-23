@@ -139,11 +139,11 @@
                                         <h2 class="table-avatar">
                                             <a href="profile.html" class="avatar">
                                                 <img alt=""
-                                                    src="{{ asset($per->detalle->empleado->imagen ?? 'assets/img/user.jpg') }}">
+                                                    src="{{ asset($per->detalle->usuario->imagen ?? 'assets/img/user.jpg') }}">
                                             </a>
                                             <a href="#">
-                                                {{ $per->detalle->empleado->nombres }}
-                                                {{ $per->detalle->empleado->apellidos }}
+                                                {{ $per->detalle->usuario->nombres }}
+                                                {{ $per->detalle->usuario->apellidos }}
                                                 <span>
                                                     {{ $per->detalle->departamento ? $per->detalle->departamento->nombre : '- Sin departamento -' }}
                                                 </span>
@@ -284,11 +284,11 @@
                                         <h2 class="table-avatar">
                                             <a href="profile.html" class="avatar">
                                                 <img alt=""
-                                                    src="{{ asset($vac->detalle->empleado->imagen ?? 'assets/img/user.jpg') }}">
+                                                    src="{{ asset($vac->detalle->usuario->imagen ?? 'assets/img/user.jpg') }}">
                                             </a>
                                             <a href="#">
-                                                {{ $vac->detalle->empleado->nombres }}
-                                                {{ $vac->detalle->empleado->apellidos }}
+                                                {{ $vac->detalle->usuario->nombres }}
+                                                {{ $vac->detalle->usuario->apellidos }}
                                                 <span>
                                                     {{ $vac->detalle->departamento ? $vac->detalle->departamento->nombre : '- Sin departamento -' }}
                                                 </span>

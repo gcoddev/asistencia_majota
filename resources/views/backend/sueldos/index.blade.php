@@ -104,11 +104,11 @@
                                         <h2 class="table-avatar">
                                             <a href="{{ route('admin.perfil.show', 1) }}" class="avatar">
                                                 <img alt=""
-                                                    src="{{ asset($sueldo->empleado->empleado->imagen ?? 'assets/img/user.jpg') }}">
+                                                    src="{{ asset($sueldo->empleado->usuario->imagen ?? 'assets/img/user.jpg') }}">
                                             </a>
                                             <a href="{{ route('admin.perfil.show', 1) }}">
-                                                {{ $sueldo->empleado->empleado->nombres }}
-                                                {{ $sueldo->empleado->empleado->apellidos }}
+                                                {{ $sueldo->empleado->usuario->nombres }}
+                                                {{ $sueldo->empleado->usuario->apellidos }}
                                                 <span>
                                                     {{ $sueldo->empleado->designacion ? $sueldo->empleado->designacion->nombre : '- Sin designación -' }}
                                                 </span>
@@ -118,7 +118,7 @@
                                     <td>
                                         <div class="dropdown">
                                             <a href="javascript:void(0)" class="btn btn-white btn-sm btn-rounded">
-                                                {{ $sueldo->empleado->empleado->role[0]->name }}
+                                                {{ $sueldo->empleado->usuario->role[0]->name }}
                                             </a>
                                         </div>
                                     </td>
@@ -152,7 +152,12 @@
                                     </td>
                                     <td>Bs. {{ $sueldo->salario_total }}</td>
                                     <td>{{ $sueldo->tipo }}</td>
-                                    <td><a class="btn btn-sm btn-primary" href="salary-view.html">Generar recibo</a></td>
+                                    <td>
+                                        <a class="btn btn-sm btn-primary"
+                                            href="{{ route('admin.sueldos.show', $sueldo->id) }}">
+                                            Generar recibo
+                                        </a>
+                                    </td>
                                     <td class="text-right">
                                         @if (Auth::user()->can('sueldo.edit') || Auth::user()->can('sueldo.delete'))
                                             <div class="dropdown dropdown-action">
@@ -211,8 +216,8 @@
                                                 <option value="{{ $emp->id }}" data-salario="{{ $emp->salario }}"
                                                     data-compensaciones="{{ $emp->compensaciones }}"
                                                     data-deducciones="{{ $emp->deducciones }}">
-                                                    {{ $emp->empleado->nombres }}
-                                                    {{ $emp->empleado->apellidos }}
+                                                    {{ $emp->usuario->nombres }}
+                                                    {{ $emp->usuario->apellidos }}
                                                 </option>
                                             @endforeach
                                         </select>

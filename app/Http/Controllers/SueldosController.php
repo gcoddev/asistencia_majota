@@ -8,6 +8,7 @@ use App\Models\Recibo;
 use App\Models\ReciboItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SueldosController extends Controller
 {
@@ -106,7 +107,8 @@ class SueldosController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $sueldo = Recibo::findOrFail($id);
+        return view('backend.sueldos.show', compact('sueldo'));
     }
 
     /**
@@ -244,5 +246,21 @@ class SueldosController extends Controller
         }
 
         return redirect()->back()->with('message', 'Sueldo eliminado correctamente');
+    }
+
+    public function reciboPDF(string $id)
+    {
+        $sueldo = Recibo::findOrFail($id);
+        // return view('backend.sueldos.recibo.pdf', compact('sueldo'));
+        $pdf = Pdf::loadView('backend.sueldos.recibo.pdf', compact('sueldo'));
+
+        // return $pdf->download('archivo.pdf');
+        return $pdf->stream('archivo.pdf');
+    }
+
+    public function reciboPrint(string $id)
+    {
+        $sueldo = Recibo::findOrFail($id);
+        return view('backend.sueldos.recibo.print', compact('sueldo'));
     }
 }

@@ -11,6 +11,8 @@
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/logo.png') }}">
 
     @include('components.styles')
+
+    @stack('styles')
 </head>
 
 <body>
@@ -19,6 +21,8 @@
     </div>
 
     @include('components.scripts')
+
+    @stack('scripts')
 </body>
 
 </html>

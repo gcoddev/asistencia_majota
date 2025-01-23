@@ -35,6 +35,9 @@ Route::prefix('admin')->middleware('usuario_autenticado')->group(function () {
 
     Route::resource('/perfil', PerfilController::class, ['names' => 'admin.perfil']);
     Route::resource('/salarios', SalarioController::class, ['names' => 'admin.salarios']);
+
+    Route::get('/sueldos/pdf/{id}', [SueldosController::class, 'reciboPDF'])->name('admin.sueldos.pdf');
+    Route::get('/sueldos/print/{id}', [SueldosController::class, 'reciboPrint'])->name('admin.sueldos.print');
 });
 
 Route::middleware('usuario_no_autenticado')->group(function () {

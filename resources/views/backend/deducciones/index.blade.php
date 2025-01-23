@@ -81,11 +81,11 @@
                                         <h2 class="table-avatar">
                                             <a href="profile.html" class="avatar">
                                                 <img alt=""
-                                                    src="{{ asset($des->detalle->empleado->imagen ?? 'assets/img/user.jpg') }}">
+                                                    src="{{ asset($des->detalle->usuario->imagen ?? 'assets/img/user.jpg') }}">
                                             </a>
                                             <a href="#">
-                                                {{ $des->detalle->empleado->nombres }}
-                                                {{ $des->detalle->empleado->apellidos }}
+                                                {{ $des->detalle->usuario->nombres }}
+                                                {{ $des->detalle->usuario->apellidos }}
                                                 <span>
                                                     {{ $des->detalle->departamento ? $des->detalle->departamento->nombre : '- Sin departamento -' }}
                                                 </span>
@@ -157,8 +157,8 @@
                                     <option value="">-</option>
                                     @foreach ($empleados as $emp)
                                         <option value="{{ $emp->id }}">
-                                            {{ $emp->empleado->nombres }}
-                                            {{ $emp->empleado->apellidos }}
+                                            {{ $emp->usuario->nombres }}
+                                            {{ $emp->usuario->apellidos }}
                                         </option>
                                     @endforeach
                                 </select>
