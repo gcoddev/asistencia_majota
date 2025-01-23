@@ -244,6 +244,9 @@
                                     <input class="form-control" type="text" name="tipo" id="tipo" readonly>
                                     <span class="invalid-feedback" id="tipo_error"></span>
                                 </div>
+                                <div class="col-12 alert alert-warning" role="alert" id="edit-alert">
+                                    <strong>Nota: </strong>Al editar se agregan las nuevas compensaciones y deducciones no registradas al salario total.
+                                </div>
                                 <div class="col-sm-6 row items" style="display:none">
                                     <div class="status-toggle col-12">
                                         <label class="col-form-label">
@@ -354,8 +357,9 @@
             $('#use_compensaciones').on('change', function() {
                 const salario = $('#salario_total').val();
                 const compensaciones = JSON.parse($('#compensaciones').attr('data-compensaciones'))
+                const editable = $('#compensaciones').attr('data-edit');
 
-                if (compensaciones) {
+                if (compensaciones.length > 0) {
                     let suma = 0;
                     if ($(this).is(':checked')) {
                         compensaciones.forEach(item => {
@@ -363,6 +367,8 @@
                         });
                         $('#salario_total').val(parseFloat(salario) + suma);
                         $('#compensaciones').css('display', 'block')
+                    } else if (editable === 'editar') {
+                        // No restar nada al no tener el check iniciado al editar
                     } else {
                         compensaciones.forEach(item => {
                             suma += parseFloat(item.monto);
@@ -371,26 +377,33 @@
                         $('#compensaciones').css('display', 'none')
                     }
                 }
+                $('#compensaciones').removeAttr('data-edit')
             })
 
             $('#use_deducciones').on('change', function() {
                 const salario = $('#salario_total').val();
                 const deducciones = JSON.parse($('#deducciones').attr('data-deducciones'))
+                const editable = $('#deducciones').attr('data-edit');
 
-                let resta = 0;
-                if ($(this).is(':checked')) {
-                    deducciones.forEach(item => {
-                        resta += parseFloat(item.monto);
-                    });
-                    $('#salario_total').val(parseFloat(salario) - resta);
-                    $('#deducciones').css('display', 'block')
-                } else {
-                    deducciones.forEach(item => {
-                        resta += parseFloat(item.monto);
-                    });
-                    $('#salario_total').val(parseFloat(salario) + resta);
-                    $('#deducciones').css('display', 'none')
+                if (deducciones.length > 0) {
+                    let resta = 0;
+                    if ($(this).is(':checked')) {
+                        deducciones.forEach(item => {
+                            resta += parseFloat(item.monto);
+                        });
+                        $('#salario_total').val(parseFloat(salario) - resta);
+                        $('#deducciones').css('display', 'block')
+                    } else if (editable === 'editar') {
+                        // No sumar nada al no tener el check iniciado al editar
+                    } else {
+                        deducciones.forEach(item => {
+                            resta += parseFloat(item.monto);
+                        });
+                        $('#salario_total').val(parseFloat(salario) + resta);
+                        $('#deducciones').css('display', 'none')
+                    }
                 }
+                $('#deducciones').removeAttr('data-edit')
             })
 
             $('#form-sueldo').on('submit', function(e) {
@@ -433,6 +446,7 @@
         });
 
         function resetForm(title) {
+            $('#edit-alert').css('display', 'none');
             $('#title-form').html(title)
             $('#btn-form').removeClass(function(index, className) {
                 return (className.match(/(^|\s)btn-\S+/g) || []).join(' ');
@@ -452,14 +466,20 @@
 
         function editSu(data) {
             resetForm('Editar')
+            $('#edit-alert').css('display', 'block');
 
             $('#id').val(data.id)
             $('#usu_detalle_id').val(data.usu_detalle_id).trigger('change')
             $('#use_compensaciones').prop('checked', data.use_compensaciones).trigger('change');
             $('#use_deducciones').prop('checked', data.use_deducciones).trigger('change');
-            $('#usu_detalle_id').val(data.usu_detalle_id).trigger('change')
-            $('#salario_neto').val(data.salario_neto)
-            $('#salario_total').val(data.salario_total)
+            $('#usu_detalle_id').trigger('change')
+            $('#compensaciones').attr('data-edit', 'editar')
+            $('#use_compensaciones').attr('data-edit', true).trigger('change');
+            $('#deducciones').attr('data-edit', 'editar')
+            $('#use_deducciones').trigger('change');
+            // fillItems()
+            // $('#salario_neto').val(data.salario_neto)
+            // $('#salario_total').val(data.salario_total)
             $('#fecha_recibo').val(formatDateToDDMMYYYY(data.fecha_recibo));
             $('#tipo').val(data.tipo)
         }
