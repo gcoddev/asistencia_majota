@@ -34,12 +34,16 @@ class EmpleadoDetalle extends Model
     {
         return $this->hasOne(EmpleadoSalario::class, 'usu_detalle_id', 'id');
     }
+
     public function compensaciones()
     {
-        return $this->hasMany(EmpleadoDescuentoCompensacion::class, 'usu_detalle_id', 'id')->where('tipo', 'compensacion');
+        return $this->hasMany(EmpleadoDescuentoCompensacion::class, 'usu_detalle_id', 'id')
+            ->where('tipo', 'compensacion')->with('items');
     }
+
     public function deducciones()
     {
-        return $this->hasMany(EmpleadoDescuentoCompensacion::class, 'usu_detalle_id', 'id')->where('tipo', 'deduccion');
+        return $this->hasMany(EmpleadoDescuentoCompensacion::class, 'usu_detalle_id', 'id')
+            ->where('tipo', 'deduccion')->with('items');
     }
 }

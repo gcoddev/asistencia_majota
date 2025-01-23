@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('fecha');
             $table->integer('horas');
             $table->float('monto');
+            $table->boolean('use')->default(false);
             $table->unsignedBigInteger('usu_id')->nullable();
             $table->foreign('usu_detalle_id')
                 ->references('id')

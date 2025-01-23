@@ -20,6 +20,10 @@ return new class extends Migration
                 ->references('id')
                 ->on('recibos')
                 ->onDelete('cascade');
+            $table->foreign('item_id')
+                ->references('id')
+                ->on('empleado_descuentos_compensaciones')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }

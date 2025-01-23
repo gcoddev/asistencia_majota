@@ -65,6 +65,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Empleado</th>
+                                <th>Nombre</th>
                                 <th>Fecha</th>
                                 <th class="text-center">Horas</th>
                                 <th class="text-center">Monto</th>
@@ -94,6 +95,7 @@
                                             </a>
                                         </h2>
                                     </td>
+                                    <td>{{ $des->nombre }}</td>
                                     <td>{{ fecha_literal($des->fecha) }}</td>
                                     <td class="text-center">{{ $des->horas }}</td>
                                     <td class="text-center">{{ $des->monto }}</td>
@@ -322,15 +324,6 @@
                     alert('Error al eliminar.');
                 }
             });
-        }
-
-        function formatDateToDDMMYYYY(dateString) {
-            if (!dateString) return '';
-            const date = new Date(dateString);
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses van de 0 a 11
-            const year = date.getFullYear();
-            return `${day}/${month}/${year}`;
         }
     </script>
 @endpush

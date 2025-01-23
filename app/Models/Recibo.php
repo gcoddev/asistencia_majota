@@ -25,8 +25,16 @@ class Recibo extends Model
     {
         return $this->hasMany(ReciboItem::class, 'recibo_id', 'id')->where('tipo', 'compensacion');
     }
+    // public function compensacionesNuevo()
+    // {
+    //     return $this->hasMany(ReciboItem::class, 'recibo_id', 'id')->where('tipo', 'compensacion')->where('use', false);
+    // }
     public function deducciones()
     {
         return $this->hasMany(ReciboItem::class, 'recibo_id', 'id')->where('tipo', 'deduccion');
     }
+//     public function deduccionesNuevo()
+//     {
+//         return $this->hasMany(ReciboItem::class, 'recibo_id', 'id')->where('tipo', 'deduccion')->where('use', false);
+//     }
 }

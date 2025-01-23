@@ -14,6 +14,7 @@ class EmpleadoDescuentoCompensacion extends Model
         'nombre',
         'descripcion',
         'cantidad',
+        'use',
         'usu_id',
     ];
 
@@ -25,5 +26,10 @@ class EmpleadoDescuentoCompensacion extends Model
     public function usuario()
     {
         return $this->hasOne(Usuario::class, 'id', 'usu_id');
+    }
+
+    public function items()
+    {
+        return $this->hasMany(ReciboItem::class, 'item_id', 'id');
     }
 }
