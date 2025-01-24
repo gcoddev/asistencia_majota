@@ -46,15 +46,16 @@
                             </div>
                         </h5>
                         <div class="punch-info">
-                            <div class="punch-hours 50">
-                                <span id="timer"></span>
+                            <div class="punch-hours {{ $horas >= 8 ? 'border-success' : ($horas == 0 ? '' : 'border-warning') }}"
+                                title="{{ $horas >= 8 ? 'Horas completadas' : ($horas == 0 ? 'Falta' : 'Horas faltantes') }}">
+                                <span id="timer">{{ $horas > 0 ? obtener_horas_segundos($horas) : '00s' }}</span>
                             </div>
                         </div>
                         <div class="punch-btn-section">
                             <button type="button" class="btn btn-primary punch-btn" data-toggle="modal"
                                 data-target="#modal_marcar">
                                 Marcar
-                                {{ $user->asistencia && $user->asistencia->asistencias->last()->hora_fin == null ? 'salida' : 'entrada' }}
+                                {{ $usr->asistencia && $usr->asistencia->asistencias->last()->hora_fin == null ? 'salida' : 'entrada' }}
                             </button>
                         </div>
 
@@ -154,6 +155,10 @@
                                         </p>
                                     </li>
                                 @endforeach
+                            @else
+                                <li>
+                                    <p class="mb-0">Falta</p>
+                                </li>
                             @endif
                         </ul>
                     </div>
@@ -270,18 +275,21 @@
                 <div class="modal-body">
                     <form id="form-asistencia">
                         @csrf
-                        <input type="text" name="asis_id" id="asis_id" value="{{ $usr->asistencia->id ?? '' }}">
-                        <input type="text" name="hora_id" id="hora_id"
+                        <input type="hidden" name="asis_id" id="asis_id" value="{{ $usr->asistencia->id ?? '' }}">
+                        <input type="hidden" name="hora_id" id="hora_id"
                             value="{{ $usr->asistencia && $usr->asistencia->asistencias->last()->hora_fin == null ? $usr->asistencia->asistencias->last()->id : '' }}">
                         <div class="form-header">
-                            <h3>Marcar <span title="title-form"></span></h3>
+                            <h3>
+                                Marcar
+                                {{ $usr->asistencia && $usr->asistencia->asistencias->last()->hora_fin == null ? 'salida' : 'entrada' }}
+                            </h3>
                         </div>
                         <div class="modal-btn delete-action">
                             <div class="row">
                                 <div class="col-6">
                                     <a href="javascript:void(0)" class="btn btn-primary continue-btn"
                                         onclick="$('#form-asistencia').submit()">
-                                        Marcar
+                                        {{ $usr->asistencia && $usr->asistencia->asistencias->last()->hora_fin == null ? 'Salida' : 'Entrada' }}
                                     </a>
                                 </div>
                                 <div class="col-6">
@@ -305,8 +313,6 @@
             if (horaIni) {
                 let inicioSegundos = convertirAHorasASegundos(horaIni);
                 setInterval(() => actualizarTimer(inicioSegundos), 1000);
-            } else {
-                $('#timer').text('00s')
             }
 
             // Enviar formulario
@@ -318,6 +324,9 @@
                 const id = $('#asis_id').val();
                 if (id != '') {
                     formData.append('_method', 'PUT');
+                    $('#title-form').text('salida')
+                } else {
+                    $('#title-form').text('entrada')
                 }
 
                 const url = id ?
@@ -353,7 +362,7 @@
 
             // Si los segundos son negativos, no mostrar nada (por ejemplo, si la hora inicial no es válida)
             if (totalSegundos < 0) {
-                $('#timer').text('');
+                $('#timer').text('-');
                 return;
             }
 

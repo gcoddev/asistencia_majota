@@ -4817,7 +4817,7 @@ html.menu-opened body {
     position: relative;
 }
 .recent-activity .res-activity-list {
-    height: 230px;
+    max-height: 435px;
     list-style-type: none;
     margin-bottom: 0;
     overflow-y: auto;

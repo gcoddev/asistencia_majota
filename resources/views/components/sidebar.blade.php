@@ -6,7 +6,7 @@
                 <li class="menu-title">
                     <span>Inicio</span>
                 </li>
-                @if (Auth::user()->role[0]->name == 'admin' || Auth::user()->role[0]->name == 'tecnico')
+                @if (Auth::user()->role[0]->name == 'admin')
                     <li class="{{ Route::is('inicio') ? 'active' : '' }}">
                         <a href="{{ route('inicio') }}">
                             <i class="la la-home"></i>

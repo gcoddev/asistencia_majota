@@ -30,7 +30,7 @@
                             Atraso
                         </div>
                         <div class="col-6">
-                            <i class="fa fa-check text-warning"></i>
+                            <i class="fa fa-info text-warning"></i>
                             Observación
                         </div>
                     </div>
@@ -129,35 +129,81 @@
                                             </h2>
                                         </td>
                                         @foreach ($diasDelMes as $dia)
-                                            @if ($emp->asistenciaDia($dia, $mes, $anio)->first())
-                                                @if ($emp->asistenciaDia($dia, $mes, $anio)->first()->asistencias[0]->hora_ini <= '08:00:00')
+                                            @if ($emp->buscarAsistencia($dia, $mes, $anio))
+                                                @php
+                                                    $ini = $emp->buscarAsistencia($dia, $mes, $anio)->asistencias[0]
+                                                        ->hora_ini;
+                                                    $fin;
+                                                    foreach (
+                                                        $emp
+                                                            ->buscarAsistencia($dia, $mes, $anio)
+                                                            ->asistencias->reverse()
+                                                        as $asis
+                                                    ) {
+                                                        if ($asis->hora_fin) {
+                                                            $fin = $asis->hora_fin;
+                                                            break;
+                                                        }
+                                                    }
+                                                @endphp
+                                                @if ($ini <= '08:00:00' && $fin >= '18:00:00')
                                                     <td>
                                                         <a href="javascript:void(0);" data-toggle="modal"
-                                                            data-target="#attendance_info_{{ $emp->id }}"
+                                                            data-target="#attendance_info_{{ $loop->iteration }}"
                                                             title="Asiste">
                                                             <i class="fa fa-check text-success"></i>
                                                         </a>
                                                     </td>
                                                 @else
                                                     <td>
+                                                        <div class="half-day">
+                                                            @if ($ini <= '08:00:00')
+                                                                <span class="first-off"><a href="javascript:void(0);"
+                                                                        data-toggle="modal"
+                                                                        data-target="#attendance_info_{{ $loop->iteration }}"
+                                                                        title="Asiste"><i
+                                                                            class="fa fa-check text-success"></i></a></span>
+                                                            @else
+                                                                <span class="first-off"><a href="javascript:void(0);"
+                                                                        data-toggle="modal"
+                                                                        data-target="#attendance_info_{{ $loop->iteration }}"
+                                                                        title="Atraso"><i
+                                                                            class="fa fa-check text-info"></i></a></span>
+                                                            @endif
+                                                            @if ($fin >= '18:00:00')
+                                                                <span class="first-off"><a href="javascript:void(0);"
+                                                                        data-toggle="modal"
+                                                                        data-target="#attendance_info_{{ $loop->iteration }}"
+                                                                        title="Asiste"><i
+                                                                            class="fa fa-check text-success"></i></a></span>
+                                                            @else
+                                                                <span class="first-off"><a href="javascript:void(0);"
+                                                                        data-toggle="modal"
+                                                                        data-target="#attendance_info_{{ $loop->iteration }}"
+                                                                        title="Observación"><i
+                                                                            class="fa fa-info text-warning"></i></a></span>
+                                                            @endif
+                                                        </div>
+                                                    </td>
+                                                    {{-- <td>
                                                         <a href="javascript:void(0);" data-toggle="modal"
-                                                            data-target="#attendance_info_{{ $emp->id }}"
+                                                            data-target="#attendance_info_{{ $loop->iteration }}"
                                                             title="Atraso">
                                                             <i class="fa fa-check text-info"></i>
                                                         </a>
-                                                    </td>
+                                                    </td> --}}
                                                 @endif
 
                                                 <!-- Attendance Modal -->
                                                 <div class="modal custom-modal fade"
-                                                    id="attendance_info_{{ $emp->id }}" role="dialog">
+                                                    id="attendance_info_{{ $loop->iteration }}" role="dialog">
                                                     <div class="modal-dialog modal-dialog-centered modal-lg"
                                                         role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title">Información de asistencia</h5>
-                                                                <button type="button" class="close" data-dismiss="modal"
-                                                                    aria-label="Close">
+                                                                <button type="button" class="close"
+                                                                    data-dismiss="modal" aria-label="Close">
                                                                     <span aria-hidden="true">&times;</span>
                                                                 </button>
                                                             </div>
@@ -176,9 +222,28 @@
                                                                                         {{ $emp->buscarAsistencia($dia, $mes, $anio)->asistencias->first()->hora_ini }}
                                                                                     </p>
                                                                                 </div>
+                                                                                @if ($ini > '08:00:00')
+                                                                                    <div class="alert alert-info">
+                                                                                        Atraso de
+                                                                                        {{ obtener_horas_segundos(obtener_horas('08:00:00', $ini)) }}
+                                                                                    </div>
+                                                                                @endif
                                                                                 <div class="punch-info">
-                                                                                    <div class="punch-hours">
-                                                                                        <span>{{ obtener_horas_segundos($emp->horas($emp->buscarAsistencia($dia, $mes, $anio)->fecha)) }}</span>
+                                                                                    @php
+                                                                                        $horasCumplidas =
+                                                                                            $emp->horas(
+                                                                                                $emp->buscarAsistencia(
+                                                                                                    $dia,
+                                                                                                    $mes,
+                                                                                                    $anio,
+                                                                                                )->fecha,
+                                                                                            ) >= 8;
+                                                                                    @endphp
+                                                                                    <div class="punch-hours {{ $horasCumplidas ? 'border-success' : 'border-warning' }}"
+                                                                                        title="{{ $horasCumplidas ? 'Horas completadas' : 'Horas faltantes' }}">
+                                                                                        <span>
+                                                                                            {{ obtener_horas_segundos($emp->horas($emp->buscarAsistencia($dia, $mes, $anio)->fecha)) }}
+                                                                                        </span>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="punch-det">
@@ -206,6 +271,12 @@
                                                                                         {{ $fin }}
                                                                                     </p>
                                                                                 </div>
+                                                                                @if ($fin < '18:00:00')
+                                                                                    <div class="alert alert-warning">
+                                                                                        Se fue antes de la hora
+                                                                                        {{ obtener_horas_segundos(obtener_horas($fin, '18:00:00')) }}
+                                                                                    </div>
+                                                                                @endif
                                                                                 {{-- <div class="statistics">
                                                                                     <div class="row">
                                                                                         <div
