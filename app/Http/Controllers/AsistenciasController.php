@@ -39,7 +39,11 @@ class AsistenciasController extends Controller
 
 
         $asistencias = Asistencia::orderBy('fecha', 'ASC')->first();
-        $oldYear = Carbon::parse($asistencias->fecha)->year;
+        if ($asistencias) {
+            $oldYear = Carbon::parse($asistencias->fecha)->year;
+        } else {
+            $oldYear = Carbon::now()->year;
+        }
         $latestYear = Carbon::now()->year;
 
         return view('backend.asistencias.index', compact('usu_detalle_id', 'mes', 'anio', 'oldYear', 'latestYear', 'diasDelMes', 'empleados'));
