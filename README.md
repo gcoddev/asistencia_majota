@@ -19,8 +19,8 @@ Cada uno de estos roles tiene funcionalidades específicas dentro del sistema.
 1. **Clonar el repositorio**
 
    ```bash
-   git clone <URL-del-repositorio>
-   cd <nombre-del-directorio>
+   git clone https://github.com/gcoddev/asistencia_majota.git
+   cd asistencia_majota
    ```
 
 2. **Instalar las dependencias del proyecto**
