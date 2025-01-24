@@ -4774,7 +4774,7 @@ html.menu-opened body {
 	margin-bottom: 0;
 }
 .stats-list {
-	height: 331px;
+	height: 230px;
 	overflow-y: auto;
 }
 .att-statistics .stats-info {
@@ -4813,8 +4813,11 @@ html.menu-opened body {
     justify-content: space-between;
     margin-bottom: 5px;
 }
+.recent-activity .activity-wrapper {
+    position: relative;
+}
 .recent-activity .res-activity-list {
-    height: 328px;
+    height: 230px;
     list-style-type: none;
     margin-bottom: 0;
     overflow-y: auto;

@@ -6,12 +6,21 @@
                 <li class="menu-title">
                     <span>Inicio</span>
                 </li>
-                <li class="{{ Route::is('inicio') ? 'active' : '' }}">
-                    <a href="{{ route('inicio') }}">
-                        <i class="la la-home"></i>
-                        <span>Panel de control</span>
-                    </a>
-                </li>
+                @if (Auth::user()->role[0]->name == 'admin' || Auth::user()->role[0]->name == 'tecnico')
+                    <li class="{{ Route::is('inicio') ? 'active' : '' }}">
+                        <a href="{{ route('inicio') }}">
+                            <i class="la la-home"></i>
+                            <span>Panel de control</span>
+                        </a>
+                    </li>
+                @else
+                    <li class="{{ Route::is('inicio') ? 'active' : '' }}">
+                        <a href="{{ route('inicio') }}">
+                            <i class="la la-clock"></i>
+                            <span>Asistencia</span>
+                        </a>
+                    </li>
+                @endif
 
                 <li class="menu-title">
                     <span>Administración</span>

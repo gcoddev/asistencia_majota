@@ -2,16 +2,47 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Asistencia;
+use App\Models\AsistenciaTiempo;
+use App\Models\EmpleadoDetalle;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AsistenciasController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('backend.asistencias.index');
+        $usu_detalle_id = $request->input('usu_detalle_id');
+        $mes = $request->input('mes');
+        $anio = $request->input('anio');
+
+        $empleados = EmpleadoDetalle::all();
+
+        if ($mes) {
+            $fecha = Carbon::create($anio ?? Carbon::now()->year, $mes, 1);
+        } else {
+            $fecha = Carbon::now();
+            $mes = $fecha->month;
+            if (!$anio) {
+                $anio = $fecha->year;
+            }
+        }
+
+        $finMes = $fecha->copy()->endOfMonth();
+        $diasDelMes = range(1, $finMes->day);
+
+
+
+
+        $asistencias = Asistencia::orderBy('fecha', 'ASC')->first();
+        $oldYear = Carbon::parse($asistencias->fecha)->year;
+        $latestYear = Carbon::now()->year;
+
+        return view('backend.asistencias.index', compact('usu_detalle_id', 'mes', 'anio', 'oldYear', 'latestYear', 'diasDelMes', 'empleados'));
     }
 
     /**
@@ -27,7 +58,27 @@ class AsistenciasController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // return response()->json($request);
+
+        $asistencia = new Asistencia();
+        $asistencia->usu_id = Auth::user()->id;
+        $asistencia->save();
+
+        $hora = new AsistenciaTiempo();
+        $hora->asis_id = $asistencia->id;
+        $hora->usu_id = Auth::user()->id;
+        $hora->hora_ini = $request->hora;
+        $hora->ubicacion = 'on';
+        $hora->ip = $request->ip();
+        $hora->save();
+
+        session()->flash('message', 'Asistencia marcada correctamente');
+
+        if ($request->ajax()) {
+            return response()->json(['redirect' => url()->previous()]);
+        }
+
+        return redirect()->back()->with('message', 'Asistencia marcada correctamente');
     }
 
     /**
@@ -51,7 +102,30 @@ class AsistenciasController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // return response()->json($request);
+
+        $asistencia = Asistencia::findOrFail($id);
+        if ($request->hora_id != '') {
+            $hora = AsistenciaTiempo::findOrFail($request->hora_id);
+            $hora->hora_fin = $request->hora;
+            $hora->save();
+        } else {
+            $hora = new AsistenciaTiempo();
+            $hora->asis_id = $asistencia->id;
+            $hora->usu_id = Auth::user()->id;
+            $hora->hora_ini = $request->hora;
+            $hora->ubicacion = 'on';
+            $hora->ip = $request->ip();
+            $hora->save();
+        }
+
+        session()->flash('message', 'Asistencia marcada correctamente');
+
+        if ($request->ajax()) {
+            return response()->json(['redirect' => url()->previous()]);
+        }
+
+        return redirect()->back()->with('message', 'Asistencia marcada correctamente');
     }
 
     /**

@@ -59,3 +59,37 @@ if (!function_exists('mes_literal')) {
         return "{$mes} de {$anio}";
     }
 }
+
+if (!function_exists('obtener_horas')) {
+    function obtener_horas($hora1, $hora2)
+    {
+        $hora1 = DateTime::createFromFormat('H:i:s', $hora1);
+        $hora2 = DateTime::createFromFormat('H:i:s', $hora2);
+
+        $diferencia = $hora1->diff($hora2);
+        $totalSegundos = $diferencia->h * 3600 + $diferencia->i * 60 + $diferencia->s;
+        $horasDecimal = $totalSegundos / 3600;
+
+        return $horasDecimal;
+
+        return 0;
+    }
+}
+
+if (!function_exists('obtener_horas_segundos')) {
+    function obtener_horas_segundos($horas)
+    {
+        $totalSegundos = ($horas / 8) * 8 * 3600;
+        $horasResultado = floor($totalSegundos / 3600);
+        $segundosRestantes = $totalSegundos % 3600;
+
+        $minutosResultado = floor($segundosRestantes / 60);
+        $segundosResultado = $segundosRestantes % 60;
+
+        $horasResultado = ($horasResultado > 0) ? str_pad($horasResultado, 2, '0', STR_PAD_LEFT) . "h " : '';
+        $minutosResultado = ($minutosResultado > 0) ? str_pad($minutosResultado, 2, '0', STR_PAD_LEFT) . "m " : '';
+        $segundosResultado = ($segundosResultado > 0) ? str_pad($segundosResultado, 2, '0', STR_PAD_LEFT) . "s" : '';
+
+        return $horasResultado . $minutosResultado . $segundosResultado;
+    }
+}

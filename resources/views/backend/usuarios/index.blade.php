@@ -457,8 +457,6 @@
                     contentType: false,
                     processData: false,
                     success: function(response) {
-                        console.log(response);
-
                         if (response.redirect) {
                             window.location.href = response.redirect;
                         }
@@ -551,8 +549,6 @@
         }
 
         function editUser(data) {
-            console.log(data);
-
             resetForm('Editar')
             $('#id').val(data.id)
             $('#imagen-prev').attr('src',

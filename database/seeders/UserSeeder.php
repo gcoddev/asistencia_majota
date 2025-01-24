@@ -28,14 +28,18 @@ class UserSeeder extends Seeder
 
         // Tecnico
         $user = Usuario::create([
-            'nombres' => 'Tenico',
-            'apellidos' => 'Tenico',
+            'nombres' => 'Técnico',
+            'apellidos' => 'Técnico',
             'email' => 'tecnico@majota.net',
             'username' => 'tecnico',
             'password' => bcrypt('tecnico'),
         ]);
         // Asignar rol de tecnico al usuario
         $user->assignRole('tecnico');
+
+        $detalle = new EmpleadoDetalle();
+        $detalle->usu_id = $user->id;
+        $detalle->save();
 
         // Empleado
         $user = Usuario::create([

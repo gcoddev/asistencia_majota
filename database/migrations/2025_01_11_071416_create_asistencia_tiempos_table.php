@@ -16,11 +16,15 @@ return new class extends Migration
             $table->unsignedBigInteger('usu_id');
             $table->unsignedBigInteger('asis_id');
             $table->time('hora_ini');
-            $table->time('hora_fin');
-            $table->string('ubicacion', 255);
+            $table->time('hora_fin')->nullable();
+            $table->string('ubicacion', 255)->nullable();
             $table->boolean('facturable')->default(false);
-            $table->string('ip', 255);
-            $table->string('note', 255);
+            $table->string('ip', 255)->nullable();
+            $table->string('note', 255)->nullable();
+            $table->foreign('usu_id')
+                ->references('id')
+                ->on('usuarios')
+                ->onDelete('cascade');
             $table->foreign('asis_id')
                 ->references('id')
                 ->on('asistencias')
