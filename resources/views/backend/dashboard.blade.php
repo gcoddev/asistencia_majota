@@ -20,53 +20,75 @@
         <!-- /Page Header -->
 
         <div class="row">
-            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                <div class="card dash-widget">
-                    <div class="card-body">
-                        <span class="dash-widget-icon"><i class="fa fa-cubes"></i></span>
-                        <div class="dash-widget-info">
-                            <h3>112</h3>
-                            <span>Projects</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                <div class="card dash-widget">
-                    <div class="card-body">
-                        <span class="dash-widget-icon"><i class="fa fa-usd"></i></span>
-                        <div class="dash-widget-info">
-                            <h3>44</h3>
-                            <span>Clients</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                <div class="card dash-widget">
-                    <div class="card-body">
-                        <span class="dash-widget-icon"><i class="fa fa-diamond"></i></span>
-                        <div class="dash-widget-info">
-                            <h3>37</h3>
-                            <span>Tasks</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="col-12 col-sm-6 col-md-4 col-sm-4 col-lg-4 col-xl-4">
                 <div class="card dash-widget">
                     <div class="card-body">
                         <span class="dash-widget-icon"><i class="fa fa-user"></i></span>
                         <div class="dash-widget-info">
-                            <h3>218</h3>
-                            <span>Employees</span>
+                            <h3>{{ $usuarios }}</h3>
+                            <span>Usuarios</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-sm-4 col-lg-4 col-xl-4">
+                <div class="card dash-widget">
+                    <div class="card-body">
+                        <span class="dash-widget-icon"><i class="fa fa-check"></i></span>
+                        <div class="dash-widget-info">
+                            <h3>{{ $asistentes }}</h3>
+                            <span>Asistentes</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-sm-4 col-lg-4 col-xl-4">
+                <div class="card dash-widget">
+                    <div class="card-body">
+                        <span class="dash-widget-icon"><i class="fa fa-sun-o"></i></span>
+                        <div class="dash-widget-info">
+                            <h3>{{ $vacaciones }}</h3>
+                            <span>Vacaciones</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-sm-4 col-lg-4 col-xl-4">
+                <div class="card dash-widget">
+                    <div class="card-body">
+                        <span class="dash-widget-icon"><i class="fa fa-clock-o"></i></span>
+                        <div class="dash-widget-info">
+                            <h3>{{ $atrasos }}</h3>
+                            <span>Atrasos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-sm-4 col-lg-4 col-xl-4">
+                <div class="card dash-widget">
+                    <div class="card-body">
+                        <span class="dash-widget-icon"><i class="fa fa-home"></i></span>
+                        <div class="dash-widget-info">
+                            <h3>{{ $permisos }}</h3>
+                            <span>Permisos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-sm-4 col-lg-4 col-xl-4">
+                <div class="card dash-widget">
+                    <div class="card-body">
+                        <span class="dash-widget-icon"><i class="fa fa-ban"></i></span>
+                        <div class="dash-widget-info">
+                            <h3>{{ $faltas }}</h3>
+                            <span>Faltas</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-6 text-center">
@@ -87,9 +109,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-md-12">
                 <div class="card-group m-b-30">
                     <div class="card">
@@ -169,10 +191,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Statistics Widget -->
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-md-12 col-lg-12 col-xl-4 d-flex">
                 <div class="card flex-fill dash-statistics">
                     <div class="card-body">
@@ -310,10 +332,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <!-- /Statistics Widget -->
 
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-md-6 d-flex">
                 <div class="card card-table flex-fill">
                     <div class="card-header">
@@ -428,9 +450,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-md-6 d-flex">
                 <div class="card card-table flex-fill">
                     <div class="card-header">
@@ -809,6 +831,6 @@
             </div>
         </div>
 
-    </div>
-    <!-- /Page Content -->
-@endsection
+    </div> --}}
+        <!-- /Page Content -->
+    @endsection

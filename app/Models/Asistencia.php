@@ -18,4 +18,9 @@ class Asistencia extends Model
     {
         return $this->hasMany(AsistenciaTiempo::class, 'asis_id', 'id');
     }
+
+    public function usuario()
+    {
+        return $this->belongsTo(Usuario::class, 'id', 'usu_id');
+    }
 }

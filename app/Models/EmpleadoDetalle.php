@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class EmpleadoDetalle extends Model
 {
@@ -167,5 +168,41 @@ class EmpleadoDetalle extends Model
         }
 
         return $hrs;
+    }
+
+    public function contarFaltas()
+    {
+        $usuario_id = $this->usu_id;
+
+        $primeraAsistencia = Asistencia::where('usu_id', $usuario_id)
+            ->min('fecha');
+
+        if (!$primeraAsistencia) {
+            return 0;
+        }
+
+        $fechaInicio = Carbon::parse($primeraAsistencia);
+        $fechaFinal = Carbon::now();
+
+        $horaEntrada = '08:00:00';
+        $horaSalida = '18:00:00';
+
+        $faltas = 0;
+
+        for ($fecha = $fechaInicio; $fecha->lte($fechaFinal); $fecha->addDay()) {
+            if ($fecha->isWeekend()) {
+                continue;
+            }
+
+            $asistencia = Asistencia::where('usu_id', $usuario_id)
+                ->where('fecha', $fecha->format('Y-m-d'))
+                ->first();
+
+            if (!$asistencia && Carbon::now()->gt(Carbon::parse($fecha->format('Y-m-d') . ' 18:00:00'))) {
+                $faltas++;
+            }
+        }
+
+        return $faltas;
     }
 }
