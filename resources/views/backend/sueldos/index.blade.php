@@ -205,7 +205,7 @@
                     <div class="modal-body">
                         <form id="form-sueldo">
                             @csrf
-                            <input type="hidden" name="id" id="id">
+                            <input type="text" name="id" id="id">
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group status-toggle">
@@ -224,9 +224,28 @@
                                         <span class="invalid-feedback" id="usu_detalle_id_error"></span>
                                     </div>
                                 </div>
+                                <div class="col-sm-6 form-group">
+                                    <label>Base salarial <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" name="tipo" id="tipo" readonly>
+                                    <span class="invalid-feedback" id="tipo_error"></span>
+                                </div>
+                                <div class="col-sm-6 form-group">
+                                    <label>Sueldo base <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" name="salario_neto" id="salario_neto"
+                                        readonly>
+                                    <span class="invalid-feedback" id="salario_neto_error"></span>
+                                </div>
                                 <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label><span id="title-cantidad">Cantidad</span> <span
+                                                class="text-danger">*</span></label>
+                                        <input class="form-control" type="number" name="cantidad" id="cantidad"
+                                            min="1">
+                                        <span class="invalid-feedback" id="cantidad_error"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 form-group">
                                     <label>Sueldo total <span class="text-danger">*</span></label>
-                                    <input type="hidden" name="salario_neto" id="salario_neto">
                                     <input class="form-control" type="text" name="salario_total" id="salario_total"
                                         readonly>
                                     <span class="invalid-feedback" id="salario_total_error"></span>
@@ -239,13 +258,9 @@
                                         <span class="invalid-feedback" id="fecha_recibo_error"></span>
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
-                                    <label>Base salarial <span class="text-danger">*</span></label>
-                                    <input class="form-control" type="text" name="tipo" id="tipo" readonly>
-                                    <span class="invalid-feedback" id="tipo_error"></span>
-                                </div>
                                 <div class="col-12 alert alert-warning" role="alert" id="edit-alert">
-                                    <strong>Nota: </strong>Al editar se agregan las nuevas compensaciones y deducciones no registradas al salario total.
+                                    <strong>Nota: </strong>Al editar se agregan las nuevas compensaciones y deducciones no
+                                    registradas al salario total.
                                 </div>
                                 <div class="col-sm-6 row items" style="display:none">
                                     <div class="status-toggle col-12">
@@ -330,7 +345,21 @@
 
                         $('#salario_neto').val(salario.salario_base)
                         $('#salario_total').val(salario.salario_base)
-
+                        switch (salario.base) {
+                            case "Horas":
+                                $('#title-cantidad').text('Cantidad de horas');
+                                break
+                            case "Diario":
+                                $('#title-cantidad').text('Cantidad de días');
+                                break
+                            case "Semanal":
+                                $('#title-cantidad').text('Cantidad de semanas');
+                                break
+                            case "Mensual":
+                                $('#title-cantidad').text('Cantidad de meses');
+                                break
+                        }
+                        $('#cantidad').val(1)
                         $('.items').css('display', 'block');
 
                         fillItems()
@@ -354,9 +383,19 @@
                 }
             })
 
+            $('#cantidad').on('change', function() {
+                const cantidad = $(this).val();
+                const salario = $('#salario_neto').val();
+
+                if (salario && cantidad) {
+                    $('#salario_total').val(parseFloat(salario) * cantidad);
+                }
+            })
+
             $('#use_compensaciones').on('change', function() {
                 const salario = $('#salario_total').val();
-                const compensaciones = JSON.parse($('#compensaciones').attr('data-compensaciones'))
+                const compensaciones = $('#compensaciones').attr('data-compensaciones') ? JSON.parse($(
+                    '#compensaciones').attr('data-compensaciones')) : []
                 const editable = $('#compensaciones').attr('data-edit');
 
                 if (compensaciones.length > 0) {
@@ -376,34 +415,57 @@
                         $('#salario_total').val(parseFloat(salario) - suma);
                         $('#compensaciones').css('display', 'none')
                     }
+                } else {
+                    if ($(this).is(':checked')) {
+                        $('#compensaciones').css('display', 'block')
+                    } else {
+                        $('#compensaciones').css('display', 'none')
+                    }
                 }
                 $('#compensaciones').removeAttr('data-edit')
             })
 
             $('#use_deducciones').on('change', function() {
                 const salario = $('#salario_total').val();
-                const deducciones = JSON.parse($('#deducciones').attr('data-deducciones'))
+                const deducciones = $('#deducciones').attr('data-deducciones') ? JSON.parse($(
+                    '#deducciones').attr('data-deducciones')) : []
                 const editable = $('#deducciones').attr('data-edit');
 
                 if (deducciones.length > 0) {
-                    let resta = 0;
+                    let suma = 0;
                     if ($(this).is(':checked')) {
                         deducciones.forEach(item => {
-                            resta += parseFloat(item.monto);
+                            suma += parseFloat(item.monto);
                         });
-                        $('#salario_total').val(parseFloat(salario) - resta);
+                        $('#salario_total').val(parseFloat(salario) + suma);
                         $('#deducciones').css('display', 'block')
                     } else if (editable === 'editar') {
-                        // No sumar nada al no tener el check iniciado al editar
+                        // No restar nada al no tener el check iniciado al editar
                     } else {
                         deducciones.forEach(item => {
-                            resta += parseFloat(item.monto);
+                            suma += parseFloat(item.monto);
                         });
-                        $('#salario_total').val(parseFloat(salario) + resta);
+                        $('#salario_total').val(parseFloat(salario) - suma);
+                        $('#deducciones').css('display', 'none')
+
+                        $('#cantidad').removeAttr('readonly');
+                    }
+                } else {
+                    if ($(this).is(':checked')) {
+                        $('#deducciones').css('display', 'block')
+                    } else {
                         $('#deducciones').css('display', 'none')
                     }
                 }
                 $('#deducciones').removeAttr('data-edit')
+            })
+
+            $('#use_compensaciones, #use_deducciones').on('change', function() {
+                if ($('#use_compensaciones').is(':checked') || $('#use_deducciones').is(':checked')) {
+                    $('#cantidad').attr('readonly', 'readonly')
+                } else {
+                    $('#cantidad').removeAttr('readonly')
+                }
             })
 
             $('#form-sueldo').on('submit', function(e) {
@@ -417,6 +479,11 @@
 
                 $('.invalid-feedback').text('');
                 $('.form-control').removeClass('is-invalid');
+
+                // Mostrar formData
+                // for (let pair of formData.entries()) {
+                //     console.log(pair[0] + ': ' + pair[1]);
+                // }
 
                 const url = id ?
                     `{{ url('admin/sueldos') }}/${id}` :
@@ -460,6 +527,9 @@
             $('#compensaciones').css('display', 'none');
             $('#deducciones').css('display', 'none');
 
+            $('#usu_detalle_id').removeAttr('disabled');
+            $('#cantidad').removeAttr('readonly');
+
             $('#usu_detalle_id').val('').trigger('change');
             $('#form-sueldo').trigger('reset')
         }
@@ -470,6 +540,7 @@
 
             $('#id').val(data.id)
             $('#usu_detalle_id').val(data.usu_detalle_id).trigger('change')
+            $('#usu_detalle_id').attr('disabled', 'disabled');
             $('#use_compensaciones').prop('checked', data.use_compensaciones).trigger('change');
             $('#use_deducciones').prop('checked', data.use_deducciones).trigger('change');
             $('#usu_detalle_id').trigger('change')
@@ -482,6 +553,7 @@
             // $('#salario_total').val(data.salario_total)
             $('#fecha_recibo').val(formatDateToDDMMYYYY(data.fecha_recibo));
             $('#tipo').val(data.tipo)
+            $('#cantidad').val(data.cantidad)
         }
 
         function deleteSu() {
@@ -514,8 +586,8 @@
             const use_ded = $('#use_deducciones').is(':checked')
 
             const compensaciones = select.data('compensaciones');
+            $('#compensaciones').empty()
             if (compensaciones && compensaciones.length > 0) {
-                $('#compensaciones').empty()
                 const compen = [];
                 compensaciones.forEach(item => {
                     const existe = item.items.some(obj => obj.recibo_id == id);
@@ -549,16 +621,16 @@
                 });
                 $('#compensaciones').attr('data-compensaciones', JSON.stringify(compen))
             }
-            if ($('#compensaciones').children().length == 0) {
-                $('#compensaciones').append(`<div class="form-group mt-3 text-center">Sin compensaciones</div>`)
+            if ($('#compensaciones').children().length < 1) {
+                $('#compensaciones').append('<div class="form-group mt-3 text-center">Sin compensaciones</div>')
             }
             const deducciones = select.data('deducciones');
+            $('#deducciones').empty()
             if (deducciones && deducciones.length > 0) {
-                $('#deducciones').empty()
-                const deduc = [];
+                const compen = [];
                 deducciones.forEach(item => {
                     const existe = item.items.some(obj => obj.recibo_id == id);
-                    if (use_ded && (existe || item.use == 0)) {
+                    if (use_com && (existe || item.use == 0)) {
                         $('#deducciones').append(`<div class="form-group mt-3 row">
                             <input type="hidden" name="deducciones[]" value="${item.id}">
                             <input type="text" class="col-6 form-control" readonly
@@ -567,11 +639,11 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Bs</span>
                                 </div>
-                                <input type="text" class="form-control" readonly value="-${item.monto}">
+                                <input type="text" class="form-control" readonly value="+${item.monto}">
                             </div>
                         </div>`)
-                        deduc.push(item)
-                    } else if (!use_ded && item.use == 0) {
+                        compen.push(item)
+                    } else if (!use_com && item.use == 0) {
                         $('#deducciones').append(`<div class="form-group mt-3 row">
                             <input type="hidden" name="deducciones[]" value="${item.id}">
                             <input type="text" class="col-6 form-control" readonly
@@ -580,16 +652,16 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Bs</span>
                                 </div>
-                                <input type="text" class="form-control" readonly value="-${item.monto}">
+                                <input type="text" class="form-control" readonly value="+${item.monto}">
                             </div>
                         </div>`)
-                        deduc.push(item)
+                        compen.push(item)
                     }
                 });
-                $('#deducciones').attr('data-deducciones', JSON.stringify(deduc))
+                $('#deducciones').attr('data-deducciones', JSON.stringify(compen))
             }
-            if ($('#deducciones').children().length == 0) {
-                $('#deducciones').append(`<div class="form-group mt-3 text-center">Sin deducciones</div>`)
+            if ($('#deducciones').children().length < 1) {
+                $('#deducciones').append('<div class="form-group mt-3 text-center">Sin deducciones</div>')
             }
         }
     </script>

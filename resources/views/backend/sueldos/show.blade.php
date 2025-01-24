@@ -98,9 +98,10 @@
                                                     $suma += $com->item->monto;
                                                 @endphp
                                             @endforeach
-                                            <tr style="background-color:#025E1255">
+
+                                            <tr style="background-color:#00ff0033">
                                                 <td>
-                                                    <strong>Total</strong>
+                                                    <strong>{{ $suma > 0 ? 'Total' : 'Vacio' }}</strong>
                                                     <span class="float-right">Bs. {{ $suma }}</span>
                                                 </td>
                                             </tr>
@@ -127,9 +128,10 @@
                                                     $resta += $ded->item->monto;
                                                 @endphp
                                             @endforeach
-                                            <tr style="background-color:#025E1255">
+
+                                            <tr style="background-color:#00ff0033">
                                                 <td>
-                                                    <strong>Total</strong>
+                                                    <strong>{{ $resta > 0 ? 'Total' : 'Vacio' }}</strong>
                                                     <span class="float-right">Bs. {{ $resta }}</span>
                                                 </td>
                                             </tr>

@@ -39,14 +39,18 @@ class SueldosController extends Controller
         $request->validate([
             'usu_detalle_id' => 'required',
             'salario_total' => 'required',
+            'salario_neto' => 'required',
             'fecha_recibo' => 'required|date_format:d/m/Y',
             'tipo' => 'required',
+            'cantidad' => 'required',
         ], [
             'usu_detalle_id.required' => 'El empleado es obligatorio',
             'salario_total.required' => 'El salario total es obligatorio',
+            'salario_neto.required' => 'El salario base es obligatorio',
             'fecha_recibo' => 'La fecha del recibo es obligatoria',
             'fecha_recibo.date_format' => 'Debe ser una fecha valida',
             'tipo.required' => 'La base salarial es obligatoria',
+            'cantidad.required' => 'La cantidad es obligatoria',
         ]);
 
         // return response()->json($request);
@@ -57,6 +61,7 @@ class SueldosController extends Controller
         $sueldo->salario_total = $request->salario_total;
         $sueldo->fecha_recibo = Carbon::createFromFormat('d/m/Y', $request->fecha_recibo)->format('Y-m-d');
         $sueldo->tipo = $request->tipo;
+        $sueldo->cantidad = $request->cantidad;
         $sueldo->save();
 
         if (isset($request->use_compensaciones) && $request->use_compensaciones == 'on') {
@@ -125,26 +130,31 @@ class SueldosController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'usu_detalle_id' => 'required',
+            // 'usu_detalle_id' => 'required',
             'salario_total' => 'required',
+            'salario_neto' => 'required',
             'fecha_recibo' => 'required|date_format:d/m/Y',
             'tipo' => 'required',
+            'cantidad' => 'required',
         ], [
-            'usu_detalle_id.required' => 'El empleado es obligatorio',
+            // 'usu_detalle_id.required' => 'El empleado es obligatorio',
             'salario_total.required' => 'El salario total es obligatorio',
+            'salario_neto.required' => 'El salario base es obligatorio',
             'fecha_recibo' => 'La fecha del recibo es obligatoria',
             'fecha_recibo.date_format' => 'Debe ser una fecha valida',
             'tipo.required' => 'La base salarial es obligatoria',
+            'cantidad.required' => 'La cantidad es obligatoria',
         ]);
 
         // return response()->json($request);
 
         $sueldo = Recibo::findOrFail($id);
-        $sueldo->usu_detalle_id = $request->usu_detalle_id;
+        // $sueldo->usu_detalle_id = $request->usu_detalle_id;
         $sueldo->salario_neto = $request->salario_neto;
         $sueldo->salario_total = $request->salario_total;
         $sueldo->fecha_recibo = Carbon::createFromFormat('d/m/Y', $request->fecha_recibo)->format('Y-m-d');
         $sueldo->tipo = $request->tipo;
+        $sueldo->cantidad = $request->cantidad;
         $sueldo->save();
 
         if (count($sueldo->compensaciones) > 0) {

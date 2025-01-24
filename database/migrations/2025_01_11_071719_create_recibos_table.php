@@ -19,7 +19,7 @@ return new class extends Migration
             $table->boolean('use_deducciones')->default(false);
             $table->date('fecha_recibo')->nullable();
             $table->string('tipo')->nullable();
-            $table->string('semanas')->nullable();
+            $table->integer('cantidad')->nullable();
             $table->date('fecha_ini')->nullable();
             $table->date('fecha_fin')->nullable();
             $table->integer('horas_totales')->nullable();
