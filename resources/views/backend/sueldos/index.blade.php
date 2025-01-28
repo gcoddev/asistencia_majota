@@ -205,7 +205,7 @@
                     <div class="modal-body">
                         <form id="form-sueldo">
                             @csrf
-                            <input type="text" name="id" id="id">
+                            <input type="hidden" name="id" id="id">
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group status-toggle">
