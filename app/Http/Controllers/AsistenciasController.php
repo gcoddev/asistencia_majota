@@ -113,6 +113,14 @@ class AsistenciasController extends Controller
             $hora = AsistenciaTiempo::findOrFail($request->hora_id);
             $hora->hora_fin = $request->hora;
             $hora->save();
+
+            session()->flash('message', 'Asistencia de salida actualizada correctamente');
+
+            if ($request->ajax()) {
+                return response()->json(['redirect' => url()->previous()]);
+            }
+
+            return redirect()->back()->with('message', 'Asistencia de salida actualizada correctamente');
         } else {
             $hora = new AsistenciaTiempo();
             $hora->asis_id = $asistencia->id;
@@ -121,15 +129,15 @@ class AsistenciasController extends Controller
             $hora->ubicacion = 'on';
             $hora->ip = $request->ip();
             $hora->save();
+
+            session()->flash('message', 'Asistencia marcada correctamente');
+
+            if ($request->ajax()) {
+                return response()->json(['redirect' => url()->previous()]);
+            }
+
+            return redirect()->back()->with('message', 'Asistencia marcada correctamente');
         }
-
-        session()->flash('message', 'Asistencia marcada correctamente');
-
-        if ($request->ajax()) {
-            return response()->json(['redirect' => url()->previous()]);
-        }
-
-        return redirect()->back()->with('message', 'Asistencia marcada correctamente');
     }
 
     /**

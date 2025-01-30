@@ -32,13 +32,23 @@ class DepartamentosController extends Controller
         $request->validate([
             'nombre' => 'required',
             'descripcion' => 'nullable',
+            'hora_ini' => 'required',
+            'hora_fin' => 'required',
+            'latitud' => 'nullable',
+            'longitud' => 'nullable',
         ], [
             'nombre.required' => 'El nombre es obligatorio',
+            'hora_ini.required' => 'La hora de entrada es obligatoria',
+            'hora_fin.required' => 'La hora de salida es obligatoria',
         ]);
 
         $departamento = new Departamento();
         $departamento->nombre = $request->nombre;
         $departamento->descripcion = $request->descripcion;
+        $departamento->hora_ini = $request->hora_ini;
+        $departamento->hora_fin = $request->hora_fin;
+        $departamento->latitud = $request->latitud;
+        $departamento->longitud = $request->longitud;
         $departamento->save();
 
         session()->flash('message', 'Departamento agregado correctamente');
@@ -74,13 +84,23 @@ class DepartamentosController extends Controller
         $request->validate([
             'nombre' => 'required',
             'descripcion' => 'nullable',
+            'hora_ini' => 'required',
+            'hora_fin' => 'required',
+            'latitud' => 'nullable',
+            'longitud' => 'nullable',
         ], [
             'nombre.required' => 'El nombre es obligatorio',
+            'hora_ini.required' => 'La hora de entrada es obligatoria',
+            'hora_fin.required' => 'La hora de salida es obligatoria',
         ]);
 
         $departamento = Departamento::findOrFail($id);
         $departamento->nombre = $request->nombre;
         $departamento->descripcion = $request->descripcion;
+        $departamento->hora_ini = $request->hora_ini;
+        $departamento->hora_fin = $request->hora_fin;
+        $departamento->latitud = $request->latitud;
+        $departamento->longitud = $request->longitud;
         $departamento->save();
 
         session()->flash('message', 'Departamento actualizado correctamente');

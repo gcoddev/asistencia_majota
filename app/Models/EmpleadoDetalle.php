@@ -184,8 +184,8 @@ class EmpleadoDetalle extends Model
         $fechaInicio = Carbon::parse($primeraAsistencia);
         $fechaFinal = Carbon::now();
 
-        $horaEntrada = '08:00:00';
-        $horaSalida = '18:00:00';
+        $horaEntrada = $this->departamento->hora_ini;
+        $horaSalida = $this->departamento->hora_fin;
 
         $faltas = 0;
 
@@ -198,7 +198,7 @@ class EmpleadoDetalle extends Model
                 ->where('fecha', $fecha->format('Y-m-d'))
                 ->first();
 
-            if (!$asistencia && Carbon::now()->gt(Carbon::parse($fecha->format('Y-m-d') . ' 18:00:00'))) {
+            if (!$asistencia && Carbon::now()->gt(Carbon::parse($fecha->format('Y-m-d') . ' ' . $horaSalida))) {
                 $faltas++;
             }
         }

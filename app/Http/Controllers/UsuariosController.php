@@ -41,7 +41,7 @@ class UsuariosController extends Controller
         $request->validate([
             'nombres' => 'required',
             'apellidos' => 'nullable',
-            'username' => 'required|unique:usuarios',
+            'ci' => 'required|unique:usuarios',
             'email' => 'nullable|email|unique:usuarios',
             'password' => 'required|min:8|confirmed',
             'role' => 'required',
@@ -50,8 +50,8 @@ class UsuariosController extends Controller
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ], [
             'nombres.required' => 'El nombre es obligatorio',
-            'username.required' => 'El nombre de usuario es obligatorio',
-            'username.unique' => 'El nombre de usuario ya está en uso',
+            'ci.required' => 'El nombre de usuario es obligatorio',
+            'ci.unique' => 'El nombre de usuario ya está en uso',
             'email.required' => 'El email es obligatorio',
             'email.email' => 'El email no es válido',
             'email.unique' => 'El email ya está en uso',
@@ -69,7 +69,7 @@ class UsuariosController extends Controller
         $usuario = new Usuario();
         $usuario->nombres = $request->nombres;
         $usuario->apellidos = $request->apellidos;
-        $usuario->username = $request->username;
+        $usuario->ci = $request->ci;
         $usuario->email = $request->email;
         $usuario->password = bcrypt($request->password);
 
@@ -139,7 +139,7 @@ class UsuariosController extends Controller
         $request->validate([
             'nombres' => 'required',
             'apellidos' => 'nullable',
-            'username' => [
+            'ci' => [
                 'required',
                 Rule::unique('usuarios')->ignore($request->id),
             ],
@@ -155,8 +155,8 @@ class UsuariosController extends Controller
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ], [
             'nombres.required' => 'El nombre es obligatorio',
-            'username.required' => 'El nombre de usuario es obligatorio',
-            'username.unique' => 'El nombre de usuario ya está en uso',
+            'ci.required' => 'El nombre de usuario es obligatorio',
+            'ci.unique' => 'El nombre de usuario ya está en uso',
             'email.required' => 'El email es obligatorio',
             'email.email' => 'El email no es válido',
             'email.unique' => 'El email ya está en uso',
@@ -171,7 +171,7 @@ class UsuariosController extends Controller
         $usuario = Usuario::findOrFail($id);
         $usuario->nombres = $request->nombres;
         $usuario->apellidos = $request->apellidos;
-        $usuario->username = $request->username;
+        $usuario->ci = $request->ci;
         $usuario->email = $request->email;
 
         if ($request->password) {

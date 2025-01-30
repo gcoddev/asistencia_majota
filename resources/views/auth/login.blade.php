@@ -22,10 +22,10 @@
                     <form action="{{ route('post_login') }}" method="POST">
                         @csrf
                         <div class="form-group">
-                            <label for="username">Nombre de usuario o dirección email</label>
-                            <input class="form-control" type="text" name="username" id="username"
-                                value="{{ session('username') }}">
-                            @error('username')
+                            <label for="ci">CI o dirección email</label>
+                            <input class="form-control" type="text" name="ci" id="ci"
+                                value="{{ session('ci') }}">
+                            @error('ci')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
@@ -42,6 +42,28 @@
                             </div>
                             <input class="form-control" type="password" name="password" id="password">
                             @error('password')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col">
+                                    <label for="captcha">Captcha</label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="mb-3 text-center">
+                                    <img src="{{ route('captcha') }}"
+                                        onclick="this.src='{{ route('captcha') }}?'+Math.random()" alt="Captcha"
+                                        class="img-fluid w-50 rounded" style="cursor:pointer">
+                                </div>
+                                <div class="mb-3">
+                                    <input type="text" name="captcha" class="form-control"
+                                        placeholder="Ingresa el código"
+                                        onkeyup="this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '');">
+                                </div>
+                            </div>
+                            @error('captcha')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>

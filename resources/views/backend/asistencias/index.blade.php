@@ -133,23 +133,27 @@
                                                 @php
                                                     $ini = $emp->buscarAsistencia($dia, $mes, $anio)->asistencias[0]
                                                         ->hora_ini;
-                                                    $fin;
-                                                    foreach (
-                                                        $emp
-                                                            ->buscarAsistencia($dia, $mes, $anio)
-                                                            ->asistencias->reverse()
-                                                        as $asis
-                                                    ) {
-                                                        if ($asis->hora_fin) {
-                                                            $fin = $asis->hora_fin;
-                                                            break;
-                                                        }
-                                                    }
+                                                    $fin = $emp->buscarAsistencia($dia, $mes, $anio)->asistencias[0]
+                                                        ->hora_fin;
+                                                    // foreach (
+                                                    //     $emp
+                                                    //         ->buscarAsistencia($dia, $mes, $anio)
+                                                    //         ->asistencias->reverse()
+                                                    //     as $asis
+                                                    // ) {
+                                                    //     if ($asis->hora_fin) {
+                                                    //         $fin = $asis->hora_fin;
+                                                    //         break;
+                                                    //     }
+                                                    // }
                                                 @endphp
-                                                @if ($ini <= '08:00:00' && $fin >= '18:00:00')
+                                                @if ($ini <= $emp->departamento->hora_ini && $fin >= $emp->departamento->hora_fin)
                                                     <td>
                                                         <a href="javascript:void(0);" data-toggle="modal"
-                                                            data-target="#attendance_info_{{ $loop->iteration }}"
+                                                            data-target="#attendance_info_{{ $dia }}{{ $emp->id }}"
+                                                            class="asis-info" data-ini="{{ $ini }}"
+                                                            data-fin="{{ $fin }}"
+                                                            data-id="{{ $dia }}{{ $emp->id }}"
                                                             title="Asiste">
                                                             <i class="fa fa-check text-success"></i>
                                                         </a>
@@ -157,46 +161,63 @@
                                                 @else
                                                     <td>
                                                         <div class="half-day">
-                                                            @if ($ini <= '08:00:00')
+                                                            @if ($ini <= $emp->departamento->hora_ini)
                                                                 <span class="first-off"><a href="javascript:void(0);"
                                                                         data-toggle="modal"
-                                                                        data-target="#attendance_info_{{ $loop->iteration }}"
+                                                                        data-target="#attendance_info_{{ $dia }}{{ $emp->id }}"
+                                                                        class="asis-info" data-ini="{{ $ini }}"
+                                                                        data-fin="{{ $fin }}"
+                                                                        data-id="{{ $dia }}{{ $emp->id }}"
                                                                         title="Asiste"><i
                                                                             class="fa fa-check text-success"></i></a></span>
                                                             @else
                                                                 <span class="first-off"><a href="javascript:void(0);"
                                                                         data-toggle="modal"
-                                                                        data-target="#attendance_info_{{ $loop->iteration }}"
+                                                                        data-target="#attendance_info_{{ $dia }}{{ $emp->id }}"
+                                                                        class="asis-info" data-ini="{{ $ini }}"
+                                                                        data-fin="{{ $fin }}"
+                                                                        data-id="{{ $dia }}{{ $emp->id }}"
                                                                         title="Atraso"><i
                                                                             class="fa fa-check text-info"></i></a></span>
                                                             @endif
-                                                            @if ($fin >= '18:00:00')
-                                                                <span class="first-off"><a href="javascript:void(0);"
-                                                                        data-toggle="modal"
-                                                                        data-target="#attendance_info_{{ $loop->iteration }}"
-                                                                        title="Asiste"><i
-                                                                            class="fa fa-check text-success"></i></a></span>
-                                                            @else
-                                                                <span class="first-off"><a href="javascript:void(0);"
-                                                                        data-toggle="modal"
-                                                                        data-target="#attendance_info_{{ $loop->iteration }}"
-                                                                        title="Observación"><i
-                                                                            class="fa fa-info text-warning"></i></a></span>
+                                                            @if ($fin)
+                                                                @if ($fin >= $emp->departamento->hora_fin)
+                                                                    <span class="first-off"><a href="javascript:void(0);"
+                                                                            data-toggle="modal"
+                                                                            data-target="#attendance_info_{{ $dia }}{{ $emp->id }}"
+                                                                            class="asis-info"
+                                                                            data-ini="{{ $ini }}"
+                                                                            data-fin="{{ $fin }}"
+                                                                            data-id="{{ $dia }}{{ $emp->id }}"
+                                                                            title="Asiste"><i
+                                                                                class="fa fa-check text-success"></i></a></span>
+                                                                @else
+                                                                    <span class="first-off"><a href="javascript:void(0);"
+                                                                            data-toggle="modal"
+                                                                            data-target="#attendance_info_{{ $dia }}{{ $emp->id }}"
+                                                                            class="asis-info"
+                                                                            data-ini="{{ $ini }}"
+                                                                            data-fin="{{ $fin }}"
+                                                                            data-id="{{ $dia }}{{ $emp->id }}"
+                                                                            title="Observación"><i
+                                                                                class="fa fa-info text-warning"></i></a></span>
+                                                                @endif
                                                             @endif
                                                         </div>
                                                     </td>
                                                     {{-- <td>
-                                                        <a href="javascript:void(0);" data-toggle="modal"
-                                                            data-target="#attendance_info_{{ $loop->iteration }}"
-                                                            title="Atraso">
-                                                            <i class="fa fa-check text-info"></i>
-                                                        </a>
-                                                    </td> --}}
+                                                            <a href="javascript:void(0);" data-toggle="modal"
+                                                                data-target="#attendance_info_{{$dia}}{{$mes}}{{$anio}}"
+                                                                title="Atraso">
+                                                                <i class="fa fa-check text-info"></i>
+                                                            </a>
+                                                        </td> --}}
                                                 @endif
 
                                                 <!-- Attendance Modal -->
                                                 <div class="modal custom-modal fade"
-                                                    id="attendance_info_{{ $loop->iteration }}" role="dialog">
+                                                    id="attendance_info_{{ $dia }}{{ $emp->id }}"
+                                                    role="dialog">
                                                     <div class="modal-dialog modal-dialog-centered modal-lg"
                                                         role="document">
                                                         <div class="modal-content">
@@ -208,6 +229,39 @@
                                                                 </button>
                                                             </div>
                                                             <div class="modal-body">
+                                                                <div class="card att-statistics">
+                                                                    <div class="card-body p-0 pt-3">
+                                                                        @if ($emp->departamento)
+                                                                            <h3 class="card-title text-center">
+                                                                                {{ $emp->usuario->nombres }}
+                                                                                {{ $emp->usuario->apellidos }}
+                                                                                <br>
+                                                                                <span class="text-muted">
+                                                                                    {{ $emp->departamento->nombre }}
+                                                                                </span>
+                                                                            </h3>
+                                                                            <div class="row">
+                                                                                <div class="col-6 text-center">
+                                                                                    <p>
+                                                                                        Entrada<br>
+                                                                                        <span
+                                                                                            class="text-muted">{{ $emp->departamento->hora_ini }}</span>
+                                                                                    </p>
+                                                                                </div>
+                                                                                <div class="col-6 text-center">
+                                                                                    <p>
+                                                                                        Salida<br>
+                                                                                        <span
+                                                                                            class="text-muted">{{ $emp->departamento->hora_fin }}</span>
+                                                                                    </p>
+                                                                                </div>
+                                                                            </div>
+                                                                        @else
+                                                                            <h5 class="card-title text-center">Sin
+                                                                                departamento</h5>
+                                                                        @endif
+                                                                    </div>
+                                                                </div>
                                                                 <div class="row">
                                                                     <div class="col-md-6">
                                                                         <div class="card punch-status">
@@ -222,10 +276,10 @@
                                                                                         {{ $emp->buscarAsistencia($dia, $mes, $anio)->asistencias->first()->hora_ini }}
                                                                                     </p>
                                                                                 </div>
-                                                                                @if ($ini > '08:00:00')
+                                                                                @if ($ini > $emp->departamento->hora_ini)
                                                                                     <div class="alert alert-info">
                                                                                         Atraso de
-                                                                                        {{ obtener_horas_segundos(obtener_horas('08:00:00', $ini)) }}
+                                                                                        {{ obtener_horas_segundos(obtener_horas($emp->departamento->hora_ini, $ini)) }}
                                                                                     </div>
                                                                                 @endif
                                                                                 <div class="punch-info">
@@ -239,13 +293,20 @@
                                                                                                 )->fecha,
                                                                                             ) >= 8;
                                                                                     @endphp
-                                                                                    <div class="punch-hours {{ $horasCumplidas ? 'border-success' : 'border-warning' }}"
-                                                                                        title="{{ $horasCumplidas ? 'Horas completadas' : 'Horas faltantes' }}">
-                                                                                        <span>
+                                                                                    <div
+                                                                                        class="punch-hours {{ $fin ? 'border-success' : 'border-warning' }}">
+                                                                                        <span
+                                                                                            id="timer_{{ $dia }}{{ $emp->id }}">
                                                                                             {{ obtener_horas_segundos($emp->horas($emp->buscarAsistencia($dia, $mes, $anio)->fecha)) }}
                                                                                         </span>
                                                                                     </div>
                                                                                 </div>
+                                                                                @if ($fin)
+                                                                                    <div
+                                                                                        class="alert alert-{{ $horasCumplidas ? 'success' : 'warning' }}">
+                                                                                        {{ $horasCumplidas ? 'Horas cumplidas' : 'Horas faltantes' }}
+                                                                                    </div>
+                                                                                @endif
                                                                                 <div class="punch-det">
                                                                                     <h6>Salida</h6>
                                                                                     <p>
@@ -271,10 +332,10 @@
                                                                                         {{ $fin }}
                                                                                     </p>
                                                                                 </div>
-                                                                                @if ($fin < '18:00:00')
+                                                                                @if ($fin != '-' && $fin < $emp->departamento->hora_fin)
                                                                                     <div class="alert alert-warning">
                                                                                         Se fue antes de la hora
-                                                                                        {{ obtener_horas_segundos(obtener_horas($fin, '18:00:00')) }}
+                                                                                        {{ obtener_horas_segundos(obtener_horas($fin, $emp->departamento->hora_fin)) }}
                                                                                     </div>
                                                                                 @endif
                                                                                 {{-- <div class="statistics">
@@ -367,3 +428,64 @@
     </div>
     <!-- /Page Content -->
 @endsection
+
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('.asis-info').on('click', function() {
+                const id = $(this).data('id')
+                const ini = $(this).data('ini')
+                const fin = $(this).data('fin')
+
+                if (!fin) {
+                    let inicioSegundos = convertirAHorasASegundos(ini);
+                    activeInterval = setInterval(() => actualizarTimer(inicioSegundos, id), 1000);
+                }
+            })
+
+            $('.modal').on('hidden.bs.modal', function() {
+                clearInterval(activeInterval);
+                activeInterval = null
+            });
+        });
+
+        let activeInterval = null;
+
+        function convertirAHorasASegundos(hora) {
+            if (!hora) return 0;
+            const [h, m, s] = hora.split(':').map(Number);
+            return h * 3600 + m * 60 + s;
+        }
+
+        function obtenerHoraActual() {
+            const d = new Date();
+            const h = d.getHours().toString().padStart(2, '0');
+            const m = d.getMinutes().toString().padStart(2, '0');
+            const s = d.getSeconds().toString().padStart(2, '0');
+            return `${h}:${m}:${s}`;
+        }
+
+        function actualizarTimer(inicioSegundos, id) {
+            const ahoraSegundos = convertirAHorasASegundos(obtenerHoraActual()); // Hora actual en segundos
+            const totalSegundos = ahoraSegundos - inicioSegundos; // Segundos transcurridos
+
+            // Si los segundos son negativos, no mostrar nada (por ejemplo, si la hora inicial no es válida)
+            if (totalSegundos < 0) {
+                $('#timer_' + id).text('-');
+                return;
+            }
+
+            const horas = Math.floor(totalSegundos / 3600); // Horas completas
+            const minutos = Math.floor((totalSegundos % 3600) / 60); // Minutos restantes
+            const segundos = totalSegundos % 60; // Segundos restantes
+
+            // Crear el formato dinámico
+            let formato = '';
+            if (horas > 0) formato += `${horas.toString().padStart(2, '0')}h `;
+            if (minutos > 0 || horas > 0) formato += `${minutos.toString().padStart(2, '0')}m `;
+            formato += `${segundos.toString().padStart(2, '0')}s`;
+
+            $('#timer_' + id).text(formato.trim());
+        }
+    </script>
+@endpush

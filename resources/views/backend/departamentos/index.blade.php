@@ -37,6 +37,8 @@
                                 <th style="width: 30px;">#</th>
                                 <th>Nombre departamento</th>
                                 <th>Descripción</th>
+                                <th>Horario</th>
+                                <th>Coordenadas</th>
                                 <th class="text-right">Acciones</th>
                             </tr>
                         </thead>
@@ -46,6 +48,17 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $dep->nombre }}</td>
                                     <td>{!! nl2br(e($dep->descripcion)) !!}</td>
+                                    <td>{{ $dep->hora_ini }} - {{ $dep->hora_fin }}</td>
+                                    <td>
+                                        @if ($dep->latitud && $dep->longitud)
+                                            <a href="https://www.google.com/maps?q={{ $dep->latitud }},{{ $dep->longitud }}&hl=es&z=15"
+                                                target="_blank">
+                                                {{ $dep->latitud }}, {{ $dep->longitud }}
+                                            </a>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td class="text-right">
                                         @if (Auth::user()->can('departamento.delete') || Auth::user()->can('designacion.edit'))
                                             <div class="dropdown dropdown-action">
@@ -87,7 +100,7 @@
     @if (Auth::user()->can('departamento.create') || Auth::user()->can('departamento.edit'))
         <!-- Add Department Modal -->
         <div id="modal_departamento" class="modal custom-modal fade" role="dialog">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-md" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title"><span id="title-form"></span> departamento</h5>
@@ -96,18 +109,45 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form id="form-departamento">
+                        <form id="form-departamento" class="row">
                             @csrf
                             <input type="hidden" name="id" id="id">
-                            <div class="form-group">
+                            <div class="form-group col-12">
                                 <label>Nombre <span class="text-danger">*</span></label>
                                 <input class="form-control" type="text" name="nombre" id="nombre">
                                 <span class="invalid-feedback" id="nombre_error"></span>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group col-12">
                                 <label>Descripción</label>
                                 <input class="form-control" type="text" name="descripcion" id="descripcion">
                                 <span class="invalid-feedback" id="descripcion_error"></span>
+                            </div>
+                            <div class="form-group col-md-6 col-12">
+                                <label>Hora de entrada <span class="text-danger">*</span></label>
+                                <div class="cal-icon">
+                                    <input class="form-control datetimepicker" type="text" name="hora_ini" id="hora_ini"
+                                        value="08:00:00">
+                                    <span class="invalid-feedback" id="hora_ini_error"></span>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6 col-12">
+                                <label>Hora de salida <span class="text-danger">*</span></label>
+                                <div class="cal-icon">
+                                    <input class="form-control datetimepicker" type="text" name="hora_fin" id="hora_fin"
+                                        value="18:00:00">
+                                    <span class="invalid-feedback" id="hora_fin_error"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group col-md-6 col-12">
+                                <label>Latitud</label>
+                                <input class="form-control" type="text" name="latitud" id="latitud">
+                                <span class="invalid-feedback" id="latitud_error"></span>
+                            </div>
+                            <div class="form-group col-md-6 col-12">
+                                <label>Longitud</label>
+                                <input class="form-control" type="text" name="longitud" id="longitud">
+                                <span class="invalid-feedback" id="longitud_error"></span>
                             </div>
                             <div class="submit-section">
                                 <button type="submit" class="btn btn-primary submit-btn" id="btn-form"></button>
@@ -154,7 +194,11 @@
 
 @push('scripts')
     <script>
+        $('.datetimepicker').datetimepicker({
+            format: 'HH:mm:ss'
+        })
         $(document).ready(function() {
+
             $('#form-departamento').on('submit', function(e) {
                 e.preventDefault();
                 let formData = new FormData(this);
@@ -214,6 +258,10 @@
             $('#id').val(data.id)
             $('#nombre').val(data.nombre)
             $('#descripcion').val(data.descripcion)
+            $('#hora_ini').val(data.hora_ini)
+            $('#hora_fin').val(data.hora_fin)
+            $('#latitud').val(data.latitud)
+            $('#longitud').val(data.longitud)
         }
 
         function deleteDep() {

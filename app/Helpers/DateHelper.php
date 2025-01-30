@@ -63,22 +63,29 @@ if (!function_exists('mes_literal')) {
 if (!function_exists('obtener_horas')) {
     function obtener_horas($hora1, $hora2)
     {
-        $hora1 = DateTime::createFromFormat('H:i:s', $hora1);
-        $hora2 = DateTime::createFromFormat('H:i:s', $hora2);
+        if ($hora1 && $hora2) {
+            $hora1 = DateTime::createFromFormat('H:i:s', $hora1);
+            $hora2 = DateTime::createFromFormat('H:i:s', $hora2);
+            // dd($hora1, $hora2);
 
-        $diferencia = $hora1->diff($hora2);
-        $totalSegundos = $diferencia->h * 3600 + $diferencia->i * 60 + $diferencia->s;
-        $horasDecimal = $totalSegundos / 3600;
+            $diferencia = $hora1->diff($hora2);
+            $totalSegundos = $diferencia->h * 3600 + $diferencia->i * 60 + $diferencia->s;
+            $horasDecimal = $totalSegundos / 3600;
 
-        return $horasDecimal;
-
-        return 0;
+            return $horasDecimal;
+        } else {
+            return 0;
+        }
     }
 }
 
 if (!function_exists('obtener_horas_segundos')) {
     function obtener_horas_segundos($horas)
     {
+        if ($horas <= 0) {
+            return 0;
+        }
+
         $totalSegundos = ($horas / 8) * 8 * 3600;
         $horasResultado = floor($totalSegundos / 3600);
         $segundosRestantes = $totalSegundos % 3600;

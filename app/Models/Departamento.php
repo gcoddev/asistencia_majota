@@ -9,6 +9,10 @@ class Departamento extends Model
     protected $table = 'departamentos';
     protected $fillable = [
         'nombre',
-        'descripcion'
+        'descripcion',
+        'hora_ini',
+        'hora_fin',
+        'latitud',
+        'longitud',
     ];
 }

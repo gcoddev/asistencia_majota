@@ -14,6 +14,8 @@ use App\Http\Controllers\RolesController;
 use App\Http\Controllers\SalarioController;
 use App\Http\Controllers\SueldosController;
 use Illuminate\Support\Facades\Route;
+use Gregwar\Captcha\CaptchaBuilder;
+use Illuminate\Support\Facades\Session;
 
 Route::get('/', function () {
     return redirect()->route('inicio');
@@ -46,3 +48,21 @@ Route::middleware('usuario_no_autenticado')->group(function () {
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+
+Route::get('/captcha', function () {
+    $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+    $length = 5;
+    $phrase = '';
+
+    for ($i = 0; $i < $length; $i++) {
+        $phrase .= $chars[rand(0, strlen($chars) - 1)];
+    }
+
+    $builder = new CaptchaBuilder($phrase);
+    $builder->build();
+
+    Session::put('captcha', $builder->getPhrase());
+
+    return response($builder->output())->header('Content-Type', 'image/jpeg');
+})->name('captcha');

@@ -46,17 +46,30 @@
                             </div>
                         </h5>
                         <div class="punch-info">
-                            <div class="punch-hours {{ $horas >= 8 ? 'border-success' : ($horas == 0 ? '' : 'border-warning') }}"
-                                title="{{ $horas >= 8 ? 'Horas completadas' : ($horas == 0 ? 'Falta' : 'Horas faltantes') }}">
+                            <div
+                                class="punch-hours {{ $usr->asistencia ? ($usr->asistencia->asistencias->last()->hora_fin ? 'border-success' : 'border-warning') : '' }}">
                                 <span id="timer">{{ $horas > 0 ? obtener_horas_segundos($horas) : '00s' }}</span>
                             </div>
                         </div>
+                        @if ($usr->asistencia && $usr->asistencia->asistencias->last()->hora_fin)
+                            <div class="alert alert-{{ $horas >= 8 ? 'success' : 'warning' }}">
+                                {{ $horas >= 8 ? 'Horas cumplidas' : 'Horas faltantes' }}
+                            </div>
+                        @endif
                         <div class="punch-btn-section">
-                            <button type="button" class="btn btn-primary punch-btn" data-toggle="modal"
-                                data-target="#modal_marcar">
-                                Marcar
-                                {{ $usr->asistencia && $usr->asistencia->asistencias->last()->hora_fin == null ? 'salida' : 'entrada' }}
-                            </button>
+                            @if ($user->departamento)
+                                <button type="button" class="btn btn-primary punch-btn" data-toggle="modal"
+                                    data-target="#modal_marcar">
+                                    Marcar
+                                    {{ $usr->asistencia && $usr->asistencia->asistencias->last()->hora_ini != null ? 'salida' : 'entrada' }}
+                                </button>
+                            @else
+                                <div class="alert alert-warning" role="alert">
+                                    No puede marcar asistencia por que no tiene un departamento asignado, solicita al
+                                    personal la asignación de un departamento
+                                    respectivo.
+                                </div>
+                            @endif
                         </div>
 
                         @if ($usr->asistencia && $usr->asistencia->asistencias->last()->hora_fin == null)
@@ -75,6 +88,29 @@
                 </div>
             </div>
             <div class="col-md-4">
+                <div class="card att-statistics">
+                    <div class="card-body">
+                        @if ($user->departamento)
+                            <h5 class="card-title text-center">{{ $user->departamento->nombre }}</h5>
+                            <div class="row">
+                                <div class="col-6 text-center">
+                                    <p>
+                                        Entrada<br>
+                                        <span class="text-muted">{{ $user->departamento->hora_ini }}</span>
+                                    </p>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <p>
+                                        Salida<br>
+                                        <span class="text-muted">{{ $user->departamento->hora_fin }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        @else
+                            <h5 class="card-title text-center">Sin departamento</h5>
+                        @endif
+                    </div>
+                </div>
                 <div class="card att-statistics">
                     <div class="card-body">
                         <h5 class="card-title">Resumen</h5>
@@ -226,7 +262,8 @@
                                 <th>Entrada</th>
                                 <th>Salida</th>
                                 <th>Tiempo</th>
-                                <th>Descanso</th>
+                                {{-- <th>Descanso</th> --}}
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -241,13 +278,13 @@
                                     <td>{{ $asis->hora_ini }}</td>
                                     <td>{{ $asis->hora_fin ?? '-' }}</td>
                                     <td>
-                                        @if ($asis->hora_fin)
+                                        @if ($asis->hora_ini && $asis->hora_fin)
                                             {{ obtener_horas_segundos(obtener_horas($asis->hora_ini, $asis->hora_fin)) }}
                                         @else
                                             -
                                         @endif
                                     </td>
-                                    @if ($fecha == $asis->asistencia->fecha)
+                                    {{-- @if ($fecha == $asis->asistencia->fecha)
                                         <td>{{ obtener_horas_segundos(obtener_horas($asis->hora_fin, $entrada)) }}</td>
                                         @php
                                             $entrada = $asis->hora_ini;
@@ -258,7 +295,19 @@
                                             $fecha = $asis->asistencia->fecha;
                                             $entrada = $asis->hora_ini;
                                         @endphp
-                                    @endif
+                                    @endif --}}
+                                    <td>
+                                        @php
+                                            $currentDate = now()->format('Y-m-d');
+                                            $asistenciaDate = $asis->asistencia->fecha;
+                                        @endphp
+
+                                        @if ($asis->hora_fin == null && $currentDate > $asistenciaDate)
+                                            <button type="button" class="btn btn-sm btn-danger">
+                                                Motivo de no salida
+                                            </button>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -277,11 +326,11 @@
                         @csrf
                         <input type="hidden" name="asis_id" id="asis_id" value="{{ $usr->asistencia->id ?? '' }}">
                         <input type="hidden" name="hora_id" id="hora_id"
-                            value="{{ $usr->asistencia && $usr->asistencia->asistencias->last()->hora_fin == null ? $usr->asistencia->asistencias->last()->id : '' }}">
+                            value="{{ $usr->asistencia && $usr->asistencia->asistencias->last()->hora_ini != null ? $usr->asistencia->asistencias->last()->id : '' }}">
                         <div class="form-header">
                             <h3>
                                 Marcar
-                                {{ $usr->asistencia && $usr->asistencia->asistencias->last()->hora_fin == null ? 'salida' : 'entrada' }}
+                                {{ $usr->asistencia && $usr->asistencia->asistencias->last()->hora_ini != null ? 'salida' : 'entrada' }}
                             </h3>
                         </div>
                         <div class="modal-btn delete-action">
@@ -289,7 +338,7 @@
                                 <div class="col-6">
                                     <a href="javascript:void(0)" class="btn btn-primary continue-btn"
                                         onclick="$('#form-asistencia').submit()">
-                                        {{ $usr->asistencia && $usr->asistencia->asistencias->last()->hora_fin == null ? 'Salida' : 'Entrada' }}
+                                        {{ $usr->asistencia && $usr->asistencia->asistencias->last()->hora_ini != null ? 'Salida' : 'Entrada' }}
                                     </a>
                                 </div>
                                 <div class="col-6">

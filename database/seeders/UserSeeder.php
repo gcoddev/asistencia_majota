@@ -20,7 +20,8 @@ class UserSeeder extends Seeder
             'nombres' => 'Admin',
             'apellidos' => 'Admin',
             'email' => 'admin@majota.net',
-            'username' => 'admin',
+            'ci' => '1000',
+            // 'username' => 'admin',
             'password' => bcrypt('admin'),
         ]);
         // Asignar rol de admin al usuario
@@ -31,7 +32,8 @@ class UserSeeder extends Seeder
             'nombres' => 'Técnico',
             'apellidos' => 'Técnico',
             'email' => 'tecnico@majota.net',
-            'username' => 'tecnico',
+            'ci' => '2000',
+            // 'username' => 'tecnico',
             'password' => bcrypt('tecnico'),
         ]);
         // Asignar rol de tecnico al usuario
@@ -46,7 +48,8 @@ class UserSeeder extends Seeder
             'nombres' => 'Empleado',
             'apellidos' => 'Empleado',
             'email' => 'empleado@majota.net',
-            'username' => 'empleado',
+            'ci' => '3000',
+            // 'username' => 'empleado',
             'password' => bcrypt('empleado'),
         ]);
         // Asignar rol de empleado al usuario

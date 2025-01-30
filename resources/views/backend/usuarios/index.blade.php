@@ -119,7 +119,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Nombres</th>
-                                <th>Nombre de usuario</th>
+                                <th>CI</th>
                                 <th>Email</th>
                                 <th>Rol</th>
                                 <th>Estado</th>
@@ -149,7 +149,7 @@
                                             </a>
                                         </h2>
                                     </td>
-                                    <td>{{ $user->username }}</td>
+                                    <td>{{ $user->ci }}</td>
                                     <td>{{ $user->email ?? '-' }}</td>
                                     <td>{{ $user->role[0]->name }}</td>
                                     <td>
@@ -237,7 +237,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="form-group">
-                                        <label class="col-form-label">Nombres <span class="text-danger">*</span></label>
+                                        <label class="col-form-label">Imagen de perfil</label>
                                         <div class="profile-img profile-input">
                                             <label class="avatar" for="imagen">
                                                 <div class="overlay">
@@ -267,10 +267,10 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label class="col-form-label">Nombre de usuario <span
+                                        <label class="col-form-label">Cédula de identidad (CI) <span
                                                 class="text-danger">*</span></label>
-                                        <input class="form-control" type="text" name="username" id="username">
-                                        <span class="invalid-feedback" id="username_error"></span>
+                                        <input class="form-control" type="text" name="ci" id="ci">
+                                        <span class="invalid-feedback" id="ci_error"></span>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -557,7 +557,7 @@
             $('#imagen').val('');
             $('#nombres').val(data.nombres)
             $('#apellidos').val(data.apellidos)
-            $('#username').val(data.username)
+            $('#ci').val(data.ci)
             $('#email').val(data.email)
             $('#password').val('')
             $('#password_confirmation').val('')

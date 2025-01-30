@@ -15,7 +15,7 @@ class Usuario extends User
         'nombres',
         'apellidos',
         'email',
-        'username',
+        'ci',
         'tipo',
         'celular',
         'password',

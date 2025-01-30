@@ -19,6 +19,8 @@
         </div>
         <!-- /Page Header -->
 
+        @include('components.alerts')
+
         <div class="row">
             <div class="col-12 col-sm-6 col-md-4 col-sm-4 col-lg-4 col-xl-4">
                 <div class="card dash-widget">

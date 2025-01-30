@@ -22,7 +22,7 @@ class HomeController extends Controller
             $asistenciasHora = AsistenciaTiempo::groupBy('asis_id')->orderBy('hora_ini', 'ASC')->get();
             $atrasos = 0;
             foreach ($asistenciasHora as $asis) {
-                if ($asis->hora_ini > '08:00:00') {
+                if ($asis->hora_ini > $asis->usuario->detalle->departamento->hora_ini) {
                     $atrasos++;
                 }
             }

@@ -4774,7 +4774,7 @@ html.menu-opened body {
 	margin-bottom: 0;
 }
 .stats-list {
-	height: 230px;
+	height: 200px;
 	overflow-y: auto;
 }
 .att-statistics .stats-info {

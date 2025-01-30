@@ -21,6 +21,7 @@ return new class extends Migration
             $table->boolean('facturable')->default(false);
             $table->string('ip', 255)->nullable();
             $table->string('note', 255)->nullable();
+            $table->boolean('estado')->nullable();
             $table->foreign('usu_id')
                 ->references('id')
                 ->on('usuarios')

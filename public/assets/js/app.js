@@ -137,6 +137,7 @@ $(document).ready(function () {
 	if ($('.datetimepicker').length > 0) {
 		$('.datetimepicker').datetimepicker({
 			format: 'DD/MM/YYYY',
+			// format: 'HH:mm:ss',
 			icons: {
 				up: "fa fa-angle-up",
 				down: "fa fa-angle-down",
