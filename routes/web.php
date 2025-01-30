@@ -31,6 +31,7 @@ Route::prefix('admin')->middleware('usuario_autenticado')->group(function () {
     Route::resource('/compensaciones', CompensacionesController::class, ['names' => 'admin.compensaciones']);
     Route::resource('/deducciones', DeduccionesController::class, ['names' => 'admin.deducciones']);
     Route::resource('/asistencias', AsistenciasController::class, ['names' => 'admin.asistencias']);
+    Route::put('/asistencias/nota/{id}', [AsistenciasController::class, 'updateNote'])->name('admin.asistencias.updateNote');
 
     Route::resource('/roles', RolesController::class, ['names' => 'admin.roles']);
     Route::put('/permission', [RolesController::class, 'putPermission'])->name('admin.permission.update');

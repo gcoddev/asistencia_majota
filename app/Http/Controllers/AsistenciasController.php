@@ -109,6 +109,7 @@ class AsistenciasController extends Controller
         // return response()->json($request);
 
         $asistencia = Asistencia::findOrFail($id);
+
         if ($request->hora_id != '') {
             $hora = AsistenciaTiempo::findOrFail($request->hora_id);
             $hora->hora_fin = $request->hora;
@@ -138,6 +139,29 @@ class AsistenciasController extends Controller
 
             return redirect()->back()->with('message', 'Asistencia marcada correctamente');
         }
+    }
+
+    public function updateNote(Request $request, string $id)
+    {
+        $request->validate([
+            'note' => 'required',
+            'note_estado' => 'nullable'
+        ], [
+            'note.required' => 'El motivo de no asistencia es obligatorio'
+        ]);
+
+        $hora = AsistenciaTiempo::findOrFail($id);
+        $hora->note = $request->note;
+        $hora->estado = $request->note_estado;
+        $hora->save();
+
+        session()->flash('message', 'Motivo enviado correctamente');
+
+        if ($request->ajax()) {
+            return response()->json(['redirect' => url()->previous()]);
+        }
+
+        return redirect()->back()->with('message', 'Motivo enviado correctamente');
     }
 
     /**

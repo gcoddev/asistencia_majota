@@ -263,6 +263,7 @@
                                 <th>Salida</th>
                                 <th>Tiempo</th>
                                 {{-- <th>Descanso</th> --}}
+                                <th>Nota</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -297,15 +298,31 @@
                                         @endphp
                                     @endif --}}
                                     <td>
+                                        @if ($asis->note)
+                                            {{ $asis->note }}
+                                            <br>
+                                            <span
+                                                class="badge bg-{{ $asis->estado === null ? 'info' : ($asis->estado ? 'success' : 'danger') }} text-white">
+                                                {{ $asis->estado === null ? 'Pendiente' : ($asis->estado ? 'Aprobado' : 'Rechazado') }}
+                                            </span>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                    <td>
                                         @php
                                             $currentDate = now()->format('Y-m-d');
                                             $asistenciaDate = $asis->asistencia->fecha;
                                         @endphp
 
                                         @if ($asis->hora_fin == null && $currentDate > $asistenciaDate)
-                                            <button type="button" class="btn btn-sm btn-danger">
-                                                Motivo de no salida
-                                            </button>
+                                            @if ($asis->note == null)
+                                                <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
+                                                    data-target="#modal_note"
+                                                    onclick="$('#note_id').val({{ $asis->id }})">
+                                                    Motivo de no salida
+                                                </button>
+                                            @endif
                                         @endif
                                     </td>
                                 </tr>
@@ -352,6 +369,33 @@
             </div>
         </div>
     </div>
+
+    <div id="modal_note" class="modal custom-modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Motivo de no asistencia</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-note">
+                        @csrf
+                        <input type="hidden" name="note_id" id="note_id">
+                        <div class="form-group col-12">
+                            <label>Motivo <span class="text-danger">*</span></label>
+                            <input class="form-control" type="text" name="note" id="note">
+                            <span class="invalid-feedback" id="note_error"></span>
+                        </div>
+                        <div class="submit-section">
+                            <button type="submit" class="btn btn-primary submit-btn">Enviar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -381,6 +425,35 @@
                 const url = id ?
                     `{{ url('admin/asistencias') }}/${id}` :
                     '{{ route('admin.asistencias.store') }}';
+
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        if (response.redirect) {
+                            window.location.href = response.redirect;
+                        }
+                    },
+                    error: function(xhr) {
+                        let errors = xhr.responseJSON.errors;
+                        for (let campo in errors) {
+                            let errorField = $(`#${campo}`);
+                            errorField.addClass('is-invalid');
+                            $(`#${campo}_error`).text(errors[campo][0]);
+                        }
+                    }
+                });
+            });
+            $('#form-note').on('submit', function(e) {
+                e.preventDefault();
+                let formData = new FormData(this);
+
+                const id = $('#note_id').val();
+                formData.append('_method', 'PUT');
+                const url = `{{ url('admin/asistencias/nota') }}/${id}`
 
                 $.ajax({
                     url: url,

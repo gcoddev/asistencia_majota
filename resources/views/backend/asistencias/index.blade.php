@@ -39,6 +39,8 @@
         </div>
         <!-- /Page Header -->
 
+        @include('components.alerts')
+
         <!-- Search Filter -->
         <form class="row filter-row" action="{{ route('admin.asistencias.index') }}" method="GET">
             <div class="col-sm-12 col-md-3">
@@ -129,12 +131,22 @@
                                             </h2>
                                         </td>
                                         @foreach ($diasDelMes as $dia)
+                                            @php
+                                                $fecha =
+                                                    $anio .
+                                                    '-' .
+                                                    str_pad($mes, 2, '0', STR_PAD_LEFT) .
+                                                    '-' .
+                                                    str_pad($dia, 2, '0', STR_PAD_LEFT);
+                                            @endphp
                                             @if ($emp->buscarAsistencia($dia, $mes, $anio))
                                                 @php
                                                     $ini = $emp->buscarAsistencia($dia, $mes, $anio)->asistencias[0]
                                                         ->hora_ini;
                                                     $fin = $emp->buscarAsistencia($dia, $mes, $anio)->asistencias[0]
                                                         ->hora_fin;
+                                                    $estado = $emp->buscarAsistencia($dia, $mes, $anio)->asistencias[0]
+                                                    ->estado;
                                                     // foreach (
                                                     //     $emp
                                                     //         ->buscarAsistencia($dia, $mes, $anio)
@@ -154,6 +166,7 @@
                                                             class="asis-info" data-ini="{{ $ini }}"
                                                             data-fin="{{ $fin }}"
                                                             data-id="{{ $dia }}{{ $emp->id }}"
+                                                            data-date="{{ $anio }}-{{ $mes }}-{{ $dia }}"
                                                             title="Asiste">
                                                             <i class="fa fa-check text-success"></i>
                                                         </a>
@@ -168,6 +181,7 @@
                                                                         class="asis-info" data-ini="{{ $ini }}"
                                                                         data-fin="{{ $fin }}"
                                                                         data-id="{{ $dia }}{{ $emp->id }}"
+                                                                        data-date="{{ $anio }}-{{ $mes }}-{{ $dia }}"
                                                                         title="Asiste"><i
                                                                             class="fa fa-check text-success"></i></a></span>
                                                             @else
@@ -177,6 +191,7 @@
                                                                         class="asis-info" data-ini="{{ $ini }}"
                                                                         data-fin="{{ $fin }}"
                                                                         data-id="{{ $dia }}{{ $emp->id }}"
+                                                                        data-date="{{ $anio }}-{{ $mes }}-{{ $dia }}"
                                                                         title="Atraso"><i
                                                                             class="fa fa-check text-info"></i></a></span>
                                                             @endif
@@ -189,6 +204,7 @@
                                                                             data-ini="{{ $ini }}"
                                                                             data-fin="{{ $fin }}"
                                                                             data-id="{{ $dia }}{{ $emp->id }}"
+                                                                            data-date="{{ $anio }}-{{ $mes }}-{{ $dia }}"
                                                                             title="Asiste"><i
                                                                                 class="fa fa-check text-success"></i></a></span>
                                                                 @else
@@ -199,8 +215,22 @@
                                                                             data-ini="{{ $ini }}"
                                                                             data-fin="{{ $fin }}"
                                                                             data-id="{{ $dia }}{{ $emp->id }}"
+                                                                            data-date="{{ $anio }}-{{ $mes }}-{{ $dia }}"
                                                                             title="Observación"><i
                                                                                 class="fa fa-info text-warning"></i></a></span>
+                                                                @endif
+                                                            @else
+                                                                @if (date('Y-m-d') != $fecha)
+                                                                    <span class="first-off"><a href="javascript:void(0);"
+                                                                            data-toggle="modal"
+                                                                            data-target="#attendance_info_{{ $dia }}{{ $emp->id }}"
+                                                                            class="asis-info"
+                                                                            data-ini="{{ $ini }}"
+                                                                            data-fin="{{ $fin }}"
+                                                                            data-id="{{ $dia }}{{ $emp->id }}"
+                                                                            data-date="{{ $anio }}-{{ $mes }}-{{ $dia }}"
+                                                                            title="Observación"><i
+                                                                                class="fa fa-close text-{{$estado === null ? 'warning' : ($estado === 1 ? 'info':'danger')}}"></i></a></span>
                                                                 @endif
                                                             @endif
                                                         </div>
@@ -338,6 +368,17 @@
                                                                                         {{ obtener_horas_segundos(obtener_horas($fin, $emp->departamento->hora_fin)) }}
                                                                                     </div>
                                                                                 @endif
+                                                                                @if ($fin == '-' && date('Y-m-d') != $fecha)
+                                                                                    @if ($asis->estado === null)
+                                                                                    <div class="alert alert-danger">
+                                                                                        No marco salida
+                                                                                    </div>
+                                                                                    @else
+                                                                                    <div class="alert alert-{{$asis->estado ? 'success':'danger'}}">
+                                                                                        {{$asis->estado ? 'Motivo permitido':'Motivo rechazado'}}
+                                                                                    </div>
+                                                                                    @endif
+                                                                                @endif
                                                                                 {{-- <div class="statistics">
                                                                                     <div class="row">
                                                                                         <div
@@ -394,6 +435,42 @@
                                                                                 </ul>
                                                                             </div>
                                                                         </div>
+                                                                        @if ($asis->note)
+                                                                            <div class="card recent-activity">
+                                                                                <div class="card-body activity-wrapper">
+                                                                                    <h5 class="card-title">Motivo
+                                                                                    </h5>
+                                                                                    <p>
+                                                                                        {{ $asis->note }}
+                                                                                    </p>
+                                                                                    @if ($asis->estado === null)
+                                                                                        <br>
+                                                                                        <form id="form-note">
+                                                                                            @csrf
+                                                                                            <input type="hidden"
+                                                                                                name="note_id"
+                                                                                                id="note_id"
+                                                                                                value="{{ $asis->id }}">
+                                                                                            <input type="hidden"
+                                                                                                name="note"
+                                                                                                id="note"
+                                                                                                value="{{ $asis->note }}">
+                                                                                            <input type="text"
+                                                                                                name="note_estado"
+                                                                                                id="note_estado">
+                                                                                            <button type="submit"
+                                                                                                class="btn btn-sm btn-success"
+                                                                                                onclick="$('#note_estado').val('1')">Permitir
+                                                                                                motivo</button>
+                                                                                            <button type="submit"
+                                                                                                class="btn btn-sm btn-danger"
+                                                                                                onclick="$('#note_estado').val('0')">Rechazar
+                                                                                                motivo</button>
+                                                                                        </form>
+                                                                                    @endif
+                                                                                </div>
+                                                                            </div>
+                                                                        @endif
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -437,7 +514,11 @@
                 const ini = $(this).data('ini')
                 const fin = $(this).data('fin')
 
-                if (!fin) {
+                const date = $(this).data('date')
+                const today = new Date().toISOString().split('T')[0]
+                const [year, month, day] = date.split('-').map(num => num.padStart(2, '0'));
+                const dateNow = `${year}-${month}-${day}`;
+                if (!fin && today == dateNow) {
                     let inicioSegundos = convertirAHorasASegundos(ini);
                     activeInterval = setInterval(() => actualizarTimer(inicioSegundos, id), 1000);
                 }
@@ -447,6 +528,36 @@
                 clearInterval(activeInterval);
                 activeInterval = null
             });
+
+            $('#form-note').on('submit', function(e) {
+                e.preventDefault();
+                let formData = new FormData(this);
+
+                const id = $('#note_id').val();
+                formData.append('_method', 'PUT');
+                const url = `{{ url('admin/asistencias/nota') }}/${id}`
+
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        if (response.redirect) {
+                            window.location.href = response.redirect;
+                        }
+                    },
+                    error: function(xhr) {
+                        let errors = xhr.responseJSON.errors;
+                        for (let campo in errors) {
+                            let errorField = $(`#${campo}`);
+                            errorField.addClass('is-invalid');
+                            $(`#${campo}_error`).text(errors[campo][0]);
+                        }
+                    }
+                });
+            })
         });
 
         let activeInterval = null;
