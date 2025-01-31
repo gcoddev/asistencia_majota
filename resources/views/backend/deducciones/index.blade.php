@@ -65,7 +65,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Empleado</th>
-                                <th>Nombre</th>
+                                <th>Tipo</th>
                                 <th>Fecha</th>
                                 <th class="text-center">Horas</th>
                                 <th class="text-center">Monto</th>
@@ -165,7 +165,7 @@
                                 <span class="invalid-feedback" id="usu_detalle_id_error"></span>
                             </div>
                             <div class="form-group">
-                                <label>Nombre <span class="text-danger">*</span></label>
+                                <label>Tipo de descuento <span class="text-danger">*</span></label>
                                 <input class="form-control" type="text" name="nombre" id="nombre">
                                 <span class="invalid-feedback" id="nombre_error"></span>
                             </div>
