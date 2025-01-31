@@ -9,9 +9,16 @@ use App\Models\ReciboItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class SueldosController extends Controller
 {
+    public function __construct()
+    {
+        if (Auth::check() && !Auth::user()->can('detalle.show')) {
+            abort(403, 'Acción no autorizada !');
+        }
+    }
     /**
      * Display a listing of the resource.
      */

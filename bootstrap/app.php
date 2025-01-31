@@ -16,7 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'usuario_autenticado' => UsuarioAutenticado::class,
-            'usuario_no_autenticado' => UsuarioNoAutenticado::class
+            'usuario_no_autenticado' => UsuarioNoAutenticado::class,
+            'can' => \Illuminate\Auth\Middleware\Authorize::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

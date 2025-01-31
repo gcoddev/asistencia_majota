@@ -125,7 +125,7 @@
                         </li>
                         @if (Auth::user()->role[0]->name == 'admin' && $user->detalle)
                             <li class="nav-item">
-                                <a href="#bank_statutory" data-toggle="tab" class="nav-link">Bancos y estatutos
+                                <a href="#salarios" data-toggle="tab" class="nav-link">Bancos y estatutos
                                     <small class="text-danger">(Admin)</small>
                                 </a>
                             </li>
@@ -140,7 +140,7 @@
         <div class="tab-content">
 
             <div class="tab-pane fade show active" id="profile">
-                <form id="form-perfil" data-form="detalle">
+                <form class="form-perfil" data-form="detalle">
                     @csrf
                     <input type="hidden" name="usu_id" id="usu_id" value="{{ $user->id }}">
                     <div class="card">
@@ -222,7 +222,7 @@
                                                     Femenino
                                                 </option>
                                             </select>
-                                            <span class="invalid-feedback" id="base_error"></span>
+                                            <span class="invalid-feedback" id="genero_error"></span>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
@@ -251,7 +251,7 @@
                                                     Prefiero no decirlo
                                                 </option>
                                             </select>
-                                            <span class="invalid-feedback" id="base_error"></span>
+                                            <span class="invalid-feedback" id="estado_civil_error"></span>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
@@ -349,11 +349,11 @@
             </div>
             @if (Auth::user()->role[0]->name == 'admin' && $user->detalle)
                 <!-- Bank Statutory Tab -->
-                <div class="tab-pane fade" id="bank_statutory">
+                <div class="tab-pane fade" id="salarios">
                     <div class="card">
                         <div class="card-body">
                             <h3 class="card-title"> Información básica sobre el salario</h3>
-                            <form id="form-perfil" data-form="salario">
+                            <form class="form-perfil" data-form="salario">
                                 @csrf
                                 <input type="hidden" name="usu_detalle_id" id="usu_detalle_id"
                                     value="{{ $user->detalle->id }}">
@@ -1111,7 +1111,9 @@
                 }
             });
 
-            $('#form-perfil').on('submit', function(e) {
+            $('.form-perfil').on('submit', function(e) {
+                console.log('prevent');
+
                 e.preventDefault();
                 let formData = new FormData(this);
                 let form = $(this).data('form');

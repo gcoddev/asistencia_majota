@@ -7,9 +7,16 @@ use App\Models\EmpleadoDetalle;
 use App\Models\Usuario;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CompensacionesController extends Controller
 {
+    public function __construct()
+    {
+        if (Auth::check() && !Auth::user()->can('compensacion.show')) {
+            abort(403, 'Acción no autorizada !');
+        }
+    }
     /**
      * Display a listing of the resource.
      */

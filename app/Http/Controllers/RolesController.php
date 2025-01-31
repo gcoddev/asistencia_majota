@@ -6,9 +6,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Auth;
 
 class RolesController extends Controller
 {
+    public function __construct()
+    {
+        if (Auth::check() && !Auth::user()->can('roles.show')) {
+            abort(403, 'Acción no autorizada !');
+        }
+    }
     public function index($id = null)
     {
         $roles = Role::with(['permissions'])->get();

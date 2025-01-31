@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Asistencia;
@@ -11,14 +10,20 @@ use Illuminate\Support\Facades\Auth;
 
 class AsistenciasController extends Controller
 {
+    public function __construct()
+    {
+        if (Auth::check() && !Auth::user()->can('asistencia.show')) {
+            abort(403, 'Acción no autorizada !');
+        }
+    }
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
         $usu_detalle_id = $request->input('usu_detalle_id');
-        $mes = $request->input('mes');
-        $anio = $request->input('anio');
+        $mes            = $request->input('mes');
+        $anio           = $request->input('anio');
 
         $empleados = EmpleadoDetalle::all();
 
@@ -26,17 +31,14 @@ class AsistenciasController extends Controller
             $fecha = Carbon::create($anio ?? Carbon::now()->year, $mes, 1);
         } else {
             $fecha = Carbon::now();
-            $mes = $fecha->month;
-            if (!$anio) {
+            $mes   = $fecha->month;
+            if (! $anio) {
                 $anio = $fecha->year;
             }
         }
 
-        $finMes = $fecha->copy()->endOfMonth();
+        $finMes     = $fecha->copy()->endOfMonth();
         $diasDelMes = range(1, $finMes->day);
-
-
-
 
         $asistencias = Asistencia::orderBy('fecha', 'ASC')->first();
         if ($asistencias) {
@@ -64,17 +66,17 @@ class AsistenciasController extends Controller
     {
         // return response()->json($request);
 
-        $asistencia = new Asistencia();
+        $asistencia         = new Asistencia();
         $asistencia->usu_id = Auth::user()->id;
-        $asistencia->fecha = date('Y-m-d');
+        $asistencia->fecha  = date('Y-m-d');
         $asistencia->save();
 
-        $hora = new AsistenciaTiempo();
-        $hora->asis_id = $asistencia->id;
-        $hora->usu_id = Auth::user()->id;
-        $hora->hora_ini = $request->hora;
+        $hora            = new AsistenciaTiempo();
+        $hora->asis_id   = $asistencia->id;
+        $hora->usu_id    = Auth::user()->id;
+        $hora->hora_ini  = $request->hora;
         $hora->ubicacion = 'on';
-        $hora->ip = $request->ip();
+        $hora->ip        = $request->ip();
         $hora->save();
 
         session()->flash('message', 'Asistencia marcada correctamente');
@@ -112,7 +114,7 @@ class AsistenciasController extends Controller
         $asistencia = Asistencia::findOrFail($id);
 
         if ($request->hora_id != '') {
-            $hora = AsistenciaTiempo::findOrFail($request->hora_id);
+            $hora           = AsistenciaTiempo::findOrFail($request->hora_id);
             $hora->hora_fin = $request->hora;
             $hora->save();
 
@@ -124,12 +126,12 @@ class AsistenciasController extends Controller
 
             return redirect()->back()->with('message', 'Asistencia de salida actualizada correctamente');
         } else {
-            $hora = new AsistenciaTiempo();
-            $hora->asis_id = $asistencia->id;
-            $hora->usu_id = Auth::user()->id;
-            $hora->hora_ini = $request->hora;
+            $hora            = new AsistenciaTiempo();
+            $hora->asis_id   = $asistencia->id;
+            $hora->usu_id    = Auth::user()->id;
+            $hora->hora_ini  = $request->hora;
             $hora->ubicacion = 'on';
-            $hora->ip = $request->ip();
+            $hora->ip        = $request->ip();
             $hora->save();
 
             session()->flash('message', 'Asistencia marcada correctamente');
@@ -145,14 +147,14 @@ class AsistenciasController extends Controller
     public function updateNote(Request $request, string $id)
     {
         $request->validate([
-            'note' => 'required',
-            'note_estado' => 'nullable'
+            'note'        => 'required',
+            'note_estado' => 'nullable',
         ], [
-            'note.required' => 'El motivo de no asistencia es obligatorio'
+            'note.required' => 'El motivo de no asistencia es obligatorio',
         ]);
 
-        $hora = AsistenciaTiempo::findOrFail($id);
-        $hora->note = $request->note;
+        $hora         = AsistenciaTiempo::findOrFail($id);
+        $hora->note   = $request->note;
         $hora->estado = $request->note_estado;
         $hora->save();
 

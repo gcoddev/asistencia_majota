@@ -11,9 +11,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Auth;
 
 class UsuariosController extends Controller
 {
+    public function __construct()
+    {
+        if (Auth::check() && !Auth::user()->can('usuario.show')) {
+            abort(403, 'Acción no autorizada !');
+        }
+    }
     /**
      * Display a listing of the resource.
      */

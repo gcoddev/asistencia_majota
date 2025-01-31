@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Auth;
 
 class PermisosController extends Controller
 {
+    public function __construct()
+    {
+        if (Auth::check() && !Auth::user()->can('permiso.show')) {
+            abort(403, 'Acción no autorizada !');
+        }
+    }
     /**
      * Display a listing of the resource.
      */

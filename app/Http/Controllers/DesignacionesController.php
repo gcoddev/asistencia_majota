@@ -1,12 +1,18 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Designacion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DesignacionesController extends Controller
 {
+    public function __construct()
+    {
+        if (Auth::check() && !Auth::user()->can('designacion.show')) {
+            abort(403, 'Acción no autorizada !');
+        }
+    }
     /**
      * Display a listing of the resource.
      */
@@ -30,14 +36,14 @@ class DesignacionesController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required',
+            'nombre'      => 'required',
             'descripcion' => 'nullable',
         ], [
             'nombre.required' => 'El nombre es obligatorio',
         ]);
 
-        $designacion = new Designacion();
-        $designacion->nombre = $request->nombre;
+        $designacion              = new Designacion();
+        $designacion->nombre      = $request->nombre;
         $designacion->descripcion = $request->descripcion;
         $designacion->save();
 
@@ -72,14 +78,14 @@ class DesignacionesController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'nombre' => 'required',
+            'nombre'      => 'required',
             'descripcion' => 'nullable',
         ], [
             'nombre.required' => 'El nombre es obligatorio',
         ]);
 
-        $designacion = Designacion::findOrFail($id);
-        $designacion->nombre = $request->nombre;
+        $designacion              = Designacion::findOrFail($id);
+        $designacion->nombre      = $request->nombre;
         $designacion->descripcion = $request->descripcion;
         $designacion->save();
 
