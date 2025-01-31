@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('asistencias', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('usu_id');
-            $table->date('fecha')->default(DB::raw('CURRENT_DATE'));
+            $table->date('fecha');
             $table->foreign('usu_id')
                 ->references('id')
                 ->on('usuarios')

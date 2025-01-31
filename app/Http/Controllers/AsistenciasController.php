@@ -66,6 +66,7 @@ class AsistenciasController extends Controller
 
         $asistencia = new Asistencia();
         $asistencia->usu_id = Auth::user()->id;
+        $asistencia->fecha = date('Y-m-d');
         $asistencia->save();
 
         $hora = new AsistenciaTiempo();
