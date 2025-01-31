@@ -122,6 +122,7 @@
                                 <th>CI</th>
                                 <th>Email</th>
                                 <th>Rol</th>
+                                <th>Unido el</th>
                                 <th>Estado</th>
                                 <th class="text-right no-sort">Acciones</th>
                             </tr>
@@ -152,6 +153,7 @@
                                     <td>{{ $user->ci }}</td>
                                     <td>{{ $user->email ?? '-' }}</td>
                                     <td>{{ $user->role[0]->name }}</td>
+                                    <td>{{ $user->detalle ? fecha_literal($user->detalle->fecha_ingreso) : '-' }}</td>
                                     <td>
                                         <div class="dropdown">
                                             @php
@@ -235,7 +237,7 @@
                             @csrf
                             <input type="hidden" name="id" id="id">
                             <div class="row">
-                                <div class="col-12">
+                                <div class="col-sm-6">
                                     <div class="form-group">
                                         <label class="col-form-label">Imagen de perfil</label>
                                         <div class="profile-img profile-input">
@@ -250,6 +252,14 @@
                                         <input type="file" name="imagen" id="imagen" class="d-none form-control"
                                             accept="image/png,image/jpg,image/jpeg">
                                         <span class="invalid-feedback" id="imagen_error"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 form-group">
+                                    <label>Fecha de ingreso <span class="text-danger">*</span></label>
+                                    <div class="cal-icon">
+                                        <input class="form-control datetimepicker" type="text" name="fecha_ingreso"
+                                            id="fecha_ingreso">
+                                        <span class="invalid-feedback" id="fecha_ingreso_error"></span>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -546,6 +556,10 @@
             $('#role').val('empleado').trigger('change');
             $('#dep_id').val('').trigger('change')
             $('#des_id').val('').trigger('change')
+
+            $('#role').removeAttr('disabled');
+            $('#dep_id').removeAttr('disabled');
+            $('#des_id').removeAttr('disabled');
         }
 
         function editUser(data) {
@@ -563,8 +577,15 @@
             $('#password_confirmation').val('')
             $('#celular').val(data.celular)
             $('#role').val(data.role[0].name).trigger('change')
-            $('#dep_id').val(data.detalle.dep_id).trigger('change')
-            $('#des_id').val(data.detalle.des_id).trigger('change')
+            $('#fecha_ingreso').val(data.detalle ? formatDateToDDMMYYYY(data.detalle.fecha_ingreso) : '');
+            $('#dep_id').val(data.detalle ? data.detalle.dep_id : '').trigger('change')
+            $('#des_id').val(data.detalle ? data.detalle.des_id : '').trigger('change')
+
+            if (data.id == 1) {
+                $('#role').attr('disabled', 'disabled');
+                $('#dep_id').attr('disabled', 'disabled');
+                $('#des_id').attr('disabled', 'disabled');
+            }
         }
 
         function deleteUser() {

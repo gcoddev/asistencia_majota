@@ -28,6 +28,7 @@ return new class extends Migration
             $table->date('fecha_nacimiento')->nullable();
             $table->date('fecha_ingreso')->nullable();
             $table->string('contacto_emergencia')->nullable();
+            $table->string('detalle_emergencia')->nullable();
             $table->foreign('usu_id')
                 ->references('id')
                 ->on('usuarios')

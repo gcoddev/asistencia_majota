@@ -23,7 +23,7 @@ class Usuario extends User
         'direccion',
         'ciudad',
         'activo',
-        'en_linea'
+        'en_linea',
     ];
 
     public function detalle()

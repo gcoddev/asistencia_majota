@@ -6,6 +6,7 @@ use App\Http\Controllers\CompensacionesController;
 use App\Http\Controllers\DeduccionesController;
 use App\Http\Controllers\DepartamentosController;
 use App\Http\Controllers\DesignacionesController;
+use App\Http\Controllers\DetalleController;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\PermisosController;
 use App\Http\Controllers\HomeController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\SalarioController;
 use App\Http\Controllers\SueldosController;
+use App\Models\EmpleadoDetalle;
 use Illuminate\Support\Facades\Route;
 use Gregwar\Captcha\CaptchaBuilder;
 use Illuminate\Support\Facades\Session;
@@ -24,6 +26,7 @@ Route::prefix('admin')->middleware('usuario_autenticado')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('inicio');
 
     Route::resource('/usuarios', UsuariosController::class, ['names' => 'admin.usuarios']);
+    Route::resource('/detalle', DetalleController::class, ['names' => 'admin.detalle']);
     Route::resource('/departamentos', DepartamentosController::class, ['names' => 'admin.departamentos']);
     Route::resource('/designaciones', DesignacionesController::class, ['names' => 'admin.designaciones']);
     Route::resource('/permisos', PermisosController::class, ['names' => 'admin.permisos']);

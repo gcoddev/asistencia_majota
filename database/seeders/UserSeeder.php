@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
             'nombres' => 'Admin',
             'apellidos' => 'Admin',
             'email' => 'admin@majota.net',
-            'ci' => '1000',
+            'ci' => '1',
             // 'username' => 'admin',
             'password' => bcrypt('admin'),
         ]);
@@ -32,7 +32,7 @@ class UserSeeder extends Seeder
             'nombres' => 'Técnico',
             'apellidos' => 'Técnico',
             'email' => 'tecnico@majota.net',
-            'ci' => '2000',
+            'ci' => '1000',
             // 'username' => 'tecnico',
             'password' => bcrypt('tecnico'),
         ]);
@@ -41,6 +41,7 @@ class UserSeeder extends Seeder
 
         $detalle = new EmpleadoDetalle();
         $detalle->usu_id = $user->id;
+        $detalle->fecha_ingreso = date('Y-m-d');
         $detalle->save();
 
         // Empleado
@@ -48,7 +49,7 @@ class UserSeeder extends Seeder
             'nombres' => 'Empleado',
             'apellidos' => 'Empleado',
             'email' => 'empleado@majota.net',
-            'ci' => '3000',
+            'ci' => '2000',
             // 'username' => 'empleado',
             'password' => bcrypt('empleado'),
         ]);
@@ -57,6 +58,7 @@ class UserSeeder extends Seeder
 
         $detalle = new EmpleadoDetalle();
         $detalle->usu_id = $user->id;
+        $detalle->fecha_ingreso = date('Y-m-d');
         $detalle->save();
     }
 }

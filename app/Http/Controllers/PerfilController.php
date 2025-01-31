@@ -38,8 +38,12 @@ class PerfilController extends Controller
      */
     public function show(string $id)
     {
-        $user = Usuario::findOrFail($id);
-        return view('auth.profile', compact('user'));
+        if (Auth::user()->role[0]->name == 'admin') {
+            $user = Usuario::findOrFail($id);
+            return view('auth.profile', compact('user'));
+        } else {
+            return redirect()->route('admin.perfil.index')->with('alert', 'No tiene permisos para ver este recurso.');
+        }
     }
 
     /**

@@ -16,11 +16,12 @@ class AuthController extends Controller
     public function postLogin(Request $request)
     {
         $request->validate([
-            'ci' => 'required',
+            'ci' => 'required|min:4',
             'password' => 'required',
             'captcha' => 'required',
         ], [
-            'ci.required' => 'El nombre de usuario es requerido',
+            'ci.required' => 'El ci o email es requerido',
+            'ci.min' => 'El ci o email debe ser valido',
             'password.required' => 'La contraseña es requerida',
             'captcha.required' => 'El código de verificación es requerido',
         ]);

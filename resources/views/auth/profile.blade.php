@@ -118,9 +118,14 @@
                             <a href="#emp_profile" data-toggle="tab" class="nav-link">Perfil</a>
                         </li> --}}
                         {{-- <li class="nav-item"><a href="#emp_projects" data-toggle="tab" class="nav-link">Projects</a></li> --}}
+                        <li class="nav-item">
+                            <a href="#profile" data-toggle="tab" class="nav-link active">
+                                Información del perfil
+                            </a>
+                        </li>
                         @if (Auth::user()->role[0]->name == 'admin' && $user->detalle)
                             <li class="nav-item">
-                                <a href="#bank_statutory" data-toggle="tab" class="nav-link active">Bancos y estatutos
+                                <a href="#bank_statutory" data-toggle="tab" class="nav-link">Bancos y estatutos
                                     <small class="text-danger">(Admin)</small>
                                 </a>
                             </li>
@@ -133,9 +138,218 @@
         @include('components.alerts')
 
         <div class="tab-content">
+
+            <div class="tab-pane fade show active" id="profile">
+                <form id="form-perfil" data-form="detalle">
+                    @csrf
+                    <input type="hidden" name="usu_id" id="usu_id" value="{{ $user->id }}">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title"> Información del usuario</h3>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Nombres</label>
+                                        <input type="text" class="form-control" placeholder="nombres" name="nombres"
+                                            id="nombres" value="{{ $user->nombres }}">
+                                        <span class="invalid-feedback" id="nombres_error"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Apellidos</label>
+                                        <input type="text" class="form-control" placeholder="apellidos" name="apellidos"
+                                            id="apellidos" value="{{ $user->apellidos }}">
+                                        <span class="invalid-feedback" id="apellidos_error"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Cédula de identidad (CI)</label>
+                                        <input type="text" class="form-control" placeholder="Numero de identidad"
+                                            name="ci" id="ci" value="{{ $user->ci }}">
+                                        <span class="invalid-feedback" id="ci_error"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Email</label>
+                                        <input type="text" class="form-control" placeholder="Dirección email"
+                                            name="email" id="email" value="{{ $user->email }}">
+                                        <span class="invalid-feedback" id="email_error"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Celular</label>
+                                        <input type="text" class="form-control" placeholder="Número de celular"
+                                            name="celular" id="celular" value="{{ $user->celular }}">
+                                        <span class="invalid-feedback" id="celular_error"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @if ($user->detalle)
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title"> Datos personales</h3>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Fecha de nacimiento</label>
+                                            <input type="hidden" id="fec_nac"
+                                                value="{{ $user->detalle->fecha_nacimiento }}">
+                                            <div class="cal-icon">
+                                                <input type="text" class="form-control datetimepicker"
+                                                    placeholder="Fecha" name="fecha_nacimiento" id="fecha_nacimiento"
+                                                    value="">
+                                                <span class="invalid-feedback" id="fecha_nacimiento_error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Genero</label>
+                                            <select class="select form-control" name="genero" id="genero">
+                                                <option value="">-</option>
+                                                <option value="M"
+                                                    {{ $user->detalle->genero == 'M' ? 'selected' : '' }}>
+                                                    Masculino
+                                                </option>
+                                                <option value="F"
+                                                    {{ $user->detalle->genero == 'F' ? 'selected' : '' }}>
+                                                    Femenino
+                                                </option>
+                                            </select>
+                                            <span class="invalid-feedback" id="base_error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Estado civil</label>
+                                            <select class="select form-control" name="estado_civil" id="estado_civil">
+                                                <option value="">-</option>
+                                                <option value="Soltero/a"
+                                                    {{ $user->detalle->estado_civil == 'Soltero/a' ? 'selected' : '' }}>
+                                                    Soltero/a
+                                                </option>
+                                                <option value="Casado/a"
+                                                    {{ $user->detalle->estado_civil == 'Casado/a' ? 'selected' : '' }}>
+                                                    Casado/a
+                                                </option>
+                                                <option value="Viudo/a"
+                                                    {{ $user->detalle->estado_civil == 'Viudo/a' ? 'selected' : '' }}>
+                                                    Viudo/a
+                                                </option>
+                                                <option value="Divorciado/a"
+                                                    {{ $user->detalle->estado_civil == 'Divorciado/a' ? 'selected' : '' }}>
+                                                    Divorciado/a
+                                                </option>
+                                                <option value="Prefiero no decirlo"
+                                                    {{ $user->detalle->estado_civil == 'Prefiero no decirlo' ? 'selected' : '' }}>
+                                                    Prefiero no decirlo
+                                                </option>
+                                            </select>
+                                            <span class="invalid-feedback" id="base_error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Nacionalidad</label>
+                                            <input type="text" class="form-control" placeholder="Nacionalidad"
+                                                name="nacionalidad" id="nacionalidad"
+                                                value="{{ $user->detalle->nacionalidad }}">
+                                            <span class="invalid-feedback" id="nacionalidad_error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Ocupación</label>
+                                            <input type="text" class="form-control" placeholder="Ocupación"
+                                                name="ocupacion" id="ocupacion" value="{{ $user->detalle->ocupacion }}">
+                                            <span class="invalid-feedback" id="ocupacion_error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Etnia</label>
+                                            <input type="text" class="form-control" placeholder="Etnia"
+                                                name="etnia" id="etnia" value="{{ $user->detalle->etnia }}">
+                                            <span class="invalid-feedback" id="etnia_error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Religion</label>
+                                            <input type="text" class="form-control" placeholder="Religion"
+                                                name="religion" id="religion" value="{{ $user->detalle->religion }}">
+                                            <span class="invalid-feedback" id="religion_error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Numero de pasaporte</label>
+                                            <input type="text" class="form-control" placeholder="Numero"
+                                                name="numero_pasaporte" id="numero_pasaporte"
+                                                value="{{ $user->detalle->numero_pasaporte }}">
+                                            <span class="invalid-feedback" id="numero_pasaporte_error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Expiración de pasaporte</label>
+                                            <input type="hidden" id="exp_pas"
+                                                value="{{ $user->detalle->exp_pasaporte }}">
+                                            <div class="cal-icon">
+                                                <input type="text" class="form-control datetimepicker"
+                                                    placeholder="Fecha" name="exp_pasaporte" id="exp_pasaporte"
+                                                    value="">
+                                                <span class="invalid-feedback" id="exp_pasaporte_error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Teléfono de pasaporte</label>
+                                            <input type="text" class="form-control" placeholder="Teléfono"
+                                                name="tel_pasaporte" id="tel_pasaporte"
+                                                value="{{ $user->detalle->tel_pasaporte }}">
+                                            <span class="invalid-feedback" id="tel_pasaporte_error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Contacto de emergencia</label>
+                                            <input type="text" class="form-control" placeholder="Numero"
+                                                name="contacto_emergencia" id="contacto_emergencia"
+                                                value="{{ $user->detalle->contacto_emergencia }}">
+                                            <span class="invalid-feedback" id="contacto_emergencia_error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Detalle emergencia</label>
+                                            <input type="text" class="form-control"
+                                                placeholder="Contacto de emergencia" name="detalle_emergencia"
+                                                id="detalle_emergencia" value="{{ $user->detalle->detalle_emergencia }}">
+                                            <span class="invalid-feedback" id="detalle_emergencia_error"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    <div class="submit-section">
+                        <button class="btn btn-primary submit-btn" type="submit">
+                            Actualizar
+                        </button>
+                    </div>
+                </form>
+            </div>
             @if (Auth::user()->role[0]->name == 'admin' && $user->detalle)
                 <!-- Bank Statutory Tab -->
-                <div class="tab-pane fade show active" id="bank_statutory">
+                <div class="tab-pane fade" id="bank_statutory">
                     <div class="card">
                         <div class="card-body">
                             <h3 class="card-title"> Información básica sobre el salario</h3>
@@ -887,6 +1101,8 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            $('#fecha_nacimiento').val(formatDateToDDMMYYYY($('#fec_nac').val()))
+            $('#exp_pasaporte').val(formatDateToDDMMYYYY($('#exp_pas').val()))
             $('#metodo_pago').on('change', function() {
                 if ($(this).val() == 'Transferencia bancaria') {
                     $('#transferencia').css('display', 'block');
@@ -916,6 +1132,11 @@
                             formData.append('_method', 'PUT');
                         }
                         break;
+                    case 'detalle':
+                        id = $('#usu_id').val();
+                        url = `{{ url('admin/detalle') }}/${id}`
+                        formData.append('_method', 'PUT');
+                        break
                 }
 
                 $.ajax({

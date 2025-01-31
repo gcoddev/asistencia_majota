@@ -6,6 +6,7 @@ use App\Models\Departamento;
 use App\Models\Designacion;
 use App\Models\EmpleadoDetalle;
 use App\Models\Usuario;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -44,10 +45,10 @@ class UsuariosController extends Controller
             'ci' => 'required|unique:usuarios',
             'email' => 'nullable|email|unique:usuarios',
             'password' => 'required|min:8|confirmed',
-            'role' => 'required',
             'dep_id' => 'nullable',
             'des_id' => 'nullable',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'fecha_ingreso' => 'required|date_format:d/m/Y'
         ], [
             'nombres.required' => 'El nombre es obligatorio',
             'ci.required' => 'El nombre de usuario es obligatorio',
@@ -58,10 +59,11 @@ class UsuariosController extends Controller
             'password.required' => 'La contraseña es obligatoria',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres',
             'password.confirmed' => 'Las contraseñas no coinciden',
-            'role.required' => 'El rol es obligatorio',
             'imagen.image' => 'Debe ser una imagen',
             'imagen.mimes' => 'El formato de la imagen debe ser JPEG, PNG o JPG',
-            'imagen.max' => 'El tamaño de la imagen no puede superar los 2MB'
+            'imagen.max' => 'El tamaño de la imagen no puede superar los 2MB',
+            'fecha_ingreso.required' => 'La fecha de ingreso es obligatoria',
+            'fecha_ingreso.date_format' => 'Debe ser una fecha valida',
         ]);
 
         // return response()->json($request);
@@ -83,12 +85,13 @@ class UsuariosController extends Controller
         }
         $usuario->save();
 
-        $usuario->assignRole($request->role);
+        $usuario->assignRole($request->role ?? 'empleado');
 
         $detalle = new EmpleadoDetalle();
         $detalle->usu_id = $usuario->id;
         $detalle->dep_id = $request->dep_id;
         $detalle->des_id = $request->des_id;
+        $detalle->fecha_ingreso = Carbon::createFromFormat('d/m/Y', $request->fecha_ingreso)->format('Y-m-d');
         $detalle->save();
 
         session()->flash('message', 'Usuario agregado correctamente');
@@ -149,10 +152,9 @@ class UsuariosController extends Controller
                 Rule::unique('usuarios')->ignore($request->id),
             ],
             'password' => 'nullable|min:8|confirmed',
-            'role' => 'required',
             'dep_id' => 'nullable',
             'des_id' => 'nullable',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ], [
             'nombres.required' => 'El nombre es obligatorio',
             'ci.required' => 'El nombre de usuario es obligatorio',
@@ -162,11 +164,19 @@ class UsuariosController extends Controller
             'email.unique' => 'El email ya está en uso',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres',
             'password.confirmed' => 'Las contraseñas no coinciden',
-            'role.required' => 'El rol es obligatorio',
             'imagen.image' => 'Debe ser una imagen',
             'imagen.mimes' => 'El formato de la imagen debe ser JPEG, PNG o JPG',
-            'imagen.max' => 'El tamaño de la imagen no puede superar los 2MB'
+            'imagen.max' => 'El tamaño de la imagen no puede superar los 2MB',
         ]);
+
+        if ($id != 1) {
+            $request->validate([
+                'fecha_ingreso' => 'required|date_format:d/m/Y'
+            ], [
+                'fecha_ingreso.required' => 'La fecha de ingreso es obligatoria',
+                'fecha_ingreso.date_format' => 'Debe ser una fecha valida',
+            ]);
+        }
 
         $usuario = Usuario::findOrFail($id);
         $usuario->nombres = $request->nombres;
@@ -196,16 +206,19 @@ class UsuariosController extends Controller
         $usuario->save();
 
 
-        if ($request->role != $usuario->role[0]->name) {
-            $usuario->removeRole($usuario->role[0]->name);
-            $usuario->assignRole($request->role);
-        }
+        if ($id != 1) {
+            if ($request->role != $usuario->role[0]->name) {
+                $usuario->removeRole($usuario->role[0]->name);
+                $usuario->assignRole($request->role);
+            }
 
-        if ($usuario->detalle) {
-            $detalle = EmpleadoDetalle::where('usu_id', $usuario->id)->first();
-            $detalle->dep_id = $request->dep_id;
-            $detalle->des_id = $request->des_id;
-            $detalle->save();
+            if ($usuario->detalle) {
+                $detalle = EmpleadoDetalle::where('usu_id', $usuario->id)->first();
+                $detalle->dep_id = $request->dep_id;
+                $detalle->des_id = $request->des_id;
+                $detalle->fecha_ingreso = Carbon::createFromFormat('d/m/Y', $request->fecha_ingreso)->format('Y-m-d');
+                $detalle->save();
+            }
         }
 
         session()->flash('message', 'Usuario actualizado correctamente');

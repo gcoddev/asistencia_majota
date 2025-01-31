@@ -16,6 +16,19 @@ class EmpleadoDetalle extends Model
         'usu_id',
         'dep_id',
         'des_id',
+        'num_pasaporte',
+        'exp_pasaporte',
+        'tel_pasaporte',
+        'nacionalidad',
+        'genero',
+        'religion',
+        'etnia',
+        'estado_civil',
+        'ocupacion',
+        'fecha_nacimiento',
+        'fecha_ingreso',
+        'contacto_emergencia',
+        'detalle_emergencia',
     ];
 
     public function usuario()
