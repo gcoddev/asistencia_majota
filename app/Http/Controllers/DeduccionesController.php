@@ -1,10 +1,8 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\EmpleadoDescuentoCompensacion;
 use App\Models\EmpleadoDetalle;
-use App\Models\Usuario;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,15 +11,17 @@ class DeduccionesController extends Controller
 {
     public function __construct()
     {
-        if (Auth::check() && !Auth::user()->can('deduccion.show')) {
-            abort(403, 'Acción no autorizada !');
-        }
+
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        if (Auth::check() && ! Auth::user()->can('deduccion.show')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         $descuentos = EmpleadoDescuentoCompensacion::where('tipo', 'deduccion')->get();
         // $empleados = Usuario::whereHas('roles', function ($query) {
         //     $query->where('name', 'empleado');
@@ -44,30 +44,34 @@ class DeduccionesController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::check() && ! Auth::user()->can('deduccion.create')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         $request->validate([
             'usu_detalle_id' => 'required',
-            'nombre' => 'required',
-            'descripcion' => 'nullable',
-            'fecha' => 'required|date_format:d/m/Y',
-            'horas' => 'required',
-            'monto' => 'required',
+            'nombre'         => 'required',
+            'descripcion'    => 'nullable',
+            'fecha'          => 'required|date_format:d/m/Y',
+            'horas'          => 'required',
+            'monto'          => 'required',
         ], [
             'usu_detalle_id.required' => 'El usuario es obligatorio',
-            'nombre.required' => 'El nombre es obligatorio',
-            'fecha.required' => 'La fecha es obligatoria',
-            'fecha.date_format' => 'Debe ser una fecha valida',
-            'horas.required' => 'Las horas son obligatorias',
-            'monto.required' => 'El monto es obligatorio',
+            'nombre.required'         => 'El nombre es obligatorio',
+            'fecha.required'          => 'La fecha es obligatoria',
+            'fecha.date_format'       => 'Debe ser una fecha valida',
+            'horas.required'          => 'Las horas son obligatorias',
+            'monto.required'          => 'El monto es obligatorio',
         ]);
 
-        $descuento = new EmpleadoDescuentoCompensacion();
-        $descuento->tipo = 'deduccion';
+        $descuento                 = new EmpleadoDescuentoCompensacion();
+        $descuento->tipo           = 'deduccion';
         $descuento->usu_detalle_id = $request->usu_detalle_id;
-        $descuento->nombre = $request->nombre;
-        $descuento->descripcion = $request->descripcion;
-        $descuento->fecha = Carbon::createFromFormat('d/m/Y', $request->fecha)->format('Y-m-d');
-        $descuento->horas = $request->horas;
-        $descuento->monto = $request->monto;
+        $descuento->nombre         = $request->nombre;
+        $descuento->descripcion    = $request->descripcion;
+        $descuento->fecha          = Carbon::createFromFormat('d/m/Y', $request->fecha)->format('Y-m-d');
+        $descuento->horas          = $request->horas;
+        $descuento->monto          = $request->monto;
         $descuento->save();
 
         session()->flash('message', 'Descuento agregado correctamente');
@@ -100,29 +104,33 @@ class DeduccionesController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if (Auth::check() && ! Auth::user()->can('deduccion.edit')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         $request->validate([
             'usu_detalle_id' => 'required',
-            'nombre' => 'required',
-            'descripcion' => 'nullable',
-            'fecha' => 'required|date_format:d/m/Y',
-            'horas' => 'required',
-            'monto' => 'required',
+            'nombre'         => 'required',
+            'descripcion'    => 'nullable',
+            'fecha'          => 'required|date_format:d/m/Y',
+            'horas'          => 'required',
+            'monto'          => 'required',
         ], [
             'usu_detalle_id.required' => 'El usuario es obligatorio',
-            'nombre.required' => 'El nombre es obligatorio',
-            'fecha.required' => 'La fecha es obligatoria',
-            'fecha.date_format' => 'Debe ser una fecha valida',
-            'horas.required' => 'Las horas son obligatorias',
-            'monto.required' => 'El monto es obligatorio',
+            'nombre.required'         => 'El nombre es obligatorio',
+            'fecha.required'          => 'La fecha es obligatoria',
+            'fecha.date_format'       => 'Debe ser una fecha valida',
+            'horas.required'          => 'Las horas son obligatorias',
+            'monto.required'          => 'El monto es obligatorio',
         ]);
 
-        $descuento = EmpleadoDescuentoCompensacion::findOrFail($id);
+        $descuento                 = EmpleadoDescuentoCompensacion::findOrFail($id);
         $descuento->usu_detalle_id = $request->usu_detalle_id;
-        $descuento->nombre = $request->nombre;
-        $descuento->descripcion = $request->descripcion;
-        $descuento->fecha = Carbon::createFromFormat('d/m/Y', $request->fecha)->format('Y-m-d');
-        $descuento->horas = $request->horas;
-        $descuento->monto = $request->monto;
+        $descuento->nombre         = $request->nombre;
+        $descuento->descripcion    = $request->descripcion;
+        $descuento->fecha          = Carbon::createFromFormat('d/m/Y', $request->fecha)->format('Y-m-d');
+        $descuento->horas          = $request->horas;
+        $descuento->monto          = $request->monto;
         $descuento->save();
 
         session()->flash('message', 'Descuento actualizado correctamente');
@@ -139,6 +147,10 @@ class DeduccionesController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
+        if (Auth::check() && ! Auth::user()->can('deduccion.delete')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         $descuento = EmpleadoDescuentoCompensacion::findOrFail($id);
         $descuento->delete();
 

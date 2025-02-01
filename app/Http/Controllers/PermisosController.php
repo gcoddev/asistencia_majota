@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\EmpleadoPermiso;
@@ -11,16 +10,18 @@ class PermisosController extends Controller
 {
     public function __construct()
     {
-        if (Auth::check() && !Auth::user()->can('permiso.show')) {
-            abort(403, 'Acción no autorizada !');
-        }
+
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $permisos = null;
+        if (Auth::check() && ! Auth::user()->can('permiso.show')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
+        $permisos   = null;
         $vacaciones = null;
 
         if (Auth::user()->role[0]->name == 'admin') {
@@ -57,33 +58,37 @@ class PermisosController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::check() && ! Auth::user()->can('permiso.create')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         $request->validate([
             'usu_detalle_id' => 'required',
-            'tipo' => 'required',
-            'fecha_ini' => 'required|date_format:d/m/Y',
-            'fecha_fin' => 'required|date_format:d/m/Y',
-            'dias' => 'required|min:1',
-            'razones' => 'required',
+            'tipo'           => 'required',
+            'fecha_ini'      => 'required|date_format:d/m/Y',
+            'fecha_fin'      => 'required|date_format:d/m/Y',
+            'dias'           => 'required|min:1',
+            'razones'        => 'required',
         ], [
             'usu_detalle_id.required' => 'El empleado es obligatorio',
-            'tipo.required' => 'El tipo es obligatorio',
-            'fecha_ini.required' => 'La fecha de inicio es obligatoria',
-            'fecha_ini.date_format' => 'Debe ser una fecha valida',
-            'fecha_fin.required' => 'La fecha de fin es obligatoria',
-            'fecha_fin.date_format' => 'Debe ser una fecha valida',
-            'fecha_fin.after' => 'La fecha limite debe ser al menos un dia después de la fecha de inicio',
-            'dias.required' => 'Los días son obligatorios',
-            'dias.min' => 'Debe ser al menos un dia',
-            'razones.required' => 'Las razones son obligatorias',
+            'tipo.required'           => 'El tipo es obligatorio',
+            'fecha_ini.required'      => 'La fecha de inicio es obligatoria',
+            'fecha_ini.date_format'   => 'Debe ser una fecha valida',
+            'fecha_fin.required'      => 'La fecha de fin es obligatoria',
+            'fecha_fin.date_format'   => 'Debe ser una fecha valida',
+            'fecha_fin.after'         => 'La fecha limite debe ser al menos un dia después de la fecha de inicio',
+            'dias.required'           => 'Los días son obligatorios',
+            'dias.min'                => 'Debe ser al menos un dia',
+            'razones.required'        => 'Las razones son obligatorias',
         ]);
 
-        $permiso = new EmpleadoPermiso();
+        $permiso                 = new EmpleadoPermiso();
         $permiso->usu_detalle_id = $request->usu_detalle_id;
-        $permiso->tipo = $request->tipo;
-        $permiso->fecha_ini = Carbon::createFromFormat('d/m/Y', $request->fecha_ini)->format('Y-m-d');
-        $permiso->fecha_fin = Carbon::createFromFormat('d/m/Y', $request->fecha_fin)->format('Y-m-d');
-        $permiso->dias = $request->dias;
-        $permiso->razones = $request->razones;
+        $permiso->tipo           = $request->tipo;
+        $permiso->fecha_ini      = Carbon::createFromFormat('d/m/Y', $request->fecha_ini)->format('Y-m-d');
+        $permiso->fecha_fin      = Carbon::createFromFormat('d/m/Y', $request->fecha_fin)->format('Y-m-d');
+        $permiso->dias           = $request->dias;
+        $permiso->razones        = $request->razones;
         $permiso->save();
 
         session()->flash('message', 'Permiso creado correctamente');
@@ -116,8 +121,12 @@ class PermisosController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if (Auth::check() && ! Auth::user()->can('permiso.edit')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         if (isset($request->estado)) {
-            $permiso = EmpleadoPermiso::findOrFail($id);
+            $permiso         = EmpleadoPermiso::findOrFail($id);
             $permiso->estado = $request->estado;
             $permiso->usu_id = Auth::user()->id;
             $permiso->save();
@@ -133,31 +142,31 @@ class PermisosController extends Controller
 
         $request->validate([
             'usu_detalle_id' => 'required',
-            'tipo' => 'required',
-            'fecha_ini' => 'required|date_format:d/m/Y',
-            'fecha_fin' => 'required|date_format:d/m/Y',
-            'dias' => 'required|min:1',
-            'razones' => 'required',
+            'tipo'           => 'required',
+            'fecha_ini'      => 'required|date_format:d/m/Y',
+            'fecha_fin'      => 'required|date_format:d/m/Y',
+            'dias'           => 'required|min:1',
+            'razones'        => 'required',
         ], [
             'usu_detalle_id.required' => 'El usuario es obligatorio',
-            'tipo.required' => 'El tipo es obligatorio',
-            'fecha_ini.required' => 'La fecha de inicio es obligatoria',
-            'fecha_ini.date_format' => 'Debe ser una fecha valida',
-            'fecha_fin.required' => 'La fecha de fin es obligatoria',
-            'fecha_fin.date_format' => 'Debe ser una fecha valida',
-            'fecha_fin.after' => 'La fecha limite debe ser al menos un dia después de la fecha de inicio',
-            'dias.required' => 'Los días son obligatorios',
-            'dias.min' => 'Debe ser al menos un dia',
-            'razones.required' => 'Las razones son obligatorias',
+            'tipo.required'           => 'El tipo es obligatorio',
+            'fecha_ini.required'      => 'La fecha de inicio es obligatoria',
+            'fecha_ini.date_format'   => 'Debe ser una fecha valida',
+            'fecha_fin.required'      => 'La fecha de fin es obligatoria',
+            'fecha_fin.date_format'   => 'Debe ser una fecha valida',
+            'fecha_fin.after'         => 'La fecha limite debe ser al menos un dia después de la fecha de inicio',
+            'dias.required'           => 'Los días son obligatorios',
+            'dias.min'                => 'Debe ser al menos un dia',
+            'razones.required'        => 'Las razones son obligatorias',
         ]);
 
-        $permiso = EmpleadoPermiso::findOrFail($id);
+        $permiso                 = EmpleadoPermiso::findOrFail($id);
         $permiso->usu_detalle_id = $request->usu_detalle_id;
-        $permiso->tipo = $request->tipo;
-        $permiso->fecha_ini = Carbon::createFromFormat('d/m/Y', $request->fecha_ini)->format('Y-m-d');
-        $permiso->fecha_fin = Carbon::createFromFormat('d/m/Y', $request->fecha_fin)->format('Y-m-d');
-        $permiso->dias = $request->dias;
-        $permiso->razones = $request->razones;
+        $permiso->tipo           = $request->tipo;
+        $permiso->fecha_ini      = Carbon::createFromFormat('d/m/Y', $request->fecha_ini)->format('Y-m-d');
+        $permiso->fecha_fin      = Carbon::createFromFormat('d/m/Y', $request->fecha_fin)->format('Y-m-d');
+        $permiso->dias           = $request->dias;
+        $permiso->razones        = $request->razones;
         $permiso->save();
 
         session()->flash('message', 'Permiso actualizado correctamente');
@@ -174,6 +183,10 @@ class PermisosController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
+        if (Auth::check() && ! Auth::user()->can('permiso.delete')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         $permiso = EmpleadoPermiso::findOrFail($id);
         $permiso->delete();
 

@@ -1,23 +1,23 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Auth;
 
 class RolesController extends Controller
 {
     public function __construct()
     {
-        if (Auth::check() && !Auth::user()->can('roles.show')) {
-            abort(403, 'Acción no autorizada !');
-        }
+
     }
     public function index($id = null)
     {
+        if (Auth::check() && ! Auth::user()->can('roles.show')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         $roles = Role::with(['permissions'])->get();
 
         // $selected_role = null;
@@ -29,8 +29,8 @@ class RolesController extends Controller
 
         $permissionArray = Permission::all();
         foreach ($permissionArray as $item) {
-            $module = $item->module;
-            $permission = $item->name;
+            $module                 = $item->module;
+            $permission             = $item->name;
             $permissions[$module][] = $permission;
         }
         return view('auth.roles.index', compact(
@@ -38,17 +38,22 @@ class RolesController extends Controller
             'roles',
         ));
     }
-    public function create(Request $request) {}
+    public function create(Request $request)
+    {}
 
     public function store(Request $request)
     {
+        if (Auth::check() && ! Auth::user()->can('roles.create')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         $request->validate([
             'name' => 'required',
         ], [
             'name.required' => 'El nombre es obligatorio',
         ]);
 
-        $departamento = new Role();
+        $departamento       = new Role();
         $departamento->name = $request->name;
         $departamento->save();
 
@@ -63,13 +68,17 @@ class RolesController extends Controller
 
     public function update(Request $request, string $id)
     {
+        if (Auth::check() && ! Auth::user()->can('roles.edit')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         $request->validate([
             'name' => 'required',
         ], [
             'name.required' => 'El nombre es obligatorio',
         ]);
 
-        $departamento = Role::findOrFail($id);
+        $departamento       = Role::findOrFail($id);
         $departamento->name = $request->name;
         $departamento->save();
 
@@ -82,9 +91,12 @@ class RolesController extends Controller
         return redirect()->back()->with('message', 'Rol actualizado correctamente');
     }
 
-
     public function destroy(Request $request, string $id)
     {
+        if (Auth::check() && ! Auth::user()->can('roles.delete')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         $role = Role::findOrFail($id);
         $role->permissions()->detach();
         $role->delete();
@@ -98,18 +110,21 @@ class RolesController extends Controller
         return redirect()->back()->with('message', 'Rol eliminado correctamente');
     }
 
-
     public function putPermission(Request $request)
     {
+        if (Auth::check() && ! Auth::user()->can('roles.edit')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         $request->validate([
-            'role_id' => 'required',
-            'permissions' => 'required|array',
-            'permissions.*' => 'exists:permissions,name'
+            'role_id'       => 'required',
+            'permissions'   => 'required|array',
+            'permissions.*' => 'exists:permissions,name',
         ], [
-            'role_id.required' => 'El id del rol es obligatorio',
+            'role_id.required'     => 'El id del rol es obligatorio',
             'permissions.required' => 'Los permisos son requeridos',
-            'permissions.array' => 'Los permisos deben ser un arreglo',
-            'permissions.*.exists' => 'Los permisos deben ser validos'
+            'permissions.array'    => 'Los permisos deben ser un arreglo',
+            'permissions.*.exists' => 'Los permisos deben ser validos',
         ]);
 
         $role = Role::findOrFail($request->role_id);

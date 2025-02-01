@@ -9,15 +9,17 @@ class DesignacionesController extends Controller
 {
     public function __construct()
     {
-        if (Auth::check() && !Auth::user()->can('designacion.show')) {
-            abort(403, 'Acción no autorizada !');
-        }
+
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        if (Auth::check() && ! Auth::user()->can('designacion.show')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         $designaciones = Designacion::all();
         return view('backend.designaciones.index', compact('designaciones'));
     }
@@ -35,6 +37,10 @@ class DesignacionesController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::check() && ! Auth::user()->can('designacion.create')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         $request->validate([
             'nombre'      => 'required',
             'descripcion' => 'nullable',
@@ -77,6 +83,10 @@ class DesignacionesController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if (Auth::check() && ! Auth::user()->can('designacion.edit')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         $request->validate([
             'nombre'      => 'required',
             'descripcion' => 'nullable',
@@ -103,6 +113,10 @@ class DesignacionesController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
+        if (Auth::check() && ! Auth::user()->can('designacion.delete')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         $designacion = Designacion::findOrFail($id);
         $designacion->delete();
 
