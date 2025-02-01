@@ -14,17 +14,24 @@
                         <li class="breadcrumb-item active">Usuarios</li>
                     </ul>
                 </div>
+                {{-- <a href="#" class="btn-sm btn-success mr-3">
+                    Generar CSV
+                    &nbsp;<i class="fa fa-file-excel-o"></i>
+                </a> --}}
+                <a href="{{ route('admin.pdf.usuarios') }}" target="_blank" class="btn-sm btn-danger mr-3">
+                    Generar PDF
+                    &nbsp;<i class="fa fa-file-pdf-o"></i>
+                </a>
+                <div class="view-icons">
+                    <a href="#" class="grid-view btn btn-link" data-name="grid"><i class="fa fa-th"></i></a>
+                    <a href="#" class="list-view btn btn-link active" data-name="list"><i class="fa fa-bars"></i></a>
+                </div>
                 @can('usuario.create')
                     <div class="col-auto float-right ml-auto">
                         <a href="#" class="btn add-btn" data-toggle="modal" data-target="#modal_usuario"
                             onclick="resetForm('Agregar')">
                             <i class="fa fa-plus"></i> Agregar usuario
                         </a>
-                        <div class="view-icons">
-                            <a href="#" class="grid-view btn btn-link" data-name="grid"><i class="fa fa-th"></i></a>
-                            <a href="#" class="list-view btn btn-link active" data-name="list"><i
-                                    class="fa fa-bars"></i></a>
-                        </div>
                     </div>
                 @endcan
             </div>
@@ -190,8 +197,9 @@
                                     <td class="text-right">
                                         @if (Auth::user()->can('usuario.delete') || Auth::user()->can('usuario.edit'))
                                             <div class="dropdown dropdown-action">
-                                                <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
-                                                    aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                                <a href="#" class="action-icon dropdown-toggle"
+                                                    data-toggle="dropdown" aria-expanded="false"><i
+                                                        class="material-icons">more_vert</i></a>
                                                 <div class="dropdown-menu dropdown-menu-right">
                                                     <a class="dropdown-item" href="#" data-toggle="modal"
                                                         data-target="#modal_usuario"

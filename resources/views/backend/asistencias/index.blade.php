@@ -6,7 +6,7 @@
         <!-- Page Header -->
         <div class="page-header">
             <div class="row">
-                <div class="col-md-8 col-12">
+                <div class="col-md-6 col-12">
                     <h3 class="page-title">Asistencias</h3>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item">
@@ -15,7 +15,20 @@
                         <li class="breadcrumb-item active">Asistencias</li>
                     </ul>
                 </div>
-                <div class="col-md-4 col-12">
+                <div class="col-md-3 col-12 mt-4">
+                    <div>
+                        {{-- <a href="#" class="btn-sm btn-success mr-3">
+                            Generar CSV
+                            &nbsp;<i class="fa fa-file-excel-o"></i>
+                        </a> --}}
+                        <a href="{{ route('admin.pdf.asistencias', [$mes, $anio, $usu_detalle_id]) }}" target="_blank"
+                            class="btn-sm btn-danger mr-3">
+                            Generar PDF
+                            &nbsp;<i class="fa fa-file-pdf-o"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-12">
                     <div class="row">
                         <div class="col-6">
                             <i class="fa fa-check text-success"></i>

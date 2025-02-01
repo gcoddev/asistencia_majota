@@ -123,7 +123,7 @@
         <div class="col-12">
             <p>
                 <strong>Salario total: Bs {{ $sueldo->salario_total }}</strong>
-                ({{ ucfirst(numero_literal($sueldo->salario_total)) }})
+                ({{ ucfirst(numero_literal($sueldo->salario_total)) }} bolivianos)
             </p>
         </div>
     </div>

@@ -7,16 +7,16 @@ use App\Http\Controllers\DeduccionesController;
 use App\Http\Controllers\DepartamentosController;
 use App\Http\Controllers\DesignacionesController;
 use App\Http\Controllers\DetalleController;
-use App\Http\Controllers\UsuariosController;
-use App\Http\Controllers\PermisosController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\PermisosController;
+use App\Http\Controllers\ReportesController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\SalarioController;
 use App\Http\Controllers\SueldosController;
-use App\Models\EmpleadoDetalle;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UsuariosController;
 use Gregwar\Captcha\CaptchaBuilder;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
 Route::get('/', function () {
@@ -44,6 +44,13 @@ Route::prefix('admin')->middleware('usuario_autenticado')->group(function () {
 
     Route::get('/sueldos/pdf/{id}', [SueldosController::class, 'reciboPDF'])->name('admin.sueldos.pdf');
     Route::get('/sueldos/print/{id}', [SueldosController::class, 'reciboPrint'])->name('admin.sueldos.print');
+
+    Route::prefix('pdf')->group(function () {
+        Route::get('/usuarios', [ReportesController::class, 'usuarios'])->name('admin.pdf.usuarios');
+        Route::get('/permisos', [ReportesController::class, 'permisos'])->name('admin.pdf.permisos');
+        Route::get('/sueldos', [ReportesController::class, 'sueldos'])->name('admin.pdf.sueldos');
+        Route::get('/asistencias/{mes?}/{anio?}/{id?}', [ReportesController::class, 'asistencias'])->name('admin.pdf.asistencias');
+    });
 });
 
 Route::middleware('usuario_no_autenticado')->group(function () {
@@ -53,9 +60,8 @@ Route::middleware('usuario_no_autenticado')->group(function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-
 Route::get('/captcha', function () {
-    $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+    $chars  = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
     $length = 5;
     $phrase = '';
 

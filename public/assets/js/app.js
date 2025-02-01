@@ -172,7 +172,50 @@ $(document).ready(function () {
 					"sortAscending": ": activar para ordenar la columna de manera ascendente",
 					"sortDescending": ": activar para ordenar la columna de manera descendente"
 				}
-			}
+			},
+			// dom: "<'row'<'col-md-12'B>>" +
+			// 	"<'row'<'col-md-6'l><'col-md-6'f>>" +
+			// 	"<'row'<'col-md-12'tr>>" +
+			// 	"<'row'<'col-md-6'i><'col-md-6'p>>",
+			// buttons: [
+			// 	{
+			// 		extend: 'copy',
+			// 		title: 'Lista de usuarios',
+			// 		exportOptions: { columns: ':not(:nth-last-child(-n+2))' }
+			// 	},
+			// 	{
+			// 		extend: 'excel',
+			// 		title: 'Reporte Excel de usuarios',
+			// 		exportOptions: { columns: ':not(:nth-last-child(-n+2))' }
+			// 	},
+			// 	{
+			// 		extend: 'pdf',
+			// 		title: 'Reporte PDF de usuarios',
+			// 		// orientation: 'landscape',
+			// 		pageSize: 'LETTER',
+			// 		exportOptions: { columns: ':not(:nth-last-child(-n+2))' },
+			// 		customize: function (doc) {
+			// 			doc.content[1].table.body.forEach(function (row) {
+			// 				row.forEach(function (cell) {
+			// 					if (typeof cell.text === 'string') {
+			// 						cell.text = cell.text.replace(/<br\s*\/?>/g, '\n');
+			// 						cell.text = cell.text.replace(/\s+/g, ' ');
+			// 					}
+			// 				});
+			// 			});
+			// 		}
+			// 	},
+			// 	{
+			// 		extend: 'print',
+			// 		title: 'Lista de usuarios',
+			// 		exportOptions: { columns: ':not(:nth-last-child(-n+2))' },
+			// 		// customize: function (win) {
+			// 		// 	$(win.document.body).css('transform', 'scale(0.9)');
+			// 		// 	$(win.document.body).find('table').addClass('compact').css('font-size', '10px'); // Ajusta fuente
+			// 		// 	$(win.document.body).find('table').css('width', '100%'); // Usa el ancho completo
+			// 		// }
+			// 	}
+			// ],
 		});
 	}
 

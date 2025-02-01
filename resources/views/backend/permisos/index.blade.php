@@ -17,6 +17,16 @@
                         <li class="breadcrumb-item active">Gestión de asistencias</li>
                     </ul>
                 </div>
+                <div>
+                    {{-- <a href="#" class="btn-sm btn-success mr-3">
+                        Generar CSV
+                        &nbsp;<i class="fa fa-file-excel-o"></i>
+                    </a> --}}
+                    <a href="{{ route('admin.pdf.permisos') }}" target="_blank" class="btn-sm btn-danger mr-3">
+                        Generar PDF
+                        &nbsp;<i class="fa fa-file-pdf-o"></i>
+                    </a>
+                </div>
                 @can('permiso.create')
                     <div class="col-auto float-right ml-auto">
                         <a href="#" class="btn add-btn" data-toggle="modal" data-target="#modal_leave"
