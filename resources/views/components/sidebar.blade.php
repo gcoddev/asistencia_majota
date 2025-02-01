@@ -64,7 +64,7 @@
                     <li class="{{ Route::is('admin.permisos.index') ? 'active' : '' }}">
                         <a href="{{ route('admin.permisos.index') }}">
                             <i class="la la-tasks"></i>
-                            <span>Gestión de asistencias</span>
+                            <span>Gestión de permisos</span>
                         </a>
                     </li>
                 @endcan

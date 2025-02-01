@@ -74,8 +74,8 @@
                             <thead>
                                 <tr>
                                     <th>Modulo</th>
-                                    <th class="text-center">Crear</th>
                                     <th class="text-center">Leer</th>
+                                    <th class="text-center">Crear</th>
                                     <th class="text-center">Editar</th>
                                     <th class="text-center">Eliminar</th>
                                 </tr>
@@ -84,7 +84,7 @@
                                 @foreach ($permissions as $module => $permission)
                                     <tr>
                                         <td>{{ $module }}</td>
-                                        @foreach (['create', 'show', 'edit', 'delete'] as $action)
+                                        @foreach (['show', 'create', 'edit', 'delete'] as $action)
                                             <td class="text-center">
                                                 @foreach ($permission as $item)
                                                     @if (str_ends_with($item, ".$action"))

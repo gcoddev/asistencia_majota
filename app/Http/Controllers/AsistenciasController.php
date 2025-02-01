@@ -10,22 +10,24 @@ use Illuminate\Support\Facades\Auth;
 
 class AsistenciasController extends Controller
 {
-    public function __construct()
-    {
-        if (Auth::check() && !Auth::user()->can('asistencia.show')) {
-            abort(403, 'Acción no autorizada !');
-        }
-    }
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        if (Auth::check() && ! Auth::user()->can('asistencia.show')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         $usu_detalle_id = $request->input('usu_detalle_id');
         $mes            = $request->input('mes');
         $anio           = $request->input('anio');
 
-        $empleados = EmpleadoDetalle::all();
+        if (Auth::user()->role[0]->name == 'admin') {
+            $empleados = EmpleadoDetalle::all();
+        } else {
+            $empleados = EmpleadoDetalle::where('usu_id', Auth::user()->id)->get();
+        }
 
         if ($mes) {
             $fecha = Carbon::create($anio ?? Carbon::now()->year, $mes, 1);
@@ -64,6 +66,9 @@ class AsistenciasController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::check() && ! Auth::user()->can('asistencia.create')) {
+            abort(403, 'Acción no autorizada !');
+        }
         // return response()->json($request);
 
         $asistencia         = new Asistencia();
@@ -109,6 +114,9 @@ class AsistenciasController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if (Auth::check() && ! Auth::user()->can('asistencia.edit')) {
+            abort(403, 'Acción no autorizada !');
+        }
         // return response()->json($request);
 
         $asistencia = Asistencia::findOrFail($id);
@@ -146,6 +154,10 @@ class AsistenciasController extends Controller
 
     public function updateNote(Request $request, string $id)
     {
+        if (Auth::check() && ! Auth::user()->can('asistencia.edit')) {
+            abort(403, 'Acción no autorizada !');
+        }
+
         $request->validate([
             'note'        => 'required',
             'note_estado' => 'nullable',

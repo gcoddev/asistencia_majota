@@ -1,8 +1,6 @@
 <?php
-
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -16,7 +14,7 @@ class PermisosSeeder extends Seeder
     {
         // Roles de usuarios
         $roles = [
-            'usuario' => [
+            'usuario'      => [
                 'usuario.create',
                 'usuario.show',
                 'usuario.edit',
@@ -28,19 +26,19 @@ class PermisosSeeder extends Seeder
                 'departamento.edit',
                 'departamento.delete',
             ],
-            'designacion' => [
+            'designacion'  => [
                 'designacion.create',
                 'designacion.show',
                 'designacion.edit',
                 'designacion.delete',
             ],
-            'permiso' => [
+            'permiso'      => [
                 'permiso.create',
                 'permiso.show',
                 'permiso.edit',
                 'permiso.delete',
             ],
-            'sueldo' => [
+            'sueldo'       => [
                 'sueldo.create',
                 'sueldo.show',
                 'sueldo.edit',
@@ -52,31 +50,31 @@ class PermisosSeeder extends Seeder
                 'compensacion.edit',
                 'compensacion.delete',
             ],
-            'deduccion' => [
+            'deduccion'    => [
                 'deduccion.create',
                 'deduccion.show',
                 'deduccion.edit',
                 'deduccion.delete',
             ],
-            'roles' => [
+            'roles'        => [
                 'roles.create',
                 'roles.show',
                 'roles.edit',
                 'roles.delete',
             ],
-            'asistencia' => [
+            'asistencia'   => [
                 'asistencia.create',
                 'asistencia.show',
                 'asistencia.edit',
                 'asistencia.delete',
-            ]
+            ],
         ];
         foreach ($roles as $module => $permissions) {
             foreach ($permissions as $role) {
                 Permission::firstOrCreate([
-                    'name' => $role,
-                    'module' => $module,
-                    'guard_name' => 'admin'
+                    'name'       => $role,
+                    'module'     => $module,
+                    'guard_name' => 'admin',
                 ]);
             }
         }
@@ -89,18 +87,31 @@ class PermisosSeeder extends Seeder
         // Tecnico
         $tecnicoRole = Role::findByName('tecnico');
         $tecnicoRole->givePermissionTo($roles);
-        $tecnicoRole->revokePermissionTo(['permiso.create']);
-        $tecnicoRole->revokePermissionTo(['usuario.create']);
-        $tecnicoRole->revokePermissionTo(['usuario.show']);
-        $tecnicoRole->revokePermissionTo(['usuario.edit']);
-        $tecnicoRole->revokePermissionTo(['usuario.delete']);
-        $tecnicoRole->revokePermissionTo(['roles.create']);
-        $tecnicoRole->revokePermissionTo(['roles.show']);
-        $tecnicoRole->revokePermissionTo(['roles.edit']);
-        $tecnicoRole->revokePermissionTo(['roles.delete']);
+        $tecnicoRole->revokePermissionTo([
+            'permiso.create',
+
+            'usuario.create',
+            'usuario.show',
+            'usuario.edit',
+            'usuario.delete',
+
+            'roles.create',
+            'roles.show',
+            'roles.edit',
+            'roles.delete',
+        ]);
 
         // Empleado
         $employeeRole = Role::findByName('empleado');
-        $employeeRole->givePermissionTo(['permiso.show', 'permiso.create', 'permiso.edit', 'permiso.delete']);
+        $employeeRole->givePermissionTo([
+            'permiso.show',
+            'permiso.create',
+            'permiso.edit',
+            'permiso.delete',
+
+            'asistencia.show',
+            'asistencia.create',
+            'asistencia.edit',
+        ]);
     }
 }

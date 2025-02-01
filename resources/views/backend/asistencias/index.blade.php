@@ -44,18 +44,20 @@
         <!-- Search Filter -->
         <form class="row filter-row" action="{{ route('admin.asistencias.index') }}" method="GET">
             <div class="col-sm-12 col-md-3">
-                <div class="form-group form-focus select-focus">
-                    <select class="select floating" name="usu_detalle_id">
-                        <option value="">-</option>
-                        @foreach ($empleados as $em)
-                            <option value="{{ $em->id }}" {{ $em->id == $usu_detalle_id ? 'selected' : '' }}>
-                                {{ $em->usuario->nombres }}
-                                {{ $em->usuario->apellidos }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <label class="focus-label">Nombre de empleado</label>
-                </div>
+                @if (Auth::user()->role[0]->name == 'admin')
+                    <div class="form-group form-focus select-focus">
+                        <select class="select floating" name="usu_detalle_id">
+                            <option value="">-</option>
+                            @foreach ($empleados as $em)
+                                <option value="{{ $em->id }}" {{ $em->id == $usu_detalle_id ? 'selected' : '' }}>
+                                    {{ $em->usuario->nombres }}
+                                    {{ $em->usuario->apellidos }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <label class="focus-label">Nombre de empleado</label>
+                    </div>
+                @endif
             </div>
             <div class="col-sm-6 col-md-3">
                 <div class="form-group form-focus select-focus">
@@ -146,7 +148,7 @@
                                                     $fin = $emp->buscarAsistencia($dia, $mes, $anio)->asistencias[0]
                                                         ->hora_fin;
                                                     $estado = $emp->buscarAsistencia($dia, $mes, $anio)->asistencias[0]
-                                                    ->estado;
+                                                        ->estado;
                                                     // foreach (
                                                     //     $emp
                                                     //         ->buscarAsistencia($dia, $mes, $anio)
@@ -230,7 +232,7 @@
                                                                             data-id="{{ $dia }}{{ $emp->id }}"
                                                                             data-date="{{ $anio }}-{{ $mes }}-{{ $dia }}"
                                                                             title="Observación"><i
-                                                                                class="fa fa-close text-{{$estado === null ? 'warning' : ($estado === 1 ? 'info':'danger')}}"></i></a></span>
+                                                                                class="fa fa-close text-{{ $estado === null ? 'warning' : ($estado === 1 ? 'info' : 'danger') }}"></i></a></span>
                                                                 @endif
                                                             @endif
                                                         </div>
@@ -370,13 +372,14 @@
                                                                                 @endif
                                                                                 @if ($fin == '-' && date('Y-m-d') != $fecha)
                                                                                     @if ($asis->estado === null)
-                                                                                    <div class="alert alert-danger">
-                                                                                        No marco salida
-                                                                                    </div>
+                                                                                        <div class="alert alert-danger">
+                                                                                            No marco salida
+                                                                                        </div>
                                                                                     @else
-                                                                                    <div class="alert alert-{{$asis->estado ? 'success':'danger'}}">
-                                                                                        {{$asis->estado ? 'Motivo permitido':'Motivo rechazado'}}
-                                                                                    </div>
+                                                                                        <div
+                                                                                            class="alert alert-{{ $asis->estado ? 'success' : 'danger' }}">
+                                                                                            {{ $asis->estado ? 'Motivo permitido' : 'Motivo rechazado' }}
+                                                                                        </div>
                                                                                     @endif
                                                                                 @endif
                                                                                 {{-- <div class="statistics">
@@ -443,7 +446,7 @@
                                                                                     <p>
                                                                                         {{ $asis->note }}
                                                                                     </p>
-                                                                                    @if ($asis->estado === null)
+                                                                                    @if ($asis->estado === null && Auth::user()->role[0]->name == 'admin')
                                                                                         <br>
                                                                                         <form id="form-note">
                                                                                             @csrf
@@ -455,7 +458,7 @@
                                                                                                 name="note"
                                                                                                 id="note"
                                                                                                 value="{{ $asis->note }}">
-                                                                                            <input type="text"
+                                                                                            <input type="hidden"
                                                                                                 name="note_estado"
                                                                                                 id="note_estado">
                                                                                             <button type="submit"

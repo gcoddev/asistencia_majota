@@ -13,6 +13,7 @@ Route::get('/', function (Request $request) {
     ], 200);
 });
 
-Route::prefix('user')->group(function() {
+Route::prefix('usuario')->group(function() {
     Route::get('/{ci}', [UsuarioController::class, 'index']);
+    Route::get('/{ci}/asistencias/{mes?}/{anio?}', [UsuarioController::class, 'asistencia']);
 });

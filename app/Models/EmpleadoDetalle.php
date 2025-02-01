@@ -1,15 +1,12 @@
 <?php
-
 namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class EmpleadoDetalle extends Model
 {
-    protected $table = 'empleado_detalles';
+    protected $table      = 'empleado_detalles';
     protected $primaryKey = 'id';
 
     protected $fillable = [
@@ -89,7 +86,7 @@ class EmpleadoDetalle extends Model
 
         // Obtener el inicio y fin de la semana actual
         $inicioSemana = Carbon::now()->startOfWeek();
-        $finSemana = Carbon::now()->endOfWeek();
+        $finSemana    = Carbon::now()->endOfWeek();
 
         // Filtrar las asistencias de la semana utilizando la relación
         $asistenciasSemana = AsistenciaTiempo::where('usu_id', $usu_id)
@@ -102,7 +99,6 @@ class EmpleadoDetalle extends Model
         return $this->calcularHorasTotales($asistenciasSemana);
     }
 
-
     // Calcular horas totales del mes
     public function horasMes()
     {
@@ -110,7 +106,7 @@ class EmpleadoDetalle extends Model
 
         // Obtener el inicio y fin del mes actual
         $inicioMes = Carbon::now()->startOfMonth();
-        $finMes = Carbon::now()->endOfMonth();
+        $finMes    = Carbon::now()->endOfMonth();
 
         // Filtrar las asistencias del mes utilizando la relación 'asistencia'
         $asistenciasMes = AsistenciaTiempo::where('usu_id', $usu_id)
@@ -122,7 +118,6 @@ class EmpleadoDetalle extends Model
         // Calcular y devolver las horas totales del mes
         return $this->calcularHorasTotales($asistenciasMes);
     }
-
 
     // Calcular horas totales en segundos
     private function calcularHorasTotales($asistencias)
@@ -150,10 +145,10 @@ class EmpleadoDetalle extends Model
     public function horasTotalesMes($anio = null, $mes = null)
     {
         $anio = $anio ?? Carbon::now()->year;
-        $mes = $mes ?? Carbon::now()->month;
+        $mes  = $mes ?? Carbon::now()->month;
 
         $inicioMes = Carbon::create($anio, $mes, 1);
-        $finMes = $inicioMes->copy()->endOfMonth();
+        $finMes    = $inicioMes->copy()->endOfMonth();
 
         $horasTotalesMes = 0;
 
@@ -183,22 +178,32 @@ class EmpleadoDetalle extends Model
         return $hrs;
     }
 
-    public function contarFaltas()
+    public function contarFaltas($mes = null, $anio = null)
     {
         $usuario_id = $this->usu_id;
 
-        $primeraAsistencia = Asistencia::where('usu_id', $usuario_id)
-            ->min('fecha');
+        if (! $mes) {
+            $mes = date('m');
+        }
+        if (! $anio) {
+            $anio = date('Y');
+        }
 
-        if (!$primeraAsistencia) {
+        $primeraAsistencia = Asistencia::where('usu_id', $usuario_id)
+            ->whereMonth('fecha', $mes)
+            ->whereYear('fecha', $anio)
+            ->orderBy('fecha', 'asc') // Ordena por fecha ascendente (primera asistencia)
+            ->value('fecha');
+
+        if (! $primeraAsistencia) {
             return 0;
         }
 
         $fechaInicio = Carbon::parse($primeraAsistencia);
-        $fechaFinal = Carbon::now();
+        $fechaFinal  = Carbon::now();
 
         $horaEntrada = $this->departamento->hora_ini;
-        $horaSalida = $this->departamento->hora_fin;
+        $horaSalida  = $this->departamento->hora_fin;
 
         $faltas = 0;
 
@@ -211,7 +216,7 @@ class EmpleadoDetalle extends Model
                 ->where('fecha', $fecha->format('Y-m-d'))
                 ->first();
 
-            if (!$asistencia && Carbon::now()->gt(Carbon::parse($fecha->format('Y-m-d') . ' ' . $horaSalida))) {
+            if (! $asistencia && Carbon::now()->gt(Carbon::parse($fecha->format('Y-m-d') . ' ' . $horaSalida))) {
                 $faltas++;
             }
         }
