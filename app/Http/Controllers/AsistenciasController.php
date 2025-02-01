@@ -50,6 +50,8 @@ class AsistenciasController extends Controller
         }
         $latestYear = Carbon::now()->year;
 
+        $mes = (int) $mes;
+        $anio = (int) $anio;
         return view('backend.asistencias.index', compact('usu_detalle_id', 'mes', 'anio', 'oldYear', 'latestYear', 'diasDelMes', 'empleados'));
     }
 
