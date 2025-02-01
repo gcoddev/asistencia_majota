@@ -8,6 +8,7 @@ use App\Models\ReciboItem;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SueldosController extends Controller
 {
