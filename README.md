@@ -61,17 +61,17 @@ Los usuarios iniciales creados por los seeders son:
 
 - **Administrador**
 
-  - Usuario: `admin`
+  - Usuario: `admin@majota.net`
   - Contraseña: `admin`
 
 - **Técnico**
 
-  - Usuario: `tecnico`
+  - Usuario: `tecnico@majota.net`
   - Contraseña: `tecnico`
 
 - **Empleado**
 
-  - Usuario: `empleado`
+  - Usuario: `empleado@majota.net`
   - Contraseña: `empleado`
 
 ## Uso
